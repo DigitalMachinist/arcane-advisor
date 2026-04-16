@@ -1,6 +1,8 @@
-import { defineConfig } from 'vite';
+import { defineConfig } from 'vitest/config';
+import { fileURLToPath, URL } from 'node:url';
 import laravel from 'laravel-vite-plugin';
 import tailwindcss from '@tailwindcss/vite';
+import vue from '@vitejs/plugin-vue';
 
 export default defineConfig({
     plugins: [
@@ -9,10 +11,21 @@ export default defineConfig({
             refresh: true,
         }),
         tailwindcss(),
+        vue(),
     ],
+    resolve: {
+        alias: {
+            '@': fileURLToPath(new URL('./resources/js', import.meta.url)),
+        },
+    },
     server: {
         watch: {
             ignored: ['**/storage/framework/views/**'],
         },
+    },
+    test: {
+        environment: 'jsdom',
+        globals: true,
+        include: ['resources/js/tests/**/*.spec.{js,ts}'],
     },
 });
