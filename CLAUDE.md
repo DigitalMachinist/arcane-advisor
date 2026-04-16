@@ -22,7 +22,6 @@ Arcane Advisor is a D&D 5e wizard spell recommendation engine. Users describe a 
 - After resolving conflicts, always rerun all tests to confirm there are no regression failures
 - When beginning work on a new feature, build it in a branch so a PR can be created from it and merged into main when it is approved
 - NEVER make commits to or push to the `main` branch. Assume `main` is branch protected and that pushes to main will always fail.
-- Controllers (`__invoke`) are thin HTTP wrappers; Actions (`execute`) hold business logic. Never collapse them into one class. Controllers call Actions, not the other way around.
 
 ## Conventions
 
