@@ -12,14 +12,14 @@ Follow-up queries refine, amend, or riff on prior results in a short conversatio
 
 | Layer | Technology |
 |-------|------------|
-| API | Laravel 13 (PHP 8.3+) |
+| API | Laravel 13 (PHP 8.4+) |
 | Frontend | Vue 3 SPA, Pinia, Vue Router, Tailwind CSS 4, Vite |
 | Database | MySQL 8.4, Redis 7 (Docker) |
 | LLM | Cloudflare Workers AI — `@cf/google/gemma-4-26b-a4b-it` (completions), `@cf/baai/bge-base-en-v1.5` (embeddings) |
 
 ## Prerequisites
 
-- PHP 8.3+
+- PHP 8.4+
 - Node.js 18+
 - Docker & Docker Compose
 - Composer

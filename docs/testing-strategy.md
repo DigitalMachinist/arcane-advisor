@@ -1,6 +1,6 @@
 # Testing Strategy
 
-A practical guide for testing this Laravel 13 / PHP 8.3+ application, informed by 2025-2026 community consensus from Spatie, Laravel core team, Laracasts, and prominent community voices.
+A practical guide for testing this Laravel 13 / PHP 8.4+ application, informed by 2025-2026 community consensus from Spatie, Laravel core team, Laracasts, and prominent community voices.
 
 ---
 

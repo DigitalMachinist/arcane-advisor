@@ -1,6 +1,6 @@
 # Style Guide
 
-A prescriptive style guide for this Laravel 13 / PHP 8.3+ application. Rules are enforced by automated tools wherever possible. Convention-only rules are enforced through code review.
+A prescriptive style guide for this Laravel 13 / PHP 8.4+ application. Rules are enforced by automated tools wherever possible. Convention-only rules are enforced through code review.
 
 ---
 
@@ -13,7 +13,7 @@ Four tools enforce style and correctness automatically. Run them all at once wit
 | Tool | What It Enforces | How to Run |
 |---|---|---|
 | **Pint** | Code formatting, strict types, comparison operators, class ordering, trailing commas, PHPDoc cleanup | `composer run lint` (fix) / `composer run lint:check` (check only) |
-| **Rector** | Dead code removal, early returns, type tightening, PHP 8.3 modernization, Laravel-specific refactoring | `vendor/bin/rector process` (fix) / `vendor/bin/rector process --dry-run` (check only) |
+| **Rector** | Dead code removal, early returns, type tightening, PHP 8.4 modernization, Laravel-specific refactoring | `vendor/bin/rector process` (fix) / `vendor/bin/rector process --dry-run` (check only) |
 | **Larastan** | Static analysis at level 6 — type safety, undefined methods, incorrect return types | `composer run analysis` |
 | **Pest** | Architectural rules, type coverage, mutation testing | `php artisan test` / `./vendor/bin/pest --type-coverage --min=100` / `./vendor/bin/pest --mutate` |
 
@@ -40,7 +40,7 @@ This runs Pint, Rector (dry-run), Larastan, the full test suite, and type covera
 | Dead code removal | Rector |
 | Early returns | Rector |
 | Type declaration tightening | Rector |
-| PHP 8.3 modernization | Rector |
+| PHP 8.4 modernization | Rector |
 | Laravel-specific modernization | Rector (driftingly/rector-laravel) |
 | Type safety (level 6) | Larastan |
 | No debugging functions | Pest arch test |
@@ -800,9 +800,9 @@ Blade templates render data. They do not compute it. Move all logic to controlle
 
 ---
 
-## 13. PHP 8.3+ Features
+## 13. PHP 8.4+ Features
 
-Use modern PHP features. Rector automatically upgrades older patterns to PHP 8.3 equivalents.
+Use modern PHP features. Rector automatically upgrades older patterns to PHP 8.4 equivalents.
 
 ### Enums
 

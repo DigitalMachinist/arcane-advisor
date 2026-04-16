@@ -2,7 +2,7 @@
 
 ## Stack and conventions (locked)
 
-- Laravel 13 + PHP 8.3+ via DigitalMachinist/laravel-13-template
+- Laravel 13 + PHP 8.4+ via DigitalMachinist/laravel-13-template
 - Vue 3 SPA + Pinia + Vue Router, mounted via Vite on top of the Laravel API
 - Tailwind 4 via `@tailwindcss/vite`
 - MySQL 8.4 + Redis 7 (Docker, template defaults); in-memory SQLite for Pest

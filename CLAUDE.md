@@ -4,7 +4,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Project Overview
 
-Arcane Advisor is a D&D 5e wizard spell recommendation engine. Users describe a situation in natural language; the system returns ranked spell picks with per-card explanations tuned by a five-position "Whimsy Dial." Stack: Laravel 13 API (PHP 8.3+), Vue 3 SPA (Pinia + Vue Router) via Vite, Tailwind CSS 4, MySQL 8.4, Redis 7. LLM: Cloudflare Workers AI — `@cf/google/gemma-4-26b-a4b-it` for completions, `@cf/baai/bge-base-en-v1.5` for embeddings. See `docs/plans/implementation-plan.md` for the full build order (Stages A–I).
+Arcane Advisor is a D&D 5e wizard spell recommendation engine. Users describe a situation in natural language; the system returns ranked spell picks with per-card explanations tuned by a five-position "Whimsy Dial." Stack: Laravel 13 API (PHP 8.4+), Vue 3 SPA (Pinia + Vue Router) via Vite, Tailwind CSS 4, MySQL 8.4, Redis 7. LLM: Cloudflare Workers AI — `@cf/google/gemma-4-26b-a4b-it` for completions, `@cf/baai/bge-base-en-v1.5` for embeddings. See `docs/plans/implementation-plan.md` for the full build order (Stages A–I).
 
 ## IMPORTANT RULES
 
@@ -140,4 +140,4 @@ See `docs/style-guide.md` for the complete style guide, including:
 - Single-action controller convention
 - Service and Action patterns
 - Array formatting, naming conventions, class structure
-- PHP 8.3+ feature usage
+- PHP 8.4+ feature usage
