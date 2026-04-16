@@ -1,0 +1,249 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Mockup Q — Red/White Surveyor</title>
+<link href="https://fonts.googleapis.com/css2?family=Cinzel+Decorative:wght@400;700;900&family=EB+Garamond:ital,wght@0,400;0,500;1,400&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --desk: #241811;
+    --ink: #f3e7cf;
+    --ink-dim: #b8a681;
+    --scrap: #e9d5a6;
+    --brass: #c4a156;
+    --brass-dark: #806330;
+    --gold: #c79a47;
+    --arcane: #ffd57a;
+    --arcane-deep: #e89a2a;
+    --arcane-glow: rgba(255, 200, 90, 0.75);
+    --red: #b02a2a;
+    --red-deep: #6e1414;
+    --white: #f4ecd8;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    min-height: 100vh;
+    background: radial-gradient(ellipse at 50% 50%, #3a2818 0%, #120905 82%), var(--desk);
+    font-family: 'EB Garamond', serif; color: var(--ink); overflow-x: hidden;
+  }
+  body::before {
+    content: ''; position: fixed; inset: 0;
+    background: repeating-linear-gradient(91deg, transparent 0 90px, rgba(0,0,0,0.1) 90px 91px);
+    pointer-events: none; z-index: 1;
+  }
+  .brand {
+    position: absolute; top: 26px; left: 40px;
+    font-family: 'Cinzel Decorative', serif;
+    font-size: 16px; color: var(--gold);
+    letter-spacing: 0.22em; text-transform: uppercase; z-index: 20;
+  }
+  .stage {
+    position: relative; width: 100%; min-height: 100vh;
+    display: flex; align-items: center; justify-content: center; z-index: 2;
+  }
+  .circle-wrap { position: relative; width: 900px; height: 900px; }
+  .ritual-halo {
+    position: absolute; inset: -80px;
+    background: radial-gradient(circle at center, rgba(255,200,90,0.26) 0%, rgba(255,180,60,0.09) 42%, transparent 72%);
+    animation: halo 5s ease-in-out infinite; pointer-events: none;
+  }
+  @keyframes halo { 0%,100%{opacity:.9;transform:scale(1)} 50%{opacity:1;transform:scale(1.04)} }
+  .circle-svg {
+    position: absolute; inset: 0; width: 100%; height: 100%;
+    filter: drop-shadow(0 0 24px var(--arcane-glow)) drop-shadow(0 0 48px rgba(255,180,80,0.3));
+  }
+  .ring-outer { animation: spin 180s linear infinite; transform-origin: 450px 450px; }
+  .ring-inner { animation: spin 120s linear infinite reverse; transform-origin: 450px 450px; }
+  @keyframes spin { to { transform: rotate(360deg); } }
+  .needle-svg { position: absolute; inset: 0; width: 100%; height: 100%; pointer-events: none; z-index: 9; }
+  .needle { transform-origin: 450px 450px; transition: transform 0.8s cubic-bezier(.3,1.4,.5,1); }
+
+  .scrap {
+    position: absolute; top: 50%; left: 50%;
+    transform: translate(-50%, -50%) rotate(-1.5deg);
+    width: 320px; min-height: 180px;
+    background: var(--scrap);
+    background-image: repeating-linear-gradient(0deg, transparent 0 27px, rgba(74,52,32,0.18) 27px 28px);
+    padding: 22px 24px;
+    clip-path: polygon(2% 4%,10% 1%,22% 3%,34% 0%,46% 2%,60% 1%,74% 3%,88% 0%,99% 6%,97% 20%,100% 36%,98% 52%,100% 68%,97% 82%,99% 94%,88% 98%,74% 96%,58% 99%,42% 97%,26% 100%,10% 97%,1% 92%,3% 76%,0% 60%,2% 44%,0% 28%,3% 14%);
+    box-shadow: 0 12px 36px rgba(0,0,0,0.6); z-index: 11;
+  }
+  .scrap textarea {
+    width: 100%; min-height: 118px;
+    background: transparent; border: none; outline: none; resize: none;
+    font-family: 'EB Garamond', serif; font-style: italic;
+    font-size: 18px; line-height: 27px; color: #3a2614;
+  }
+  .scrap textarea::placeholder { color: rgba(58,38,20,0.45); }
+  .scrap .submit-row { display: flex; justify-content: flex-end; margin-top: 10px; }
+  .scrap button {
+    font-family: 'Cinzel Decorative', serif;
+    background: transparent; border: 1px solid rgba(74,52,32,0.5);
+    color: #3a2614; padding: 6px 16px; font-size: 10px;
+    letter-spacing: 0.2em; cursor: pointer; text-transform: uppercase;
+  }
+  .scrap button:hover { background: rgba(255,200,90,0.3); border-color: var(--arcane-deep); color: var(--arcane-deep); }
+
+  .symbols { position: absolute; inset: 0; pointer-events: none; z-index: 10; }
+  .symbol {
+    position: absolute; width: 64px; height: 64px;
+    transform: translate(-50%, -50%);
+    display: flex; align-items: center; justify-content: center;
+    cursor: pointer; pointer-events: auto; transition: all 0.4s ease;
+  }
+  .symbol svg {
+    width: 40px; height: 40px;
+    stroke: var(--ink-dim); stroke-width: 1.5; fill: none;
+    transition: all 0.4s ease;
+  }
+  .symbol:hover svg { stroke: var(--arcane); filter: drop-shadow(0 0 6px var(--arcane-glow)); }
+  .symbol.active svg {
+    stroke: var(--arcane); stroke-width: 2;
+    filter: drop-shadow(0 0 10px var(--arcane)) drop-shadow(0 0 20px var(--arcane-glow));
+  }
+  .symbol .label {
+    position: absolute; top: 66px; left: 50%; transform: translateX(-50%);
+    font-family: 'Cinzel Decorative', serif;
+    font-size: 10px; letter-spacing: 0.28em;
+    color: var(--ink-dim); text-transform: uppercase; white-space: nowrap;
+    transition: color 0.4s ease;
+  }
+  .symbol.active .label { color: var(--arcane); text-shadow: 0 0 8px var(--arcane-glow); }
+</style>
+</head>
+<body>
+
+<div class="brand">Arcane Advisor</div>
+
+<div class="stage">
+  <div class="circle-wrap">
+    <div class="ritual-halo"></div>
+
+    <svg class="circle-svg" viewBox="0 0 900 900">
+      <defs>
+        <radialGradient id="innerGlow-q" cx="0.5" cy="0.5" r="0.5">
+          <stop offset="0%" stop-color="rgba(255,220,140,0.22)"/>
+          <stop offset="70%" stop-color="rgba(255,180,80,0.06)"/>
+          <stop offset="100%" stop-color="transparent"/>
+        </radialGradient>
+      </defs>
+      <circle cx="450" cy="450" r="420" fill="url(#innerGlow-q)"/>
+      <g class="ring-outer">
+        <circle cx="450" cy="450" r="420" fill="none" stroke="var(--arcane)" stroke-width="1.4" opacity="0.75"/>
+        <circle cx="450" cy="450" r="402" fill="none" stroke="var(--arcane-deep)" stroke-width="0.7" opacity="0.5"/>
+        <circle cx="450" cy="450" r="390" fill="none" stroke="var(--arcane)" stroke-width="0.5" opacity="0.35"/>
+        <g stroke="var(--arcane)" stroke-width="1.1" opacity="0.7" id="major-ticks"></g>
+        <g stroke="var(--arcane)" stroke-width="0.5" opacity="0.45" id="minor-ticks"></g>
+      </g>
+      <g class="ring-inner">
+        <circle cx="450" cy="450" r="320" fill="none" stroke="var(--arcane)" stroke-width="1.1" opacity="0.65"/>
+        <circle cx="450" cy="450" r="308" fill="none" stroke="var(--arcane-deep)" stroke-width="0.6" opacity="0.45" stroke-dasharray="2 5"/>
+      </g>
+      <g stroke="var(--arcane)" stroke-width="1" fill="none" opacity="0.5">
+        <line x1="450" y1="140" x2="450" y2="760"/>
+        <line x1="140" y1="450" x2="760" y2="450"/>
+      </g>
+      <g font-family="'Cinzel Decorative', serif" font-size="16" fill="var(--arcane)" text-anchor="middle" opacity="0.9" letter-spacing="2">
+        <text x="450" y="92">N</text>
+        <text x="800" y="454">E</text>
+        <text x="100" y="454">W</text>
+      </g>
+      <circle cx="450" cy="450" r="20" fill="none" stroke="var(--arcane)" stroke-width="0.8" opacity="0.7"/>
+    </svg>
+
+    <!-- NEEDLE Q: Red/White surveyor — slim pointed triangles, north red, south white -->
+    <svg class="needle-svg" viewBox="0 0 900 900">
+      <g class="needle" id="needle">
+        <!-- Red north, slim tapered spear -->
+        <polygon points="450,450 444,350 450,180 456,350" fill="var(--red)" stroke="var(--red-deep)" stroke-width="0.8"/>
+        <polygon points="450,450 447,350 450,180 450,350" fill="#d85555" opacity="0.55"/>
+        <!-- White south, slim tapered spear with subtle glow -->
+        <polygon points="450,450 444,550 450,760 456,550" fill="var(--white)" stroke="#c4b78a" stroke-width="0.6"
+                 style="filter: drop-shadow(0 0 6px rgba(255,240,200,0.7)) drop-shadow(0 0 14px var(--arcane-glow));"/>
+        <polygon points="450,450 450,550 450,760 453,550" fill="#fff9ea" opacity="0.7"/>
+        <!-- Brass hub -->
+        <circle cx="450" cy="450" r="16" fill="var(--brass)" stroke="var(--brass-dark)" stroke-width="1"/>
+        <circle cx="450" cy="450" r="9" fill="var(--brass-dark)"/>
+        <circle cx="450" cy="450" r="3" fill="#120906"/>
+      </g>
+    </svg>
+
+    <!-- Symbols Q: Geometric/weapon simpler line icons -->
+    <div class="symbols">
+      <!-- Tactical: shield -->
+      <div class="symbol" data-angle="230" style="left: 75px; top: 765px;">
+        <svg viewBox="0 0 40 40">
+          <path d="M20 4 L34 10 L34 22 Q34 32 20 36 Q6 32 6 22 L6 10 Z"/>
+          <path d="M14 16 L26 16 M20 14 L20 28"/>
+        </svg>
+        <span class="label">Tactical</span>
+      </div>
+      <!-- Balanced: yin-yang-ish split circle -->
+      <div class="symbol" data-angle="200" style="left: 282px; top: 871px;">
+        <svg viewBox="0 0 40 40">
+          <circle cx="20" cy="20" r="14"/>
+          <path d="M20 6 Q6 13 20 20 Q34 27 20 34"/>
+        </svg>
+        <span class="label">Balanced</span>
+      </div>
+      <!-- Creative: key/quill -->
+      <div class="symbol active" data-angle="180" style="left: 450px; top: 940px;">
+        <svg viewBox="0 0 40 40">
+          <path d="M20 4 L28 22 L20 36 L12 22 Z"/>
+          <line x1="20" y1="14" x2="20" y2="30"/>
+          <path d="M14 24 L26 24"/>
+        </svg>
+        <span class="label">Creative</span>
+      </div>
+      <!-- Theatrical: theater mask style (simplified) -->
+      <div class="symbol" data-angle="160" style="left: 618px; top: 871px;">
+        <svg viewBox="0 0 40 40">
+          <path d="M8 10 Q20 6 32 10 Q32 26 20 34 Q8 26 8 10 Z"/>
+          <circle cx="15" cy="18" r="1.5" fill="currentColor" stroke="none"/>
+          <circle cx="25" cy="18" r="1.5" fill="currentColor" stroke="none"/>
+          <path d="M15 26 Q20 28 25 26"/>
+        </svg>
+        <span class="label">Theatrical</span>
+      </div>
+      <!-- Chaotic: 8-pointed chaos star -->
+      <div class="symbol" data-angle="130" style="left: 825px; top: 765px;">
+        <svg viewBox="0 0 40 40">
+          <path d="M20 4 L20 36 M4 20 L36 20 M8 8 L32 32 M32 8 L8 32"/>
+          <circle cx="20" cy="20" r="3"/>
+        </svg>
+        <span class="label">Chaotic</span>
+      </div>
+    </div>
+
+    <div class="scrap">
+      <textarea placeholder="Inscribe thy question..."></textarea>
+      <div class="submit-row"><button>Consult</button></div>
+    </div>
+  </div>
+</div>
+
+<script>
+  const major = document.getElementById('major-ticks'), minor = document.getElementById('minor-ticks');
+  const cx=450, cy=450, svgNS="http://www.w3.org/2000/svg";
+  for (let deg = 0; deg < 360; deg += 5) {
+    const isMajor = deg % 15 === 0;
+    const len = isMajor ? 18 : 8;
+    const r1 = 420, r2 = 420 - len;
+    const rad = (deg - 90) * Math.PI / 180;
+    const x1 = cx + r1*Math.cos(rad), y1 = cy + r1*Math.sin(rad);
+    const x2 = cx + r2*Math.cos(rad), y2 = cy + r2*Math.sin(rad);
+    const line = document.createElementNS(svgNS, 'line');
+    line.setAttribute('x1', x1); line.setAttribute('y1', y1);
+    line.setAttribute('x2', x2); line.setAttribute('y2', y2);
+    (isMajor ? major : minor).appendChild(line);
+  }
+  const needle = document.getElementById('needle');
+  const symbols = document.querySelectorAll('.symbol');
+  symbols.forEach(sym => sym.addEventListener('click', () => {
+    symbols.forEach(s => s.classList.remove('active'));
+    sym.classList.add('active');
+    needle.style.transform = `rotate(${parseFloat(sym.dataset.angle) - 180}deg)`;
+  }));
+</script>
+</body>
+</html>

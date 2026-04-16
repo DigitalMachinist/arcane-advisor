@@ -1,0 +1,307 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Component Sheet — Whimsy Dial</title>
+<link href="https://fonts.googleapis.com/css2?family=Cinzel+Decorative:wght@400;700;900&family=Cinzel:wght@400;600;700&family=EB+Garamond:ital,wght@0,400;0,500;0,600;1,400;1,500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --desk: #241811; --ink: #f3e7cf; --ink-dim: #b8a681; --ink-faint: #7a6944;
+    --gold: #c79a47;
+    --arcane: #ffd57a; --arcane-deep: #e89a2a;
+    --arcane-glow: rgba(255, 200, 90, 0.75);
+  }
+  .whimsy-symbol[data-theme="tactical"]   { --sym-arc:#9fc5e8; --sym-deep:#3f78a8; --sym-glow:rgba(120,180,230,0.75); }
+  .whimsy-symbol[data-theme="balanced"]   { --sym-arc:#9fe3b8; --sym-deep:#3fa870; --sym-glow:rgba(110,220,160,0.75); }
+  .whimsy-symbol[data-theme="creative"]   { --sym-arc:#ffd57a; --sym-deep:#e89a2a; --sym-glow:rgba(255,200,90,0.75); }
+  .whimsy-symbol[data-theme="theatrical"] { --sym-arc:#d8a8ee; --sym-deep:#8a42b8; --sym-glow:rgba(200,130,230,0.75); }
+  .whimsy-symbol[data-theme="chaotic"]    { --sym-arc:#ff9aa0; --sym-deep:#c03848; --sym-glow:rgba(255,120,130,0.75); }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html, body { height: 100%; }
+  body {
+    min-height: 100vh;
+    background: radial-gradient(ellipse at 50% 20%, #3a2818 0%, #120905 82%), var(--desk);
+    background-attachment: fixed;
+    font-family: 'EB Garamond', serif; color: var(--ink);
+    padding: 60px 40px 120px;
+  }
+  body::before {
+    content: ''; position: fixed; inset: 0;
+    background: repeating-linear-gradient(91deg, transparent 0 90px, rgba(0,0,0,0.1) 90px 91px);
+    pointer-events: none; z-index: 0;
+  }
+
+  .sheet { max-width: 880px; margin: 0 auto; position: relative; z-index: 2; }
+  .sheet-head { border-bottom: 1px solid rgba(184,166,129,0.25); padding-bottom: 28px; margin-bottom: 40px; }
+  .breadcrumb {
+    font-family: 'Cinzel Decorative', serif; font-size: 10px;
+    letter-spacing: 0.28em; text-transform: uppercase; color: var(--ink-faint);
+  }
+  .breadcrumb a { color: var(--ink-dim); text-decoration: none; }
+  .breadcrumb a:hover { color: var(--gold); }
+  .sheet-title {
+    font-family: 'Cinzel Decorative', serif; font-weight: 900;
+    font-size: 32px; color: var(--gold);
+    letter-spacing: 0.1em; text-transform: uppercase; margin: 8px 0 10px;
+  }
+  .sheet-sub {
+    font-family: 'EB Garamond', serif; font-style: italic;
+    color: var(--ink-dim); font-size: 15px; line-height: 22px; max-width: 640px;
+  }
+  .state { margin-bottom: 56px; }
+  .state-head { display: flex; align-items: baseline; gap: 16px; margin-bottom: 6px; }
+  .state-name {
+    font-family: 'Cinzel Decorative', serif; font-weight: 700;
+    font-size: 13px; letter-spacing: 0.28em; text-transform: uppercase; color: var(--gold);
+  }
+  .state-chip {
+    font-family: 'Cinzel', serif; font-size: 9px;
+    letter-spacing: 0.22em; text-transform: uppercase; color: var(--ink-faint);
+    padding: 2px 10px; border: 1px solid rgba(184,166,129,0.35); border-radius: 10px;
+  }
+  .state-note {
+    font-family: 'EB Garamond', serif; font-style: italic;
+    color: var(--ink-dim); font-size: 14px; line-height: 21px;
+    margin-bottom: 18px; max-width: 640px;
+  }
+
+  /* WHIMSY DIAL */
+  .dial-frame {
+    padding: 40px 20px 50px; border: 1px dashed rgba(184,166,129,0.2);
+    border-radius: 2px; margin-bottom: 12px;
+    background: rgba(0,0,0,0.25);
+  }
+  .dial-caption {
+    font-family: 'Cinzel', serif; font-size: 9px;
+    letter-spacing: 0.22em; text-transform: uppercase; color: var(--ink-faint);
+    text-align: center; margin-top: 4px;
+  }
+  .whimsy-symbols {
+    display: flex; align-items: center; justify-content: center;
+    gap: 72px;
+  }
+  .whimsy-symbol {
+    position: relative;
+    width: 52px; height: 52px;
+    display: flex; align-items: center; justify-content: center;
+    cursor: pointer; transition: all 0.4s ease;
+  }
+  .whimsy-symbol svg {
+    width: 34px; height: 34px;
+    stroke: var(--sym-arc); stroke-width: 1.6; fill: none;
+    stroke-linecap: round; stroke-linejoin: round;
+    opacity: 0.75;
+    transition: all 0.4s ease;
+  }
+  .whimsy-symbol:hover svg {
+    stroke-width: 2; opacity: 1;
+    filter: drop-shadow(0 0 6px var(--sym-glow));
+  }
+  .whimsy-symbol.active svg {
+    stroke-width: 2.4; opacity: 1;
+    filter: drop-shadow(0 0 10px var(--sym-arc)) drop-shadow(0 0 20px var(--sym-glow));
+  }
+  .whimsy-symbol .label {
+    position: absolute; top: 54px; left: 50%; transform: translateX(-50%);
+    font-family: 'Cinzel Decorative', serif;
+    font-size: 10px; letter-spacing: 0.28em;
+    color: var(--ink-faint); text-transform: uppercase; white-space: nowrap;
+    opacity: 0.85; transition: color 0.4s ease, opacity 0.4s ease;
+  }
+  .whimsy-symbol:hover .label { color: var(--sym-arc); opacity: 1; }
+  .whimsy-symbol.active .label {
+    color: var(--sym-arc); opacity: 1; text-shadow: 0 0 8px var(--sym-glow);
+  }
+
+  /* Cap-complete substitution */
+  .restart-btn {
+    display: inline-block;
+    font-family: 'Cinzel Decorative', serif; background: transparent;
+    border: 1px solid var(--arcane-deep); color: var(--arcane);
+    padding: 10px 28px; font-size: 11px; letter-spacing: 0.28em;
+    text-transform: uppercase; cursor: pointer;
+    box-shadow: 0 0 14px var(--arcane-glow);
+    animation: beckon 2.6s ease-in-out infinite;
+  }
+  @keyframes beckon {
+    0%,100% { box-shadow: 0 0 14px var(--arcane-glow); }
+    50%     { box-shadow: 0 0 22px var(--arcane-glow); }
+  }
+</style>
+</head>
+<body>
+<div class="sheet">
+
+  <div class="sheet-head">
+    <div class="breadcrumb"><a href="index.html">Components</a> · Whimsy Dial</div>
+    <h1 class="sheet-title">Whimsy Dial</h1>
+    <p class="sheet-sub">
+      Five runes in a horizontal row, each in its canonical Spec 6 palette. The active rune
+      controls the whimsy applied to the next prompt: brighter stroke, outer glow, label
+      elevated out of dimness. In the live UI the dial sits immediately beneath the prompt
+      dock and drives both the casting-circle colour cascade and the compass needle direction.
+    </p>
+  </div>
+
+  <!-- STATE 1 — each rune active in turn -->
+  <section class="state">
+    <div class="state-head">
+      <div class="state-name">Active rune sweep — each of the five</div>
+      <div class="state-chip">Primary state</div>
+    </div>
+    <p class="state-note">
+      Shown here with each rune in turn as the active selection. Non-active runes keep their
+      own Spec 6 colour but sit at reduced stroke weight and no glow.
+    </p>
+
+    <div class="dial-frame">
+      <div class="whimsy-symbols">
+        <div class="whimsy-symbol active" data-theme="tactical">
+          <svg viewBox="0 0 40 40"><line x1="20" y1="6" x2="20" y2="34"/><line x1="20" y1="8" x2="10" y2="16"/><line x1="20" y1="8" x2="30" y2="16"/></svg>
+          <span class="label">Tactical</span>
+        </div>
+        <div class="whimsy-symbol" data-theme="balanced">
+          <svg viewBox="0 0 40 40"><line x1="8" y1="8" x2="32" y2="32"/><line x1="32" y1="8" x2="8" y2="32"/><circle cx="20" cy="20" r="3"/></svg>
+          <span class="label">Balanced</span>
+        </div>
+        <div class="whimsy-symbol" data-theme="creative">
+          <svg viewBox="0 0 40 40"><line x1="8" y1="8" x2="8" y2="32"/><line x1="32" y1="8" x2="32" y2="32"/><line x1="8" y1="8" x2="32" y2="32"/><line x1="32" y1="8" x2="8" y2="32"/></svg>
+          <span class="label">Creative</span>
+        </div>
+        <div class="whimsy-symbol" data-theme="theatrical">
+          <svg viewBox="0 0 40 40"><path d="M20 6 L20 34"/><path d="M20 12 Q12 16 10 22"/><path d="M20 22 Q28 26 30 32"/><circle cx="20" cy="6" r="2"/><circle cx="20" cy="34" r="2"/></svg>
+          <span class="label">Theatrical</span>
+        </div>
+        <div class="whimsy-symbol" data-theme="chaotic">
+          <svg viewBox="0 0 40 40"><path d="M10 6 L10 34"/><path d="M10 8 L24 14 L10 20"/><path d="M24 14 L30 24 L20 30 L30 34"/></svg>
+          <span class="label">Chaotic</span>
+        </div>
+      </div>
+      <div class="dial-caption">Tactical active</div>
+    </div>
+
+    <div class="dial-frame">
+      <div class="whimsy-symbols">
+        <div class="whimsy-symbol" data-theme="tactical">
+          <svg viewBox="0 0 40 40"><line x1="20" y1="6" x2="20" y2="34"/><line x1="20" y1="8" x2="10" y2="16"/><line x1="20" y1="8" x2="30" y2="16"/></svg>
+          <span class="label">Tactical</span>
+        </div>
+        <div class="whimsy-symbol active" data-theme="balanced">
+          <svg viewBox="0 0 40 40"><line x1="8" y1="8" x2="32" y2="32"/><line x1="32" y1="8" x2="8" y2="32"/><circle cx="20" cy="20" r="3"/></svg>
+          <span class="label">Balanced</span>
+        </div>
+        <div class="whimsy-symbol" data-theme="creative">
+          <svg viewBox="0 0 40 40"><line x1="8" y1="8" x2="8" y2="32"/><line x1="32" y1="8" x2="32" y2="32"/><line x1="8" y1="8" x2="32" y2="32"/><line x1="32" y1="8" x2="8" y2="32"/></svg>
+          <span class="label">Creative</span>
+        </div>
+        <div class="whimsy-symbol" data-theme="theatrical">
+          <svg viewBox="0 0 40 40"><path d="M20 6 L20 34"/><path d="M20 12 Q12 16 10 22"/><path d="M20 22 Q28 26 30 32"/><circle cx="20" cy="6" r="2"/><circle cx="20" cy="34" r="2"/></svg>
+          <span class="label">Theatrical</span>
+        </div>
+        <div class="whimsy-symbol" data-theme="chaotic">
+          <svg viewBox="0 0 40 40"><path d="M10 6 L10 34"/><path d="M10 8 L24 14 L10 20"/><path d="M24 14 L30 24 L20 30 L30 34"/></svg>
+          <span class="label">Chaotic</span>
+        </div>
+      </div>
+      <div class="dial-caption">Balanced active</div>
+    </div>
+
+    <div class="dial-frame">
+      <div class="whimsy-symbols">
+        <div class="whimsy-symbol" data-theme="tactical">
+          <svg viewBox="0 0 40 40"><line x1="20" y1="6" x2="20" y2="34"/><line x1="20" y1="8" x2="10" y2="16"/><line x1="20" y1="8" x2="30" y2="16"/></svg>
+          <span class="label">Tactical</span>
+        </div>
+        <div class="whimsy-symbol" data-theme="balanced">
+          <svg viewBox="0 0 40 40"><line x1="8" y1="8" x2="32" y2="32"/><line x1="32" y1="8" x2="8" y2="32"/><circle cx="20" cy="20" r="3"/></svg>
+          <span class="label">Balanced</span>
+        </div>
+        <div class="whimsy-symbol active" data-theme="creative">
+          <svg viewBox="0 0 40 40"><line x1="8" y1="8" x2="8" y2="32"/><line x1="32" y1="8" x2="32" y2="32"/><line x1="8" y1="8" x2="32" y2="32"/><line x1="32" y1="8" x2="8" y2="32"/></svg>
+          <span class="label">Creative</span>
+        </div>
+        <div class="whimsy-symbol" data-theme="theatrical">
+          <svg viewBox="0 0 40 40"><path d="M20 6 L20 34"/><path d="M20 12 Q12 16 10 22"/><path d="M20 22 Q28 26 30 32"/><circle cx="20" cy="6" r="2"/><circle cx="20" cy="34" r="2"/></svg>
+          <span class="label">Theatrical</span>
+        </div>
+        <div class="whimsy-symbol" data-theme="chaotic">
+          <svg viewBox="0 0 40 40"><path d="M10 6 L10 34"/><path d="M10 8 L24 14 L10 20"/><path d="M24 14 L30 24 L20 30 L30 34"/></svg>
+          <span class="label">Chaotic</span>
+        </div>
+      </div>
+      <div class="dial-caption">Creative active</div>
+    </div>
+
+    <div class="dial-frame">
+      <div class="whimsy-symbols">
+        <div class="whimsy-symbol" data-theme="tactical">
+          <svg viewBox="0 0 40 40"><line x1="20" y1="6" x2="20" y2="34"/><line x1="20" y1="8" x2="10" y2="16"/><line x1="20" y1="8" x2="30" y2="16"/></svg>
+          <span class="label">Tactical</span>
+        </div>
+        <div class="whimsy-symbol" data-theme="balanced">
+          <svg viewBox="0 0 40 40"><line x1="8" y1="8" x2="32" y2="32"/><line x1="32" y1="8" x2="8" y2="32"/><circle cx="20" cy="20" r="3"/></svg>
+          <span class="label">Balanced</span>
+        </div>
+        <div class="whimsy-symbol" data-theme="creative">
+          <svg viewBox="0 0 40 40"><line x1="8" y1="8" x2="8" y2="32"/><line x1="32" y1="8" x2="32" y2="32"/><line x1="8" y1="8" x2="32" y2="32"/><line x1="32" y1="8" x2="8" y2="32"/></svg>
+          <span class="label">Creative</span>
+        </div>
+        <div class="whimsy-symbol active" data-theme="theatrical">
+          <svg viewBox="0 0 40 40"><path d="M20 6 L20 34"/><path d="M20 12 Q12 16 10 22"/><path d="M20 22 Q28 26 30 32"/><circle cx="20" cy="6" r="2"/><circle cx="20" cy="34" r="2"/></svg>
+          <span class="label">Theatrical</span>
+        </div>
+        <div class="whimsy-symbol" data-theme="chaotic">
+          <svg viewBox="0 0 40 40"><path d="M10 6 L10 34"/><path d="M10 8 L24 14 L10 20"/><path d="M24 14 L30 24 L20 30 L30 34"/></svg>
+          <span class="label">Chaotic</span>
+        </div>
+      </div>
+      <div class="dial-caption">Theatrical active</div>
+    </div>
+
+    <div class="dial-frame">
+      <div class="whimsy-symbols">
+        <div class="whimsy-symbol" data-theme="tactical">
+          <svg viewBox="0 0 40 40"><line x1="20" y1="6" x2="20" y2="34"/><line x1="20" y1="8" x2="10" y2="16"/><line x1="20" y1="8" x2="30" y2="16"/></svg>
+          <span class="label">Tactical</span>
+        </div>
+        <div class="whimsy-symbol" data-theme="balanced">
+          <svg viewBox="0 0 40 40"><line x1="8" y1="8" x2="32" y2="32"/><line x1="32" y1="8" x2="8" y2="32"/><circle cx="20" cy="20" r="3"/></svg>
+          <span class="label">Balanced</span>
+        </div>
+        <div class="whimsy-symbol" data-theme="creative">
+          <svg viewBox="0 0 40 40"><line x1="8" y1="8" x2="8" y2="32"/><line x1="32" y1="8" x2="32" y2="32"/><line x1="8" y1="8" x2="32" y2="32"/><line x1="32" y1="8" x2="8" y2="32"/></svg>
+          <span class="label">Creative</span>
+        </div>
+        <div class="whimsy-symbol" data-theme="theatrical">
+          <svg viewBox="0 0 40 40"><path d="M20 6 L20 34"/><path d="M20 12 Q12 16 10 22"/><path d="M20 22 Q28 26 30 32"/><circle cx="20" cy="6" r="2"/><circle cx="20" cy="34" r="2"/></svg>
+          <span class="label">Theatrical</span>
+        </div>
+        <div class="whimsy-symbol active" data-theme="chaotic">
+          <svg viewBox="0 0 40 40"><path d="M10 6 L10 34"/><path d="M10 8 L24 14 L10 20"/><path d="M24 14 L30 24 L20 30 L30 34"/></svg>
+          <span class="label">Chaotic</span>
+        </div>
+      </div>
+      <div class="dial-caption">Chaotic active</div>
+    </div>
+  </section>
+
+  <!-- STATE 2 — Cap-reached substitution -->
+  <section class="state">
+    <div class="state-head">
+      <div class="state-name">Cap reached — dial replaced</div>
+      <div class="state-chip">5/5 substitution</div>
+    </div>
+    <p class="state-note">
+      When the session is sealed, the entire dial is removed and replaced in-place by the
+      "Begin new consultation" button. The button uses a slow <code style="font-family: 'Cinzel', serif; font-size: 11px; color: var(--ink-dim);">beckon</code>
+      glow animation to invite reset without shouting.
+    </p>
+    <div class="dial-frame" style="text-align: center;">
+      <button class="restart-btn">Begin new consultation</button>
+    </div>
+  </section>
+
+</div>
+</body>
+</html>

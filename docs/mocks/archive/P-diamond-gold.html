@@ -1,0 +1,287 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Mockup P — Diamond Gold</title>
+<link href="https://fonts.googleapis.com/css2?family=Cinzel+Decorative:wght@400;700;900&family=EB+Garamond:ital,wght@0,400;0,500;1,400&family=IM+Fell+English+SC&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --desk: #241811;
+    --ink: #f3e7cf;
+    --ink-dim: #b8a681;
+    --scrap: #e9d5a6;
+    --brass: #c4a156;
+    --brass-dark: #806330;
+    --gold: #c79a47;
+    --arcane: #ffd57a;
+    --arcane-deep: #e89a2a;
+    --arcane-glow: rgba(255, 200, 90, 0.75);
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    min-height: 100vh;
+    background:
+      radial-gradient(ellipse at 50% 50%, #3a2818 0%, #120905 82%),
+      var(--desk);
+    font-family: 'EB Garamond', serif;
+    color: var(--ink);
+    overflow-x: hidden;
+  }
+  body::before {
+    content: '';
+    position: fixed; inset: 0;
+    background: repeating-linear-gradient(91deg, transparent 0 90px, rgba(0,0,0,0.1) 90px 91px);
+    pointer-events: none;
+    z-index: 1;
+  }
+  .brand {
+    position: absolute; top: 26px; left: 40px;
+    font-family: 'Cinzel Decorative', serif;
+    font-size: 16px; color: var(--gold);
+    letter-spacing: 0.22em; text-transform: uppercase;
+    z-index: 20;
+  }
+  .stage {
+    position: relative;
+    width: 100%; min-height: 100vh;
+    display: flex; align-items: center; justify-content: center;
+    z-index: 2;
+  }
+  .circle-wrap {
+    position: relative;
+    width: 900px; height: 900px;
+  }
+  .ritual-halo {
+    position: absolute; inset: -80px;
+    background: radial-gradient(circle at center, rgba(255,200,90,0.26) 0%, rgba(255,180,60,0.09) 42%, transparent 72%);
+    animation: halo 5s ease-in-out infinite;
+    pointer-events: none;
+  }
+  @keyframes halo { 0%,100%{opacity:.9;transform:scale(1)} 50%{opacity:1;transform:scale(1.04)} }
+  .circle-svg {
+    position: absolute; inset: 0;
+    width: 100%; height: 100%;
+    filter: drop-shadow(0 0 24px var(--arcane-glow)) drop-shadow(0 0 48px rgba(255,180,80,0.3));
+  }
+  .ring-outer { animation: spin 180s linear infinite; transform-origin: 450px 450px; }
+  .ring-inner { animation: spin 120s linear infinite reverse; transform-origin: 450px 450px; }
+  @keyframes spin { to { transform: rotate(360deg); } }
+  .needle-svg { position: absolute; inset: 0; width: 100%; height: 100%; pointer-events: none; z-index: 9; }
+  .needle { transform-origin: 450px 450px; transition: transform 0.8s cubic-bezier(.3,1.4,.5,1); }
+
+  .scrap {
+    position: absolute; top: 50%; left: 50%;
+    transform: translate(-50%, -50%) rotate(-1.5deg);
+    width: 320px; min-height: 180px;
+    background: var(--scrap);
+    background-image: repeating-linear-gradient(0deg, transparent 0 27px, rgba(74,52,32,0.18) 27px 28px);
+    padding: 22px 24px;
+    clip-path: polygon(2% 4%,10% 1%,22% 3%,34% 0%,46% 2%,60% 1%,74% 3%,88% 0%,99% 6%,97% 20%,100% 36%,98% 52%,100% 68%,97% 82%,99% 94%,88% 98%,74% 96%,58% 99%,42% 97%,26% 100%,10% 97%,1% 92%,3% 76%,0% 60%,2% 44%,0% 28%,3% 14%);
+    box-shadow: 0 12px 36px rgba(0,0,0,0.6);
+    z-index: 11;
+  }
+  .scrap textarea {
+    width: 100%; min-height: 118px;
+    background: transparent; border: none; outline: none; resize: none;
+    font-family: 'EB Garamond', serif; font-style: italic;
+    font-size: 18px; line-height: 27px; color: #3a2614;
+  }
+  .scrap textarea::placeholder { color: rgba(58,38,20,0.45); }
+  .scrap .submit-row { display: flex; justify-content: flex-end; margin-top: 10px; }
+  .scrap button {
+    font-family: 'Cinzel Decorative', serif;
+    background: transparent; border: 1px solid rgba(74,52,32,0.5);
+    color: #3a2614; padding: 6px 16px;
+    font-size: 10px; letter-spacing: 0.2em;
+    cursor: pointer; text-transform: uppercase;
+  }
+  .scrap button:hover { background: rgba(255,200,90,0.3); border-color: var(--arcane-deep); color: var(--arcane-deep); }
+
+  .symbols { position: absolute; inset: 0; pointer-events: none; z-index: 10; }
+  .symbol {
+    position: absolute; width: 64px; height: 64px;
+    transform: translate(-50%, -50%);
+    display: flex; align-items: center; justify-content: center;
+    cursor: pointer; pointer-events: auto;
+    transition: all 0.4s ease;
+  }
+  .symbol svg {
+    width: 40px; height: 40px;
+    stroke: var(--ink-dim); stroke-width: 1.5; fill: none;
+    transition: all 0.4s ease;
+  }
+  .symbol:hover svg { stroke: var(--arcane); filter: drop-shadow(0 0 6px var(--arcane-glow)); }
+  .symbol.active svg {
+    stroke: var(--arcane); stroke-width: 2;
+    filter: drop-shadow(0 0 10px var(--arcane)) drop-shadow(0 0 20px var(--arcane-glow));
+  }
+  .symbol .label {
+    position: absolute; top: 66px; left: 50%;
+    transform: translateX(-50%);
+    font-family: 'Cinzel Decorative', serif;
+    font-size: 10px; letter-spacing: 0.28em;
+    color: var(--ink-dim); text-transform: uppercase;
+    white-space: nowrap; transition: color 0.4s ease;
+  }
+  .symbol.active .label {
+    color: var(--arcane);
+    text-shadow: 0 0 8px var(--arcane-glow);
+  }
+</style>
+</head>
+<body>
+
+<div class="brand">Arcane Advisor</div>
+
+<div class="stage">
+  <div class="circle-wrap">
+    <div class="ritual-halo"></div>
+
+    <!-- Compass circle: classic mechanical. -->
+    <svg class="circle-svg" viewBox="0 0 900 900">
+      <defs>
+        <radialGradient id="innerGlow-p" cx="0.5" cy="0.5" r="0.5">
+          <stop offset="0%" stop-color="rgba(255,220,140,0.22)"/>
+          <stop offset="70%" stop-color="rgba(255,180,80,0.06)"/>
+          <stop offset="100%" stop-color="transparent"/>
+        </radialGradient>
+      </defs>
+      <circle cx="450" cy="450" r="420" fill="url(#innerGlow-p)"/>
+      <g class="ring-outer">
+        <circle cx="450" cy="450" r="420" fill="none" stroke="var(--arcane)" stroke-width="1.4" opacity="0.75"/>
+        <circle cx="450" cy="450" r="402" fill="none" stroke="var(--arcane-deep)" stroke-width="0.7" opacity="0.5"/>
+        <circle cx="450" cy="450" r="390" fill="none" stroke="var(--arcane)" stroke-width="0.5" opacity="0.35"/>
+        <g stroke="var(--arcane)" stroke-width="1.1" opacity="0.7" id="major-ticks"></g>
+        <g stroke="var(--arcane)" stroke-width="0.5" opacity="0.45" id="minor-ticks"></g>
+      </g>
+      <g class="ring-inner">
+        <circle cx="450" cy="450" r="320" fill="none" stroke="var(--arcane)" stroke-width="1.1" opacity="0.65"/>
+        <circle cx="450" cy="450" r="308" fill="none" stroke="var(--arcane-deep)" stroke-width="0.6" opacity="0.45" stroke-dasharray="2 5"/>
+      </g>
+      <g stroke="var(--arcane)" stroke-width="1" fill="none" opacity="0.5">
+        <line x1="450" y1="140" x2="450" y2="760"/>
+        <line x1="140" y1="450" x2="760" y2="450"/>
+      </g>
+      <g font-family="'Cinzel Decorative', serif" font-size="16" fill="var(--arcane)" text-anchor="middle" opacity="0.9" letter-spacing="2">
+        <text x="450" y="92">N</text>
+        <text x="800" y="454">E</text>
+        <text x="100" y="454">W</text>
+      </g>
+      <circle cx="450" cy="450" r="20" fill="none" stroke="var(--arcane)" stroke-width="0.8" opacity="0.7"/>
+      <circle cx="450" cy="450" r="10" fill="var(--arcane-deep)" opacity="0.6"/>
+    </svg>
+
+    <!-- NEEDLE P: Classic black/gold diamond needle (fat, dagger-diamond shape) -->
+    <svg class="needle-svg" viewBox="0 0 900 900">
+      <g class="needle" id="needle">
+        <!-- Dark north diamond -->
+        <polygon points="450,450 418,320 450,180 482,320" fill="#1b0f07" stroke="var(--arcane-deep)" stroke-width="0.8"/>
+        <polygon points="450,450 434,380 450,180 466,380" fill="#3a2414" opacity="0.75"/>
+        <!-- Bright south diamond -->
+        <polygon points="450,450 414,580 450,760 486,580" fill="var(--arcane)" stroke="var(--arcane-deep)" stroke-width="0.8"
+                 style="filter: drop-shadow(0 0 8px var(--arcane)) drop-shadow(0 0 18px var(--arcane-glow));"/>
+        <polygon points="450,450 434,520 450,760 466,520" fill="#fff3d0" opacity="0.6"/>
+        <!-- Brass hub -->
+        <circle cx="450" cy="450" r="18" fill="var(--brass)" stroke="var(--arcane-deep)" stroke-width="1.2"/>
+        <circle cx="450" cy="450" r="11" fill="var(--brass-dark)"/>
+        <circle cx="450" cy="450" r="4" fill="#120906"/>
+      </g>
+    </svg>
+
+    <!-- Symbols: ALCHEMICAL / ARCANE GLYPHS, placed on OUTER ring radius (far from circle body) -->
+    <!-- radius 520 (circle r=420, wrap center 450) -->
+    <!-- Tactical 235°: x=450+520*sin(235)=450-426=24, y=450-520*cos(235)=450+298=748 -->
+    <!-- Balanced 205°: sin=-0.423,cos=-0.906; x=450-220=230, y=450+471=921 → too far. Use 210°: sin=-0.5,cos=-0.866; x=450-260=190, y=450+450=900 -->
+    <!-- Let's use angles 230, 205, 180, 155, 130 with radius 520 -->
+    <!-- 230: sin=-0.766,cos=-0.643; x=450-398=52, y=450+334=784 -->
+    <!-- 205: sin=-0.423,cos=-0.906; x=450-220=230, y=450+471=921 too far-->
+    <!-- clip to viewport — use radius 500 -->
+    <!-- 230: x=450-383=67, y=450+321=771 -->
+    <!-- 205: x=450-211=239, y=450+453=903 → still beyond 900. Reduce spread -->
+    <!-- Use 225, 205, 180, 155, 135 with radius 500 -->
+    <!-- 225: sin=-.707,cos=-.707; x=450-354=96, y=450+354=804 -->
+    <!-- 205: y=903 → pull balanced to 200: sin=-.342,cos=-.940; x=450-171=279, y=450+470=920 — still off. -->
+    <!-- Just extend wrap height — cleaner. Already 900 square. Let's use r=490 and angles 230, 200, 180, 160, 130 -->
+    <!-- 230: x=450-375=75, y=450+315=765 -->
+    <!-- 200: sin=-0.342,cos=-0.940; x=450-168=282, y=450+461=911 → bump down wrap -->
+    <!-- I'll just allow overflow -->
+    <div class="symbols">
+      <!-- Tactical: crossed arrows -->
+      <div class="symbol" data-angle="230" style="left: 75px; top: 765px;">
+        <svg viewBox="0 0 40 40">
+          <path d="M6 6 L34 34 M34 6 L6 34"/>
+          <path d="M6 6 L6 14 M6 6 L14 6 M34 34 L34 26 M34 34 L26 34 M34 6 L26 6 M34 6 L34 14 M6 34 L6 26 M6 34 L14 34"/>
+        </svg>
+        <span class="label">Tactical</span>
+      </div>
+      <!-- Balanced: ouroboros circle + horizontal line -->
+      <div class="symbol" data-angle="200" style="left: 282px; top: 871px;">
+        <svg viewBox="0 0 40 40">
+          <circle cx="20" cy="20" r="13"/>
+          <line x1="6" y1="20" x2="34" y2="20"/>
+        </svg>
+        <span class="label">Balanced</span>
+      </div>
+      <!-- Creative: alchemical spiral/mercury-like -->
+      <div class="symbol active" data-angle="180" style="left: 450px; top: 940px;">
+        <svg viewBox="0 0 40 40">
+          <circle cx="20" cy="16" r="7"/>
+          <path d="M20 23 L20 34 M14 30 L26 30"/>
+          <path d="M14 9 Q20 3 26 9"/>
+        </svg>
+        <span class="label">Creative</span>
+      </div>
+      <!-- Theatrical: flaming sun -->
+      <div class="symbol" data-angle="160" style="left: 618px; top: 871px;">
+        <svg viewBox="0 0 40 40">
+          <circle cx="20" cy="20" r="6"/>
+          <path d="M20 4 L22 10 L18 10 Z M20 36 L22 30 L18 30 Z M4 20 L10 18 L10 22 Z M36 20 L30 18 L30 22 Z"/>
+          <path d="M8 8 L13 12 L9 13 Z M32 8 L27 12 L31 13 Z M8 32 L13 28 L9 27 Z M32 32 L27 28 L31 27 Z"/>
+        </svg>
+        <span class="label">Theatrical</span>
+      </div>
+      <!-- Chaotic: lightning bolt in circle -->
+      <div class="symbol" data-angle="130" style="left: 825px; top: 765px;">
+        <svg viewBox="0 0 40 40">
+          <circle cx="20" cy="20" r="15"/>
+          <path d="M22 8 L14 22 L20 22 L17 32 L26 18 L20 18 Z" fill="currentColor" stroke="none"/>
+        </svg>
+        <span class="label">Chaotic</span>
+      </div>
+    </div>
+
+    <div class="scrap">
+      <textarea placeholder="Inscribe thy question..."></textarea>
+      <div class="submit-row"><button>Consult</button></div>
+    </div>
+  </div>
+</div>
+
+<script>
+  const major = document.getElementById('major-ticks'), minor = document.getElementById('minor-ticks');
+  const cx=450, cy=450, svgNS="http://www.w3.org/2000/svg";
+  for (let deg = 0; deg < 360; deg += 5) {
+    const isMajor = deg % 15 === 0;
+    const len = isMajor ? 18 : 8;
+    const r1 = 420, r2 = 420 - len;
+    const rad = (deg - 90) * Math.PI / 180;
+    const x1 = cx + r1*Math.cos(rad), y1 = cy + r1*Math.sin(rad);
+    const x2 = cx + r2*Math.cos(rad), y2 = cy + r2*Math.sin(rad);
+    const line = document.createElementNS(svgNS, 'line');
+    line.setAttribute('x1', x1); line.setAttribute('y1', y1);
+    line.setAttribute('x2', x2); line.setAttribute('y2', y2);
+    (isMajor ? major : minor).appendChild(line);
+  }
+  const needle = document.getElementById('needle');
+  const symbols = document.querySelectorAll('.symbol');
+  symbols.forEach(sym => {
+    sym.addEventListener('click', () => {
+      symbols.forEach(s => s.classList.remove('active'));
+      sym.classList.add('active');
+      const angle = parseFloat(sym.dataset.angle);
+      needle.style.transform = `rotate(${angle - 180}deg)`;
+    });
+  });
+</script>
+</body>
+</html>

@@ -1,0 +1,542 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Mockup B — Wizard's Desk</title>
+<link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;700&family=EB+Garamond:ital,wght@0,400;0,500;1,400&family=IM+Fell+English+SC&display=swap" rel="stylesheet">
+<style>
+:root {
+  /* Dark: deep oak desk, candlelit */
+  --desk: #2a1810;
+  --desk-dark: #1a0e06;
+  --desk-light: #3a241a;
+  --desk-grain: rgba(60,30,10,0.4);
+  --parchment: #ede0c2;
+  --parchment-dark: #c9b48a;
+  --parchment-shadow: #8a7548;
+  --ink: #2d1a08;
+  --ink-soft: #4a3420;
+  --gold: #d4a04a;
+  --gold-bright: #f0c060;
+  --wax-red: #8a1d28;
+  --glow: rgba(240, 192, 96, 0.4);
+  --bottle-green: #3a6b42;
+  --bottle-blue: #2a4d78;
+  --bottle-purple: #5a2d6b;
+  --bg-top: #130a04;
+  --bg-bottom: var(--desk);
+}
+
+[data-theme="light"] {
+  --desk: #b38b5c;
+  --desk-dark: #8a6a40;
+  --desk-light: #d4ac7a;
+  --desk-grain: rgba(100,60,20,0.3);
+  --parchment: #faf0d4;
+  --parchment-dark: #e8d6a8;
+  --parchment-shadow: #b89d6a;
+  --ink: #3b2814;
+  --ink-soft: #5c4a32;
+  --gold: #9a7020;
+  --gold-bright: #bf8f30;
+  --wax-red: #7a1820;
+  --glow: rgba(200, 150, 60, 0.3);
+  --bg-top: #d4ac7a;
+  --bg-bottom: var(--desk);
+}
+
+* { box-sizing: border-box; margin: 0; padding: 0; }
+
+body {
+  min-height: 100vh;
+  background: linear-gradient(to bottom, var(--bg-top), var(--bg-bottom));
+  font-family: 'EB Garamond', serif;
+  color: var(--ink);
+  overflow-x: hidden;
+}
+
+/* HEADER */
+.header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0.9rem 2rem;
+  background: linear-gradient(to bottom, #0a0503, #1a0e06);
+  border-bottom: 2px solid #000;
+  box-shadow: 0 4px 18px rgba(0,0,0,0.6);
+  position: relative;
+  z-index: 20;
+}
+.header-nav { display: flex; gap: 1.8rem; }
+.header-link {
+  color: var(--gold);
+  font-family: 'Cinzel', serif;
+  font-size: 0.88rem;
+  letter-spacing: 0.08em;
+  text-decoration: none;
+  transition: color 0.2s;
+  text-transform: uppercase;
+}
+.header-link:hover { color: var(--gold-bright); }
+.header-actions { display: flex; gap: 0.8rem; }
+.header-btn {
+  background: transparent;
+  color: var(--gold);
+  border: 1px solid var(--gold);
+  padding: 0.3rem 0.9rem;
+  font-family: 'Cinzel', serif;
+  font-size: 0.78rem;
+  letter-spacing: 0.1em;
+  cursor: pointer;
+  text-transform: uppercase;
+  transition: all 0.2s;
+}
+.header-btn:hover { background: var(--gold); color: #1a0e06; }
+
+/* DESK */
+.desk-wrap {
+  min-height: calc(100vh - 60px);
+  position: relative;
+  overflow: hidden;
+}
+.desk-surface {
+  position: absolute;
+  inset: 0;
+  background: var(--desk);
+  background-image:
+    repeating-linear-gradient(94deg,
+      transparent 0, transparent 60px,
+      var(--desk-grain) 60px, var(--desk-grain) 61px,
+      transparent 61px, transparent 140px,
+      var(--desk-grain) 140px, var(--desk-grain) 142px,
+      transparent 142px, transparent 260px,
+      rgba(0,0,0,0.15) 260px, rgba(0,0,0,0.15) 262px),
+    repeating-linear-gradient(3deg,
+      transparent 0, transparent 200px,
+      rgba(0,0,0,0.08) 200px, rgba(0,0,0,0.08) 201px),
+    radial-gradient(ellipse at 30% 40%, rgba(240,192,96,0.08), transparent 50%),
+    radial-gradient(ellipse at 80% 70%, rgba(90,45,107,0.05), transparent 50%);
+}
+.desk-surface::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background:
+    radial-gradient(ellipse at center, transparent 30%, rgba(0,0,0,0.45) 100%);
+  pointer-events: none;
+}
+
+/* DESK ITEMS - scattered */
+.desk-item {
+  position: absolute;
+  filter: drop-shadow(4px 6px 8px rgba(0,0,0,0.6));
+}
+
+/* Map in the top-left corner, partially visible */
+.map {
+  top: 40px;
+  left: -60px;
+  width: 320px;
+  height: 240px;
+  background: var(--parchment-dark);
+  background-image:
+    radial-gradient(ellipse at 60% 50%, var(--parchment) 30%, var(--parchment-dark) 70%),
+    url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='120' height='120'><filter id='n'><feTurbulence baseFrequency='0.6' numOctaves='3'/></filter><rect width='100%25' height='100%25' filter='url(%23n)' opacity='0.3'/></svg>");
+  background-blend-mode: multiply;
+  transform: rotate(-12deg);
+  border-radius: 4px;
+  padding: 14px;
+  box-shadow: inset 0 0 40px rgba(100,60,20,0.3);
+}
+.map svg { width: 100%; height: 100%; opacity: 0.55; }
+
+/* Potions right side */
+.potions {
+  bottom: 20px;
+  right: 30px;
+  display: flex;
+  gap: 12px;
+  align-items: flex-end;
+  filter: drop-shadow(4px 6px 10px rgba(0,0,0,0.7));
+}
+.potion {
+  width: 42px;
+  height: 90px;
+  border-radius: 4px 4px 18px 18px;
+  position: relative;
+  background: rgba(255,255,255,0.15);
+  box-shadow: inset 0 0 14px rgba(255,255,255,0.2);
+  backdrop-filter: blur(2px);
+}
+.potion::before {
+  content: '';
+  position: absolute;
+  top: -10px; left: 12px; right: 12px;
+  height: 14px;
+  background: var(--desk-light);
+  border-radius: 2px;
+  box-shadow: 0 1px 0 rgba(0,0,0,0.4);
+}
+.potion::after {
+  content: '';
+  position: absolute;
+  bottom: 4px; left: 4px; right: 4px;
+  height: 60%;
+  border-radius: 4px 4px 14px 14px;
+  opacity: 0.85;
+}
+.potion.green::after { background: linear-gradient(to bottom, transparent, var(--bottle-green)); box-shadow: 0 0 18px var(--bottle-green); }
+.potion.blue { height: 105px; }
+.potion.blue::after { background: linear-gradient(to bottom, transparent, var(--bottle-blue)); box-shadow: 0 0 18px var(--bottle-blue); }
+.potion.purple { height: 78px; }
+.potion.purple::after { background: linear-gradient(to bottom, transparent, var(--bottle-purple)); box-shadow: 0 0 18px var(--bottle-purple); }
+.potion.red { height: 95px; }
+.potion.red::after { background: linear-gradient(to bottom, transparent, var(--wax-red)); box-shadow: 0 0 18px var(--wax-red); }
+
+/* Quill bottom-left */
+.quill {
+  bottom: 40px;
+  left: 60px;
+  width: 220px;
+  height: 40px;
+  transform: rotate(-22deg);
+}
+.quill svg { width: 100%; height: 100%; }
+
+/* Inkpot near quill */
+.inkpot {
+  bottom: 30px;
+  left: 40px;
+  width: 60px;
+  height: 50px;
+  background: radial-gradient(ellipse at 30% 30%, #3a2616, #0f0604);
+  border-radius: 50% 50% 8px 8px / 35% 35% 8px 8px;
+  border-top: 3px solid #0a0402;
+}
+.inkpot::after {
+  content: '';
+  position: absolute;
+  top: -2px; left: 8px; right: 8px; height: 6px;
+  background: #000;
+  border-radius: 50%;
+  box-shadow: 0 0 10px rgba(40,20,80,0.6);
+}
+
+/* Scroll top-right */
+.scroll {
+  top: 70px;
+  right: 40px;
+  width: 180px;
+  height: 60px;
+  transform: rotate(14deg);
+}
+.scroll-body {
+  width: 100%;
+  height: 40px;
+  background: linear-gradient(to bottom, var(--parchment), var(--parchment-dark));
+  border-radius: 4px;
+  position: relative;
+  margin-top: 10px;
+}
+.scroll-body::before, .scroll-body::after {
+  content: '';
+  position: absolute;
+  top: -10px;
+  bottom: -10px;
+  width: 20px;
+  background: linear-gradient(to bottom, var(--parchment-dark), var(--parchment-shadow), var(--parchment-dark));
+  border-radius: 50%;
+  box-shadow: inset 2px 0 4px rgba(0,0,0,0.2);
+}
+.scroll-body::before { left: -10px; }
+.scroll-body::after { right: -10px; }
+.scroll-body span {
+  position: absolute;
+  inset: 8px 30px;
+  font-family: 'IM Fell English SC', serif;
+  font-size: 0.7rem;
+  color: var(--ink-soft);
+  white-space: nowrap;
+  overflow: hidden;
+}
+
+/* Candle bottom right area behind potions */
+.candle {
+  bottom: 130px;
+  right: 250px;
+  width: 30px;
+  height: 80px;
+  background: linear-gradient(to bottom, #f4e4b8, #d4b578);
+  border-radius: 4px;
+  filter: drop-shadow(0 0 25px rgba(240, 192, 96, 0.5));
+}
+.candle::before {
+  content: '';
+  position: absolute;
+  top: -14px; left: 50%;
+  transform: translateX(-50%);
+  width: 10px; height: 20px;
+  background: radial-gradient(circle, #fff4c0 20%, #f4b040 60%, transparent 85%);
+  border-radius: 50% 50% 50% 50% / 30% 30% 70% 70%;
+  animation: flicker 1.6s infinite alternate;
+}
+@keyframes flicker {
+  0% { transform: translateX(-50%) scale(1) rotate(-2deg); opacity: 1; }
+  100% { transform: translateX(-50%) scale(1.08) rotate(2deg); opacity: 0.92; }
+}
+
+/* PROMPT AREA - central illuminated parchment */
+.prompt-area {
+  position: relative;
+  z-index: 5;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: calc(100vh - 60px);
+  padding: 3rem 1rem;
+}
+.prompt-parchment {
+  width: min(620px, 92vw);
+  padding: 2.8rem 3.2rem;
+  background: var(--parchment);
+  background-image:
+    radial-gradient(ellipse at 50% 50%, var(--parchment) 40%, var(--parchment-dark) 100%),
+    url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='300' height='300'><filter id='n'><feTurbulence baseFrequency='0.75' numOctaves='2'/></filter><rect width='100%25' height='100%25' filter='url(%23n)' opacity='0.2'/></svg>");
+  background-blend-mode: multiply;
+  position: relative;
+  box-shadow:
+    0 30px 60px rgba(0,0,0,0.7),
+    0 10px 20px rgba(0,0,0,0.4),
+    inset 0 0 60px rgba(139,117,72,0.2),
+    0 0 80px var(--glow);
+  /* torn deckle edges */
+  clip-path: polygon(
+    1% 2%, 4% 0, 10% 2%, 18% 1%, 28% 3%, 40% 0, 52% 2%, 65% 1%, 78% 3%, 88% 1%, 96% 2%, 100% 5%,
+    99% 15%, 100% 28%, 98% 42%, 100% 58%, 99% 72%, 100% 85%, 97% 97%, 94% 100%,
+    86% 98%, 74% 100%, 62% 98%, 48% 100%, 34% 98%, 22% 100%, 10% 97%, 2% 99%, 0 92%,
+    1% 78%, 0 62%, 2% 48%, 0 34%, 2% 18%, 0 8%
+  );
+}
+.prompt-heading {
+  font-family: 'Cinzel', serif;
+  font-size: 1.1rem;
+  color: var(--wax-red);
+  text-align: center;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  margin-bottom: 0.3rem;
+}
+.prompt-divider {
+  text-align: center;
+  color: var(--gold);
+  margin-bottom: 1.8rem;
+  font-size: 1rem;
+  letter-spacing: 0.4em;
+}
+.prompt-input {
+  width: 100%;
+  background: transparent;
+  border: none;
+  border-bottom: 1.5px solid var(--ink-soft);
+  outline: none;
+  font-family: 'EB Garamond', serif;
+  font-size: 1.3rem;
+  color: var(--ink);
+  font-style: italic;
+  padding: 0.8rem 0.2rem;
+  transition: border-color 0.2s, box-shadow 0.3s;
+}
+.prompt-input::placeholder { color: var(--ink-soft); opacity: 0.5; }
+.prompt-input:focus {
+  border-bottom-color: var(--wax-red);
+  box-shadow: 0 10px 24px -10px rgba(212,160,74,0.5);
+}
+.submit-row {
+  display: flex;
+  justify-content: flex-end;
+  margin-top: 1.4rem;
+}
+.submit-btn {
+  background: var(--wax-red);
+  background-image: radial-gradient(circle at 30% 30%, rgba(255,255,255,0.2), transparent 60%);
+  color: var(--parchment);
+  border: 2px solid #4a0d14;
+  padding: 0.55rem 1.4rem;
+  font-family: 'Cinzel', serif;
+  letter-spacing: 0.12em;
+  font-size: 0.85rem;
+  cursor: pointer;
+  border-radius: 50%;
+  width: 60px;
+  height: 60px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.6), inset 0 0 6px rgba(0,0,0,0.4);
+  transition: transform 0.15s;
+  position: relative;
+}
+.submit-btn::before {
+  content: '✦';
+  font-size: 1.6rem;
+  font-family: serif;
+}
+.submit-btn:hover { transform: translateY(-2px) rotate(5deg); }
+
+/* magic particles */
+.particle {
+  position: absolute;
+  width: 4px; height: 4px;
+  background: var(--gold-bright);
+  border-radius: 50%;
+  box-shadow: 0 0 8px var(--gold-bright);
+  opacity: 0;
+  pointer-events: none;
+  animation: float 3.5s ease-in-out infinite;
+}
+@keyframes float {
+  0%, 100% { opacity: 0; transform: translate(0,0); }
+  40% { opacity: 0.8; }
+  100% { transform: translate(var(--dx, 30px), var(--dy, -40px)); }
+}
+.p1 { top: 20%; left: 12%; animation-delay: 0s; --dx: 20px; --dy: -30px; }
+.p2 { top: 30%; right: 15%; animation-delay: 1.2s; --dx: -15px; --dy: -35px; }
+.p3 { bottom: 25%; left: 18%; animation-delay: 2s; --dx: 25px; --dy: -40px; }
+.p4 { bottom: 20%; right: 20%; animation-delay: 0.6s; --dx: -20px; --dy: -30px; }
+
+@media (max-width: 700px) {
+  .map, .scroll, .quill, .inkpot, .candle { display: none; }
+  .potions { transform: scale(0.7); transform-origin: right bottom; }
+  .prompt-parchment { padding: 2rem 1.6rem; }
+}
+</style>
+</head>
+<body data-theme="dark">
+
+<!-- HEADER -->
+<header class="header">
+  <nav class="header-nav">
+    <a href="#" class="header-link">Spellbook</a>
+    <a href="#" class="header-link">Sourcebooks</a>
+    <a href="#" class="header-link">About</a>
+  </nav>
+  <div class="header-actions">
+    <button class="header-btn" id="themeToggle">☾ Night</button>
+    <button class="header-btn">Sign In</button>
+  </div>
+</header>
+
+<!-- DESK -->
+<div class="desk-wrap">
+  <div class="desk-surface"></div>
+
+  <!-- Magic particles drifting around -->
+  <span class="particle p1"></span>
+  <span class="particle p2"></span>
+  <span class="particle p3"></span>
+  <span class="particle p4"></span>
+
+  <!-- Map in corner -->
+  <div class="desk-item map">
+    <svg viewBox="0 0 300 220">
+      <path d="M30 180 Q80 120 130 150 Q180 180 240 120 L260 60" stroke="#5a3a20" fill="none" stroke-width="1.5" stroke-dasharray="3 3"/>
+      <circle cx="30" cy="180" r="4" fill="#8a1d28"/>
+      <circle cx="260" cy="60" r="4" fill="#8a1d28"/>
+      <path d="M70 60 Q90 40 110 55 Q120 65 100 80 Q80 90 70 60" fill="#7a5a30" opacity="0.5"/>
+      <path d="M170 160 Q190 140 210 155 Q220 165 200 180 Q180 190 170 160" fill="#7a5a30" opacity="0.4"/>
+      <text x="100" y="30" font-family="IM Fell English SC" font-size="12" fill="#3b2514">Northern Wastes</text>
+      <text x="30" y="200" font-family="IM Fell English SC" font-size="9" fill="#3b2514">Hearth</text>
+    </svg>
+  </div>
+
+  <!-- Scroll -->
+  <div class="desk-item scroll">
+    <div class="scroll-body">
+      <span>...verbal, somatic, material...</span>
+    </div>
+  </div>
+
+  <!-- Inkpot -->
+  <div class="desk-item inkpot"></div>
+
+  <!-- Quill -->
+  <div class="desk-item quill">
+    <svg viewBox="0 0 220 40" preserveAspectRatio="none">
+      <defs>
+        <linearGradient id="featherG" x1="0" y1="0" x2="1" y2="0">
+          <stop offset="0%" stop-color="#8a1d28"/>
+          <stop offset="50%" stop-color="#e8d090"/>
+          <stop offset="100%" stop-color="#fff4d0"/>
+        </linearGradient>
+      </defs>
+      <path d="M10 30 Q50 5 120 10 Q180 15 210 20 Q150 22 100 28 Q50 34 10 30 Z" fill="url(#featherG)" stroke="#6a4a20" stroke-width="0.8"/>
+      <path d="M30 25 L200 20" stroke="#6a4a20" stroke-width="1"/>
+      <!-- feather barbs -->
+      <g stroke="#6a4a20" stroke-width="0.4" opacity="0.5">
+        <line x1="50" y1="18" x2="55" y2="12"/>
+        <line x1="70" y1="15" x2="75" y2="9"/>
+        <line x1="90" y1="13" x2="95" y2="7"/>
+        <line x1="110" y1="12" x2="115" y2="6"/>
+        <line x1="130" y1="14" x2="135" y2="8"/>
+        <line x1="150" y1="16" x2="155" y2="10"/>
+        <line x1="60" y1="30" x2="65" y2="36"/>
+        <line x1="80" y1="30" x2="85" y2="36"/>
+        <line x1="100" y1="29" x2="105" y2="35"/>
+        <line x1="120" y1="28" x2="125" y2="34"/>
+        <line x1="140" y1="27" x2="145" y2="33"/>
+      </g>
+      <!-- nib -->
+      <path d="M210 20 L218 22 L210 24 Z" fill="#1a0a00"/>
+    </svg>
+  </div>
+
+  <!-- Candle -->
+  <div class="desk-item candle"></div>
+
+  <!-- Potions -->
+  <div class="desk-item potions">
+    <div class="potion green"></div>
+    <div class="potion blue"></div>
+    <div class="potion red"></div>
+    <div class="potion purple"></div>
+  </div>
+
+  <!-- PROMPT -->
+  <div class="prompt-area">
+    <div class="prompt-parchment">
+      <div class="prompt-heading">Pose Thy Question</div>
+      <div class="prompt-divider">✦ · · ✦ · · ✦</div>
+
+      <input
+        type="text"
+        class="prompt-input"
+        id="promptInput"
+        placeholder="What spell befits this moment?"
+        autocomplete="off"
+      >
+
+      <div class="submit-row">
+        <button class="submit-btn" title="Cast"></button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+  const toggle = document.getElementById('themeToggle');
+  const input = document.getElementById('promptInput');
+  toggle.addEventListener('click', () => {
+    const current = document.body.dataset.theme;
+    document.body.dataset.theme = current === 'dark' ? 'light' : 'dark';
+    toggle.textContent = current === 'dark' ? '☀ Day' : '☾ Night';
+  });
+  document.addEventListener('keydown', (e) => {
+    if (e.key === '/' && document.activeElement !== input) {
+      e.preventDefault();
+      input.focus();
+    }
+  });
+</script>
+
+</body>
+</html>

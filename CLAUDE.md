@@ -4,7 +4,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Project Overview
 
-Fresh Laravel 13 application (PHP 8.3+) with Tailwind CSS 4 and Vite. No custom domain logic yet — ready for feature development.
+Arcane Advisor is a D&D 5e wizard spell recommendation engine. Users describe a situation in natural language; the system returns ranked spell picks with per-card explanations tuned by a five-position "Whimsy Dial." Stack: Laravel 13 API (PHP 8.3+), Vue 3 SPA (Pinia + Vue Router) via Vite, Tailwind CSS 4, MySQL 8.4, Redis 7. LLM: Cloudflare Workers AI — `@cf/google/gemma-4-26b-a4b-it` for completions, `@cf/baai/bge-base-en-v1.5` for embeddings. See `docs/plans/implementation-plan.md` for the full build order (Stages A–I).
 
 ## IMPORTANT RULES
 
@@ -12,6 +12,7 @@ Fresh Laravel 13 application (PHP 8.3+) with Tailwind CSS 4 and Vite. No custom 
 - Always refer to relevant documentation in `docs/` and `docs/specs/` to provide context for writing new specifications
 - Always review the specification yourself, report the results, and don't move forward with implementation planning until the specification is approved
 - Always plan out the implementation in a plan file before implementing
+- When writing implementation plans, organize them into self-consistent and complete shippable units that are small enough for a Claude context window to execute on
 - Always make use of superpowers (especially brainstorming) when planning features
 - Always build implementation plans using a TDD-approach and plan out the critical path for an agent swarm development process
 - Always plan to perform several passes of reviews and self-correction at the end of implementation before considering the implmentation complete
@@ -21,6 +22,11 @@ Fresh Laravel 13 application (PHP 8.3+) with Tailwind CSS 4 and Vite. No custom 
 - After resolving conflicts, always rerun all tests to confirm there are no regression failures
 - When beginning work on a new feature, build it in a branch so a PR can be created from it and merged into main when it is approved
 - NEVER make commits to or push to the `main` branch. Assume `main` is branch protected and that pushes to main will always fail.
+- Controllers (`__invoke`) are thin HTTP wrappers; Actions (`execute`) hold business logic. Never collapse them into one class. Controllers call Actions, not the other way around.
+
+## Conventions
+
+See `docs/conventions.md` for project work and process conventions, naming rules, and legacy issues to keep in mind when producing work.
 
 ## Common Commands
 
@@ -92,31 +98,32 @@ npm run build             # Production build (Vite)
 
 ## Documentation
 
-### Chat Sessions
+### Point-in-Time Artifacts
 
-- Store records of chat sessions in `docs/sessions/` (but only when requested by the user)
-- Use date-prefixed filenames: `YYYY-MM-DD-short-description.md`
+Date-prefixed filenames (`YYYY-MM-DD-##-description.md`). These accumulate; old ones are rarely edited.
 
-### Specifications
+- **Chat Sessions** (`docs/sessions/`) — records of chat sessions (only when requested). Format: `YYYY-MM-DD-short-description.md`.
+- **Mocks** (`docs/mocks/`) — design mockups and related artifacts.
+- **Notes** (`docs/notes/`) — research notes, audit results, working documents that don't fit another category.
 
-- Store implementation plans (current and historical) in `docs/specs/`
-- Use date-prefixed filenames: `YYYY-MM-DD-short-description.md`
+### Living References
 
-### Implementation Plans
+Descriptive non-dated kebab-case filenames (e.g. `api-consult.md`, `implementation-plan.md`). These are the current truth, edited in place, with stable linkable names.
 
-- Store implementation plans (current and historical) in `docs/plans/`
-- Use date-prefixed filenames: `YYYY-MM-DD-short-description.md`
+- **Specs** (`docs/specs/`) — feature specifications. Use numeric prefixes for build ordering (`00-index.md`, `01-prompt-box-and-landing.md`).
+- **Plans** (`docs/plans/`) — implementation plans.
+- **Schemas** (`docs/schemas/`) — data schemas and API contracts.
+- **Guides** (`docs/`) — permanent documentation (style guide, testing strategy). Descriptive kebab-case names.
 
-### Permanent Documentation
+## Key References
 
-- Store user-targeted and technical documentation in `docs/`
-- Use descriptive non-dated file names in kebab-case: `project-architecture.md`
+- `docs/specs/00-index.md` — canonical spec map and dependency graph for all 8 feature specs
+- `docs/plans/implementation-plan.md` — full build order (Stages A–I), per-PR test lists, locked conventions
+- `docs/schemas/` — API envelope (`api-consult.md`), spell YAML structure (`spell-yaml.md`), enum vocabularies (`enums.md`)
 
-### Notes
+## Current Status
 
-- Store documents that guide implementations or aid development but don't fit another category in `docs/notes/`
-- This includes things like research notes, audit results, and other working documents that aren't chat sessions, permanent documentation, plans, or specs
-- Use date-prefixed filenames: `YYYY-MM-DD-short-description.md`
+Track and update progress in `docs/notes/checklist.md`. Keep it current as PRs are completed.
 
 ## Testing Strategy
 

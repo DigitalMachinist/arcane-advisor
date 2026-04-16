@@ -1,0 +1,217 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Component Sheet — Set Message</title>
+<link href="https://fonts.googleapis.com/css2?family=Cinzel+Decorative:wght@400;700;900&family=Cinzel:wght@400;600;700&family=EB+Garamond:ital,wght@0,400;0,500;0,600;1,400;1,500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --desk: #241811; --ink: #f3e7cf; --ink-dim: #b8a681; --ink-faint: #7a6944;
+    --gold: #c79a47;
+    --arcane: #ffd57a; --arcane-deep: #e89a2a;
+    --arcane-glow: rgba(255, 200, 90, 0.75);
+  }
+  [data-whimsy="tactical"]   { --arcane:#9fc5e8; --arcane-deep:#3f78a8; --arcane-glow:rgba(120,180,230,0.75); }
+  [data-whimsy="balanced"]   { --arcane:#9fe3b8; --arcane-deep:#3fa870; --arcane-glow:rgba(110,220,160,0.75); }
+  [data-whimsy="creative"]   { --arcane:#ffd57a; --arcane-deep:#e89a2a; --arcane-glow:rgba(255,200,90,0.75);  }
+  [data-whimsy="theatrical"] { --arcane:#d8a8ee; --arcane-deep:#8a42b8; --arcane-glow:rgba(200,130,230,0.75); }
+  [data-whimsy="chaotic"]    { --arcane:#ff9aa0; --arcane-deep:#c03848; --arcane-glow:rgba(255,120,130,0.75); }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html, body { height: 100%; }
+  body {
+    min-height: 100vh;
+    background: radial-gradient(ellipse at 50% 20%, #3a2818 0%, #120905 82%), var(--desk);
+    background-attachment: fixed;
+    font-family: 'EB Garamond', serif; color: var(--ink);
+    padding: 60px 40px 120px;
+  }
+  body::before {
+    content: ''; position: fixed; inset: 0;
+    background: repeating-linear-gradient(91deg, transparent 0 90px, rgba(0,0,0,0.1) 90px 91px);
+    pointer-events: none; z-index: 0;
+  }
+
+  .sheet { max-width: 880px; margin: 0 auto; position: relative; z-index: 2; }
+  .sheet-head { border-bottom: 1px solid rgba(184,166,129,0.25); padding-bottom: 28px; margin-bottom: 40px; }
+  .breadcrumb {
+    font-family: 'Cinzel Decorative', serif; font-size: 10px;
+    letter-spacing: 0.28em; text-transform: uppercase; color: var(--ink-faint);
+  }
+  .breadcrumb a { color: var(--ink-dim); text-decoration: none; }
+  .breadcrumb a:hover { color: var(--gold); }
+  .sheet-title {
+    font-family: 'Cinzel Decorative', serif; font-weight: 900;
+    font-size: 32px; color: var(--gold);
+    letter-spacing: 0.1em; text-transform: uppercase; margin: 8px 0 10px;
+  }
+  .sheet-sub {
+    font-family: 'EB Garamond', serif; font-style: italic;
+    color: var(--ink-dim); font-size: 15px; line-height: 22px; max-width: 640px;
+  }
+  .state { margin-bottom: 56px; }
+  .state-head { display: flex; align-items: baseline; gap: 16px; margin-bottom: 6px; }
+  .state-name {
+    font-family: 'Cinzel Decorative', serif; font-weight: 700;
+    font-size: 13px; letter-spacing: 0.28em; text-transform: uppercase; color: var(--gold);
+  }
+  .state-chip {
+    font-family: 'Cinzel', serif; font-size: 9px;
+    letter-spacing: 0.22em; text-transform: uppercase; color: var(--ink-faint);
+    padding: 2px 10px; border: 1px solid rgba(184,166,129,0.35); border-radius: 10px;
+  }
+  .state-note {
+    font-family: 'EB Garamond', serif; font-style: italic;
+    color: var(--ink-dim); font-size: 14px; line-height: 21px;
+    margin-bottom: 18px; max-width: 640px;
+  }
+
+  /* SET MESSAGE (component under study) */
+  .set-message {
+    font-family: 'EB Garamond', serif; font-style: italic;
+    font-size: 14px; color: var(--ink); line-height: 22px;
+    padding: 14px 20px 14px 24px;
+    border-left: 2px solid var(--arcane-deep);
+    background: linear-gradient(90deg, rgba(255,200,90,0.10), rgba(255,200,90,0.02) 60%, transparent);
+    position: relative;
+  }
+  .set-message .lead {
+    font-family: 'Cinzel Decorative', serif; font-style: normal;
+    font-size: 9px; letter-spacing: 0.26em; text-transform: uppercase;
+    color: var(--arcane); display: block; margin-bottom: 6px;
+  }
+
+  .palette-label {
+    font-family: 'Cinzel Decorative', serif; font-size: 10px;
+    letter-spacing: 0.24em; text-transform: uppercase;
+    color: var(--arcane);
+    margin-bottom: 8px;
+    display: flex; align-items: center; gap: 8px;
+  }
+  .palette-label::before {
+    content: ''; width: 10px; height: 10px; border-radius: 50%;
+    background: var(--arcane); box-shadow: 0 0 6px var(--arcane-glow);
+  }
+</style>
+</head>
+<body>
+<div class="sheet">
+
+  <div class="sheet-head">
+    <div class="breadcrumb"><a href="index.html">Components</a> · Set Message</div>
+    <h1 class="sheet-title">Set Message</h1>
+    <p class="sheet-sub">
+      A lightweight banner for messages that introduce or stand in for a result set —
+      rules/meta answers, soft-fail explanations, and no-results fallbacks. Shares its accent
+      colour with the active whimsy so it reads as part of the same oracle voice.
+    </p>
+  </div>
+
+  <section class="state">
+    <div class="state-head">
+      <div class="state-name">Rules Q&amp;A answer</div>
+      <div class="state-chip">Meta lookup</div>
+    </div>
+    <p class="state-note">
+      Returned when the user asks a rules or mechanics question rather than requesting a
+      spell recommendation. No cards follow — the banner is the entire system turn.
+    </p>
+    <div data-whimsy="balanced">
+      <div class="set-message">
+        <span class="lead">Rules question — Concentration (PHB 203)</span>
+        Being prone doesn't break concentration by itself — you can keep concentrating while
+        lying on the ground. Concentration only breaks when you take damage and fail a
+        Constitution save, when you're incapacitated, or when you die. So if being prone means
+        you're hit hard enough to fail the Con save, yes — but that's the damage, not the
+        prone condition.
+      </div>
+    </div>
+  </section>
+
+  <section class="state">
+    <div class="state-head">
+      <div class="state-name">No exact match — introduces closest options</div>
+      <div class="state-chip">Soft-fail header</div>
+    </div>
+    <p class="state-note">
+      Used when the user's constraints can't be fully satisfied. The banner precedes a small
+      set of "closest fit" cards (see the Spell Card sheet's <em>Not an Exact Match</em> state
+      for the paired card variant).
+    </p>
+    <div data-whimsy="chaotic">
+      <div class="set-message">
+        <span class="lead">No exact match</span>
+        No 1st-level spell meets every constraint — force damage in a 60-foot cone that stuns
+        without concentration is too tall an order. Here's what comes closest.
+      </div>
+    </div>
+  </section>
+
+  <section class="state">
+    <div class="state-head">
+      <div class="state-name">No results at all</div>
+      <div class="state-chip">Empty-set fallback</div>
+    </div>
+    <p class="state-note">
+      The rarest case — the query doesn't plausibly match any spell even loosely. No cards
+      follow. The banner gently redirects without blaming the user.
+    </p>
+    <div data-whimsy="creative">
+      <div class="set-message">
+        <span class="lead">Nothing in the grimoire</span>
+        Nothing in the 5e spell list fits this well enough to recommend. Try loosening one
+        constraint — spell level, damage type, or the target count — and the oracle can likely
+        offer something useful.
+      </div>
+    </div>
+  </section>
+
+  <section class="state">
+    <div class="state-head">
+      <div class="state-name">Themed Accents · All Five Whimsy Levels</div>
+      <div class="state-chip">Palette sweep</div>
+    </div>
+    <p class="state-note">
+      The banner's left rule and eyebrow pick up the active whimsy's arcane colour, matching
+      the "Why this spell" accent on the paired Spell Card.
+    </p>
+    <div data-whimsy="tactical">
+      <div class="palette-label">Tactical</div>
+      <div class="set-message" style="margin-bottom:18px;">
+        <span class="lead">Rules clarification</span>
+        Example banner text in the tactical palette so you can see the accent cascade.
+      </div>
+    </div>
+    <div data-whimsy="balanced">
+      <div class="palette-label">Balanced</div>
+      <div class="set-message" style="margin-bottom:18px;">
+        <span class="lead">Rules clarification</span>
+        Example banner text in the balanced palette so you can see the accent cascade.
+      </div>
+    </div>
+    <div data-whimsy="creative">
+      <div class="palette-label">Creative</div>
+      <div class="set-message" style="margin-bottom:18px;">
+        <span class="lead">Rules clarification</span>
+        Example banner text in the creative palette so you can see the accent cascade.
+      </div>
+    </div>
+    <div data-whimsy="theatrical">
+      <div class="palette-label">Theatrical</div>
+      <div class="set-message" style="margin-bottom:18px;">
+        <span class="lead">Rules clarification</span>
+        Example banner text in the theatrical palette so you can see the accent cascade.
+      </div>
+    </div>
+    <div data-whimsy="chaotic">
+      <div class="palette-label">Chaotic</div>
+      <div class="set-message">
+        <span class="lead">Rules clarification</span>
+        Example banner text in the chaotic palette so you can see the accent cascade.
+      </div>
+    </div>
+  </section>
+
+</div>
+</body>
+</html>

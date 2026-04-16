@@ -1,0 +1,234 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Spec 1 — Landing & Prompt Box</title>
+<link href="https://fonts.googleapis.com/css2?family=Cinzel+Decorative:wght@400;700;900&family=EB+Garamond:ital,wght@0,400;0,500;1,400&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --desk: #241811; --ink: #f3e7cf; --ink-dim: #b8a681;
+    --scrap: #e9d5a6; --brass: #c4a156; --brass-dark: #806330;
+    --gold: #c79a47;
+    /* Spec 1 has no whimsy selector, so the circle uses a neutral gold glow */
+    --arcane: #ffd57a; --arcane-deep: #e89a2a;
+    --arcane-glow: rgba(255, 200, 90, 0.75);
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    min-height: 100vh;
+    background: radial-gradient(ellipse at 50% 50%, #3a2818 0%, #120905 82%), var(--desk);
+    font-family: 'EB Garamond', serif; color: var(--ink); overflow-x: hidden;
+  }
+  body::before {
+    content: ''; position: fixed; inset: 0;
+    background: repeating-linear-gradient(91deg, transparent 0 90px, rgba(0,0,0,0.1) 90px 91px);
+    pointer-events: none; z-index: 1;
+  }
+  .brand {
+    position: absolute; top: 26px; left: 40px;
+    font-family: 'Cinzel Decorative', serif;
+    font-size: 16px; color: var(--gold);
+    letter-spacing: 0.22em; text-transform: uppercase; z-index: 20;
+  }
+  .stage { position: relative; width: 100%; min-height: 100vh; display: flex; align-items: center; justify-content: center; z-index: 2; }
+  .circle-wrap { position: relative; width: 900px; height: 900px; }
+  .ritual-halo {
+    position: absolute; inset: -80px;
+    background: radial-gradient(circle at center, var(--arcane-glow) 0%, rgba(0,0,0,0) 72%);
+    opacity: 0.35; animation: halo 5s ease-in-out infinite; pointer-events: none;
+  }
+  @keyframes halo { 0%,100%{opacity:.28;transform:scale(1)} 50%{opacity:.42;transform:scale(1.04)} }
+  .circle-svg {
+    position: absolute; inset: 0; width: 100%; height: 100%;
+    filter: drop-shadow(0 0 24px var(--arcane-glow)) drop-shadow(0 0 48px var(--arcane-glow));
+  }
+  .ring-outer { animation: spin 200s linear infinite; transform-origin: 450px 450px; }
+  .ring-mid   { animation: spin 140s linear infinite reverse; transform-origin: 450px 450px; }
+  .ring-inner { animation: spin 100s linear infinite; transform-origin: 450px 450px; }
+  @keyframes spin { to { transform: rotate(360deg); } }
+
+  /* Unlined scrap — blank vellum. No button. Enter sends. */
+  .scrap {
+    position: absolute; top: 50%; left: 50%;
+    transform: translate(-50%, -50%) rotate(-1.5deg);
+    width: 340px; min-height: 170px;
+    background: var(--scrap);
+    background-image:
+      radial-gradient(ellipse at 20% 30%, rgba(130,90,50,0.10) 0%, transparent 45%),
+      radial-gradient(ellipse at 80% 70%, rgba(90,60,30,0.12) 0%, transparent 40%),
+      radial-gradient(ellipse at 55% 20%, rgba(160,120,70,0.08) 0%, transparent 38%);
+    padding: 26px 28px 32px;
+    clip-path: polygon(2% 4%,10% 1%,22% 3%,34% 0%,46% 2%,60% 1%,74% 3%,88% 0%,99% 6%,97% 20%,100% 36%,98% 52%,100% 68%,97% 82%,99% 94%,88% 98%,74% 96%,58% 99%,42% 97%,26% 100%,10% 97%,1% 92%,3% 76%,0% 60%,2% 44%,0% 28%,3% 14%);
+    box-shadow: 0 12px 36px rgba(0,0,0,0.6);
+    z-index: 11;
+  }
+  .scrap textarea {
+    width: 100%; min-height: 118px;
+    background: transparent; border: none; outline: none; resize: none;
+    font-family: 'EB Garamond', serif; font-style: italic;
+    font-size: 19px; line-height: 28px; color: #3a2614;
+    caret-color: var(--arcane-deep);
+  }
+  .scrap textarea::placeholder { color: rgba(58,38,20,0.4); }
+
+  .send-hint {
+    position: absolute; bottom: 10px; right: 18px;
+    font-family: 'EB Garamond', serif;
+    font-size: 11px; letter-spacing: 0.18em; text-transform: uppercase;
+    color: rgba(58,38,20,0.38);
+    display: flex; align-items: center; gap: 6px;
+    pointer-events: none;
+    transition: color 0.3s ease, opacity 0.3s ease;
+  }
+  .send-hint .key {
+    font-family: 'Cinzel Decorative', serif;
+    font-size: 12px; letter-spacing: 0;
+    padding: 1px 6px; border: 1px solid rgba(58,38,20,0.35); border-radius: 3px;
+  }
+  .scrap.ready .send-hint { color: var(--arcane-deep); }
+  .scrap.ready .send-hint .key { border-color: var(--arcane-deep); box-shadow: 0 0 8px var(--arcane-glow); }
+</style>
+</head>
+<body>
+
+<div class="brand">Arcane Advisor</div>
+
+<div class="stage">
+  <div class="circle-wrap">
+    <div class="ritual-halo"></div>
+
+    <svg class="circle-svg" viewBox="0 0 900 900">
+      <defs>
+        <radialGradient id="glow-s1" cx="0.5" cy="0.5" r="0.5">
+          <stop offset="0%" stop-color="var(--arcane-glow)" stop-opacity="0.35"/>
+          <stop offset="70%" stop-color="var(--arcane-glow)" stop-opacity="0.1"/>
+          <stop offset="100%" stop-color="transparent"/>
+        </radialGradient>
+      </defs>
+      <circle cx="450" cy="450" r="420" fill="url(#glow-s1)"/>
+
+      <g class="ring-outer">
+        <circle cx="450" cy="450" r="420" fill="none" stroke="var(--arcane)" stroke-width="1.4" opacity="0.75"/>
+        <circle cx="450" cy="450" r="405" fill="none" stroke="var(--arcane-deep)" stroke-width="0.6" opacity="0.5"/>
+        <g stroke="var(--arcane)" stroke-width="1.1" opacity="0.7" id="major-ticks"></g>
+        <g stroke="var(--arcane)" stroke-width="0.5" opacity="0.4" id="minor-ticks"></g>
+      </g>
+
+      <g class="ring-mid">
+        <circle cx="450" cy="450" r="370" fill="none" stroke="var(--arcane)" stroke-width="1" opacity="0.65"/>
+        <circle cx="450" cy="450" r="320" fill="none" stroke="var(--arcane)" stroke-width="1" opacity="0.65"/>
+        <g stroke="var(--arcane)" stroke-width="0.8" opacity="0.55" id="sector-dividers"></g>
+        <g font-family="serif" font-size="18" fill="var(--arcane)" text-anchor="middle" opacity="0.75" id="sector-glyphs"></g>
+      </g>
+
+      <g class="ring-inner">
+        <circle cx="450" cy="450" r="260" fill="none" stroke="var(--arcane)" stroke-width="0.9" opacity="0.6"/>
+        <circle cx="450" cy="450" r="245" fill="none" stroke="var(--arcane-deep)" stroke-width="0.5" opacity="0.4" stroke-dasharray="2 4"/>
+        <g stroke="var(--arcane)" stroke-width="0.7" opacity="0.55" id="mandala-spokes"></g>
+        <g stroke="var(--arcane)" stroke-width="0.6" fill="none" opacity="0.5" id="star-12"></g>
+      </g>
+
+      <circle cx="450" cy="450" r="70" fill="none" stroke="var(--arcane)" stroke-width="0.5" opacity="0.4"/>
+      <circle cx="450" cy="450" r="50" fill="none" stroke="var(--arcane)" stroke-width="0.5" opacity="0.45"/>
+      <circle cx="450" cy="450" r="30" fill="none" stroke="var(--arcane)" stroke-width="0.6" opacity="0.55"/>
+      <circle cx="450" cy="450" r="18" fill="none" stroke="var(--arcane)" stroke-width="0.8" opacity="0.7"/>
+      <circle cx="450" cy="450" r="10" fill="var(--arcane-deep)" opacity="0.6"/>
+    </svg>
+
+    <div class="scrap" id="scrap">
+      <textarea id="prompt" placeholder="The owlbear we tracked has cubs. Combat seems cruel. Can we pacify or redirect it without bloodshed?"></textarea>
+      <div class="send-hint"><span>Send</span><span class="key">↵</span></div>
+    </div>
+  </div>
+</div>
+
+<script>
+  const svgNS = "http://www.w3.org/2000/svg";
+  const cx = 450, cy = 450;
+
+  const major = document.getElementById('major-ticks'), minor = document.getElementById('minor-ticks');
+  for (let deg = 0; deg < 360; deg += 5) {
+    const isMajor = deg % 15 === 0;
+    const len = isMajor ? 16 : 7;
+    const r1 = 420, r2 = 420 - len;
+    const rad = (deg - 90) * Math.PI / 180;
+    const line = document.createElementNS(svgNS, 'line');
+    line.setAttribute('x1', cx + r1*Math.cos(rad));
+    line.setAttribute('y1', cy + r1*Math.sin(rad));
+    line.setAttribute('x2', cx + r2*Math.cos(rad));
+    line.setAttribute('y2', cy + r2*Math.sin(rad));
+    (isMajor ? major : minor).appendChild(line);
+  }
+
+  const dividers = document.getElementById('sector-dividers');
+  const glyphs = document.getElementById('sector-glyphs');
+  const runeMarks = ['ᚠ','ᚢ','ᚦ','ᚨ','ᚱ','ᚲ','ᚷ','ᚹ','ᚺ','ᚾ','ᛁ','ᛃ'];
+  for (let i = 0; i < 12; i++) {
+    const deg = i * 30;
+    const rad = (deg - 90) * Math.PI / 180;
+    const line = document.createElementNS(svgNS, 'line');
+    line.setAttribute('x1', cx + 320*Math.cos(rad));
+    line.setAttribute('y1', cy + 320*Math.sin(rad));
+    line.setAttribute('x2', cx + 370*Math.cos(rad));
+    line.setAttribute('y2', cy + 370*Math.sin(rad));
+    dividers.appendChild(line);
+    const gDeg = deg + 15;
+    const gRad = (gDeg - 90) * Math.PI / 180;
+    const t = document.createElementNS(svgNS, 'text');
+    t.setAttribute('x', cx + 345*Math.cos(gRad));
+    t.setAttribute('y', cy + 345*Math.sin(gRad) + 6);
+    t.textContent = runeMarks[i];
+    glyphs.appendChild(t);
+  }
+
+  const spokes = document.getElementById('mandala-spokes');
+  for (let i = 0; i < 12; i++) {
+    const deg = i * 30;
+    const rad = (deg - 90) * Math.PI / 180;
+    const line = document.createElementNS(svgNS, 'line');
+    line.setAttribute('x1', cx + 160*Math.cos(rad));
+    line.setAttribute('y1', cy + 160*Math.sin(rad));
+    line.setAttribute('x2', cx + 245*Math.cos(rad));
+    line.setAttribute('y2', cy + 245*Math.sin(rad));
+    spokes.appendChild(line);
+  }
+
+  const star = document.getElementById('star-12');
+  function poly(r, offset, n) {
+    const pts = [];
+    for (let i = 0; i < n; i++) {
+      const deg = offset + (360/n)*i;
+      const rad = (deg - 90) * Math.PI / 180;
+      pts.push(`${cx + r*Math.cos(rad)},${cy + r*Math.sin(rad)}`);
+    }
+    return pts.join(' ');
+  }
+  [ [0,1], [180,1], [30,0.6], [210,0.6] ].forEach(([off, op]) => {
+    const p = document.createElementNS(svgNS, 'polygon');
+    p.setAttribute('points', poly(230, off, 3));
+    p.setAttribute('opacity', op);
+    star.appendChild(p);
+  });
+
+  const scrap = document.getElementById('scrap');
+  const prompt = document.getElementById('prompt');
+  function updateReady() { scrap.classList.toggle('ready', prompt.value.trim().length > 0); }
+  prompt.addEventListener('input', updateReady);
+  prompt.addEventListener('keydown', (e) => {
+    if (e.key === 'Enter' && !e.shiftKey) {
+      e.preventDefault();
+      if (prompt.value.trim().length === 0) return;
+      console.log('Consulting:', prompt.value);
+      scrap.animate(
+        [{ transform: 'translate(-50%,-50%) rotate(-1.5deg) scale(1)' },
+         { transform: 'translate(-50%,-50%) rotate(-1.5deg) scale(1.02)' },
+         { transform: 'translate(-50%,-50%) rotate(-1.5deg) scale(1)' }],
+        { duration: 400, easing: 'ease-out' }
+      );
+    }
+  });
+  updateReady();
+</script>
+</body>
+</html>

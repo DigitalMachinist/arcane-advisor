@@ -1,0 +1,352 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Mockup I — Ribbon Bookmarks</title>
+<link href="https://fonts.googleapis.com/css2?family=Cinzel+Decorative:wght@400;700&family=EB+Garamond:ital,wght@0,400;0,500;1,400&family=IM+Fell+English+SC&display=swap" rel="stylesheet">
+<style>
+:root {
+  --ink: #2a1a0a;
+  --ink-soft: #4a3420;
+  --page: #ead5a4;
+  --page-shadow: #c9b07e;
+  --leather: #3a1d0a;
+  --leather-dark: #1f0d04;
+  --desk: #2b1a0e;
+  --desk-grain: rgba(80,40,12,0.35);
+  --gold: #c8963a;
+  --gold-bright: #ebb947;
+  --gold-deep: #8a651f;
+  --vermilion: #a8221c;
+  --ribbon-crimson: #8a1f2a;
+  --ribbon-amber:   #b87820;
+  --ribbon-forest:  #2f5a2f;
+  --ribbon-lapis:   #253e68;
+  --ribbon-violet:  #5a2a6a;
+}
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body { min-height: 100vh; background: var(--desk); font-family: 'EB Garamond', serif; color: var(--ink); overflow-x: hidden; }
+
+.desk-bg {
+  position: fixed; inset: 60px 0 0 0; z-index: 0;
+  background: var(--desk);
+  background-image:
+    repeating-linear-gradient(93deg, transparent 0 70px, var(--desk-grain) 70px 71px, transparent 71px 150px, rgba(0,0,0,0.1) 150px 152px, transparent 152px 270px, var(--desk-grain) 270px 272px),
+    repeating-linear-gradient(3deg, transparent 0 220px, rgba(0,0,0,0.07) 220px 222px);
+}
+.desk-bg::after {
+  content: ''; position: absolute; inset: 0;
+  background: radial-gradient(ellipse at 50% 45%, transparent 35%, rgba(0,0,0,0.55) 100%);
+}
+
+.header {
+  position: relative; z-index: 30;
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 0.9rem 2rem;
+  background: linear-gradient(to bottom, #0a0402, #1a0d04);
+  border-bottom: 2px solid rgba(0,0,0,0.6);
+  box-shadow: 0 6px 16px rgba(0,0,0,0.55);
+  color: var(--page);
+  font-family: 'IM Fell English SC', serif;
+}
+.header a { color: var(--page); text-decoration: none; margin-right: 1.5rem; opacity: 0.85; }
+.header-right { display: flex; align-items: center; gap: 1rem; }
+.theme-toggle { background: none; border: 1px solid var(--gold-deep); color: var(--gold-bright); padding: 0.3rem 0.7rem; border-radius: 2px; cursor: pointer; font-family: inherit; }
+
+.stage {
+  position: relative; z-index: 10;
+  min-height: calc(100vh - 60px);
+  display: flex; align-items: center; justify-content: center;
+  padding: 3rem 2rem;
+}
+
+.tome {
+  position: relative;
+  width: min(1100px, 95vw);
+  aspect-ratio: 16 / 10;
+  display: grid; grid-template-columns: 1fr 1fr;
+  background: var(--leather-dark);
+  border: 10px solid var(--leather);
+  border-radius: 6px;
+  box-shadow: 0 30px 80px rgba(0,0,0,0.7), inset 0 0 40px rgba(0,0,0,0.5);
+}
+.tome::before {
+  content: ''; position: absolute; top: 0; bottom: 0; left: 50%; width: 18px;
+  background: linear-gradient(90deg, rgba(0,0,0,0.5), rgba(0,0,0,0.85), rgba(0,0,0,0.5));
+  transform: translateX(-50%); z-index: 3;
+}
+
+/* Ribbons anchored to the top of the tome, hanging down the right side */
+.ribbons {
+  position: absolute;
+  top: -10px;
+  right: 2%;
+  display: flex; gap: 14px;
+  z-index: 20;
+}
+.ribbon {
+  position: relative;
+  width: 34px;
+  height: 180px;
+  cursor: pointer;
+  transition: height 0.3s cubic-bezier(.3,1.4,.6,1), filter 0.2s;
+  filter: drop-shadow(2px 4px 6px rgba(0,0,0,0.55));
+}
+.ribbon:hover { filter: drop-shadow(2px 6px 10px rgba(0,0,0,0.75)) brightness(1.08); }
+.ribbon.active { height: 300px; filter: drop-shadow(2px 8px 14px rgba(0,0,0,0.85)) brightness(1.15); }
+.ribbon svg { width: 100%; height: 100%; display: block; overflow: visible; }
+.ribbon .label {
+  position: absolute;
+  bottom: 28px; left: 50%;
+  transform: translateX(-50%) rotate(-90deg);
+  transform-origin: center;
+  font-family: 'IM Fell English SC', serif;
+  font-size: 0.72rem;
+  color: #f6e6b8;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  white-space: nowrap;
+  text-shadow: 0 1px 2px rgba(0,0,0,0.9);
+  pointer-events: none;
+}
+.ribbon-crimson  { color: var(--ribbon-crimson); }
+.ribbon-amber    { color: var(--ribbon-amber); }
+.ribbon-forest   { color: var(--ribbon-forest); }
+.ribbon-lapis    { color: var(--ribbon-lapis); }
+.ribbon-violet   { color: var(--ribbon-violet); }
+
+.page {
+  background: var(--page);
+  background-image:
+    repeating-linear-gradient(0deg, transparent 0 2px, rgba(0,0,0,0.012) 2px 3px),
+    radial-gradient(ellipse at 50% 40%, transparent 40%, rgba(0,0,0,0.18) 100%);
+  padding: 2.5rem 3rem;
+  position: relative;
+}
+.page-left { border-right: 1px solid rgba(0,0,0,0.1); }
+.dropcap {
+  float: left;
+  font-family: 'Cinzel Decorative', serif;
+  font-size: 5.5rem;
+  line-height: 0.9;
+  color: var(--vermilion);
+  padding: 0.5rem 0.7rem 0.2rem 0;
+  background: radial-gradient(circle at 30% 30%, rgba(235,185,71,0.25), transparent 70%);
+  text-shadow: 1px 1px 0 var(--gold-deep);
+}
+.left-body { font-size: 1.02rem; line-height: 1.7; color: var(--ink-soft); }
+.left-body p { margin-bottom: 1rem; text-align: justify; }
+
+.page-right { display: flex; flex-direction: column; gap: 1.5rem; padding-right: 4.5rem; }
+.page-right-header {
+  font-family: 'Cinzel Decorative', serif;
+  color: var(--ink-soft);
+  font-size: 0.95rem;
+  text-align: center;
+  letter-spacing: 0.15em;
+  border-bottom: 1px solid rgba(0,0,0,0.15);
+  padding-bottom: 0.6rem;
+}
+.prompt-lines {
+  background: repeating-linear-gradient(0deg, transparent 0 30px, rgba(0,0,0,0.09) 30px 31px);
+  padding: 0.5rem 0.3rem; min-height: 180px;
+}
+.prompt-input {
+  width: 100%; height: 170px;
+  background: transparent; border: none; outline: none; resize: none;
+  font-family: 'EB Garamond', serif; font-size: 1.15rem;
+  color: var(--ink); line-height: 30px; font-style: italic;
+}
+
+/* Current-selection card */
+.current-pick {
+  margin-top: auto;
+  background: rgba(202,162,88,0.15);
+  border: 1px solid rgba(138,101,31,0.3);
+  border-radius: 3px;
+  padding: 0.8rem 1rem;
+  font-size: 0.95rem;
+  color: var(--ink-soft);
+  position: relative;
+}
+.current-pick::before {
+  content: '';
+  position: absolute; left: -6px; top: 50%; transform: translateY(-50%);
+  width: 10px; height: 30px; background: var(--ribbon-forest);
+  border-radius: 2px;
+  box-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+}
+.current-pick .name {
+  font-family: 'IM Fell English SC', serif;
+  letter-spacing: 0.15em;
+  color: var(--vermilion);
+  text-transform: uppercase;
+  font-size: 0.85rem;
+  display: block; margin-bottom: 0.2rem;
+}
+
+.desk-item { position: absolute; z-index: 5; filter: drop-shadow(0 8px 18px rgba(0,0,0,0.6)); }
+.item-candle { top: 8%; left: -60px; width: 80px; }
+.item-potion { bottom: 12%; right: -50px; width: 70px; transform: rotate(8deg); }
+.item-quill  { top: -30px; left: 15%; width: 180px; transform: rotate(-12deg); }
+
+.footer-note {
+  position: fixed; bottom: 1rem; left: 0; right: 0;
+  text-align: center; color: rgba(235,213,164,0.5);
+  font-family: 'IM Fell English SC', serif; font-size: 0.8rem;
+  letter-spacing: 0.15em;
+  z-index: 20;
+}
+</style>
+</head>
+<body>
+<div class="desk-bg"></div>
+
+<header class="header">
+  <nav>
+    <a href="#">About</a>
+    <a href="#">How it works</a>
+    <a href="#">Sourcebooks</a>
+  </nav>
+  <div class="header-right">
+    <button class="theme-toggle">Candlelight</button>
+    <span style="color:var(--gold); opacity:0.6;">Login</span>
+  </div>
+</header>
+
+<main class="stage">
+  <div class="tome">
+    <!-- Desk items -->
+    <svg class="desk-item item-candle" viewBox="0 0 80 120">
+      <defs>
+        <radialGradient id="flameI" cx="50%" cy="40%"><stop offset="0%" stop-color="#fff4b0"/><stop offset="50%" stop-color="#f0a020"/><stop offset="100%" stop-color="#8a2010" stop-opacity="0"/></radialGradient>
+      </defs>
+      <ellipse cx="40" cy="30" rx="9" ry="22" fill="url(#flameI)"/>
+      <rect x="30" y="45" width="20" height="70" fill="#e4d1a0" stroke="#8a6f3c" stroke-width="1"/>
+      <ellipse cx="40" cy="45" rx="10" ry="3" fill="#c2a876"/>
+    </svg>
+    <svg class="desk-item item-potion" viewBox="0 0 70 100">
+      <defs>
+        <linearGradient id="potionI" x1="0" x2="0" y1="0" y2="1">
+          <stop offset="0%" stop-color="#c47aa8"/><stop offset="60%" stop-color="#522968"/><stop offset="100%" stop-color="#2a1434"/>
+        </linearGradient>
+      </defs>
+      <rect x="28" y="5" width="14" height="18" fill="#3a1d0a"/>
+      <path d="M22 25 Q22 35 18 45 Q8 65 10 80 Q12 95 35 95 Q58 95 60 80 Q62 65 52 45 Q48 35 48 25 Z" fill="url(#potionI)" stroke="#0f0502" stroke-width="1.5"/>
+      <ellipse cx="25" cy="55" rx="3" ry="8" fill="rgba(255,255,255,0.35)"/>
+    </svg>
+    <svg class="desk-item item-quill" viewBox="0 0 180 60">
+      <path d="M10 30 Q90 10 170 15 L165 22 Q90 20 15 35 Z" fill="#f0d89a" stroke="#8a6f3c" stroke-width="0.8"/>
+      <path d="M10 30 L2 40 L8 42 L14 36 Z" fill="#2a1a0a"/>
+    </svg>
+
+    <!-- Left page -->
+    <div class="page page-left">
+      <p class="left-body">
+        <span class="dropcap">F</span>ive ribbons mark the pages of this tome, each a different voice in which the spells may be recommended. Tug the ribbon that suits your mood — a crimson for practicality, a violet for chaos.
+      </p>
+      <p class="left-body">The ribbon you pull forward is the tone the tome will speak in. You may change it at any time, but the choice takes effect only when you next ask a question.</p>
+      <p class="left-body" style="color: var(--ink); font-style: italic;">Pull a ribbon. Ink your question. Let the tome answer in kind.</p>
+    </div>
+
+    <!-- Right page -->
+    <div class="page page-right">
+      <div class="page-right-header">— Your Query —</div>
+      <div class="prompt-lines">
+        <textarea class="prompt-input" placeholder="We're fighting a dragon on a bridge over a volcano..."></textarea>
+      </div>
+      <div class="current-pick">
+        <span class="name">Currently: Creative</span>
+        Lateral thinking and unexpected applications — the tome will reach for the clever angle.
+      </div>
+    </div>
+
+    <!-- Ribbons hanging down the top-right -->
+    <div class="ribbons">
+      <div class="ribbon" data-name="Tactical" data-color="crimson">
+        <svg viewBox="0 0 34 300" preserveAspectRatio="none">
+          <defs>
+            <linearGradient id="rib-crimson" x1="0" x2="1"><stop offset="0%" stop-color="#6a1420"/><stop offset="50%" stop-color="#a8221c"/><stop offset="100%" stop-color="#6a1420"/></linearGradient>
+          </defs>
+          <path d="M0 0 L34 0 L34 270 L22 295 L12 270 L0 295 Z" fill="url(#rib-crimson)" stroke="#3a0c10" stroke-width="0.8"/>
+          <path d="M4 0 L4 265" stroke="rgba(0,0,0,0.2)" stroke-width="0.5"/>
+          <path d="M30 0 L30 265" stroke="rgba(0,0,0,0.2)" stroke-width="0.5"/>
+        </svg>
+        <span class="label">Tactical</span>
+      </div>
+      <div class="ribbon" data-name="Balanced" data-color="amber">
+        <svg viewBox="0 0 34 300" preserveAspectRatio="none">
+          <defs>
+            <linearGradient id="rib-amber" x1="0" x2="1"><stop offset="0%" stop-color="#7a4c12"/><stop offset="50%" stop-color="#c8963a"/><stop offset="100%" stop-color="#7a4c12"/></linearGradient>
+          </defs>
+          <path d="M0 0 L34 0 L34 270 L22 295 L12 270 L0 295 Z" fill="url(#rib-amber)" stroke="#3a2408" stroke-width="0.8"/>
+          <path d="M4 0 L4 265" stroke="rgba(0,0,0,0.2)" stroke-width="0.5"/>
+          <path d="M30 0 L30 265" stroke="rgba(0,0,0,0.2)" stroke-width="0.5"/>
+        </svg>
+        <span class="label">Balanced</span>
+      </div>
+      <div class="ribbon active" data-name="Creative" data-color="forest">
+        <svg viewBox="0 0 34 300" preserveAspectRatio="none">
+          <defs>
+            <linearGradient id="rib-forest" x1="0" x2="1"><stop offset="0%" stop-color="#1f3e1f"/><stop offset="50%" stop-color="#3f6a3f"/><stop offset="100%" stop-color="#1f3e1f"/></linearGradient>
+          </defs>
+          <path d="M0 0 L34 0 L34 270 L22 295 L12 270 L0 295 Z" fill="url(#rib-forest)" stroke="#0c1f0c" stroke-width="0.8"/>
+          <path d="M4 0 L4 265" stroke="rgba(0,0,0,0.2)" stroke-width="0.5"/>
+          <path d="M30 0 L30 265" stroke="rgba(0,0,0,0.2)" stroke-width="0.5"/>
+        </svg>
+        <span class="label">Creative</span>
+      </div>
+      <div class="ribbon" data-name="Theatrical" data-color="lapis">
+        <svg viewBox="0 0 34 300" preserveAspectRatio="none">
+          <defs>
+            <linearGradient id="rib-lapis" x1="0" x2="1"><stop offset="0%" stop-color="#14224a"/><stop offset="50%" stop-color="#2a4a78"/><stop offset="100%" stop-color="#14224a"/></linearGradient>
+          </defs>
+          <path d="M0 0 L34 0 L34 270 L22 295 L12 270 L0 295 Z" fill="url(#rib-lapis)" stroke="#060e24" stroke-width="0.8"/>
+          <path d="M4 0 L4 265" stroke="rgba(0,0,0,0.2)" stroke-width="0.5"/>
+          <path d="M30 0 L30 265" stroke="rgba(0,0,0,0.2)" stroke-width="0.5"/>
+        </svg>
+        <span class="label">Theatrical</span>
+      </div>
+      <div class="ribbon" data-name="Chaotic" data-color="violet">
+        <svg viewBox="0 0 34 300" preserveAspectRatio="none">
+          <defs>
+            <linearGradient id="rib-violet" x1="0" x2="1"><stop offset="0%" stop-color="#3a1444"/><stop offset="50%" stop-color="#6a2c7c"/><stop offset="100%" stop-color="#3a1444"/></linearGradient>
+          </defs>
+          <path d="M0 0 L34 0 L34 270 L22 295 L12 270 L0 295 Z" fill="url(#rib-violet)" stroke="#1a0824" stroke-width="0.8"/>
+          <path d="M4 0 L4 265" stroke="rgba(0,0,0,0.2)" stroke-width="0.5"/>
+          <path d="M30 0 L30 265" stroke="rgba(0,0,0,0.2)" stroke-width="0.5"/>
+        </svg>
+        <span class="label">Chaotic</span>
+      </div>
+    </div>
+  </div>
+</main>
+
+<div class="footer-note">Variation I — Ribbon Bookmarks</div>
+
+<script>
+  const meanings = {
+    Tactical: 'Practical and mechanical — the tome speaks in the voice of a careful strategist.',
+    Balanced: 'A measured mix of practicality and flavour — the default voice of the tome.',
+    Creative: 'Lateral thinking and unexpected applications — the tome will reach for the clever angle.',
+    Theatrical: 'Maximum drama, maximum spectacle — every recommendation is a scene.',
+    Chaotic: 'Off-script, absurd, and sometimes wonderful — prepare to be surprised.'
+  };
+  const colors = { crimson: '#8a1f2a', amber: '#b87820', forest: '#2f5a2f', lapis: '#253e68', violet: '#5a2a6a' };
+  document.querySelectorAll('.ribbon').forEach(ribbon => {
+    ribbon.addEventListener('click', () => {
+      document.querySelectorAll('.ribbon').forEach(r => r.classList.remove('active'));
+      ribbon.classList.add('active');
+      const name = ribbon.dataset.name;
+      const color = colors[ribbon.dataset.color];
+      const pick = document.querySelector('.current-pick');
+      pick.querySelector('.name').textContent = 'Currently: ' + name;
+      pick.childNodes[pick.childNodes.length - 1].nodeValue = ' ' + meanings[name];
+      pick.style.setProperty('--accent', color);
+      pick.querySelector(':scope').style;
+      document.styleSheets[0].insertRule(`.current-pick::before{background:${color}!important}`, 0);
+    });
+  });
+</script>
+</body>
+</html>
