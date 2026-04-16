@@ -116,6 +116,43 @@ Quick index of where things live. See `docs/conventions.md` for the filename-for
 - `docs/plans/implementation-plan.md` — full build order (Stages A–I), per-PR test lists, locked conventions
 - `docs/schemas/` — API envelope (`api-consult.md`), spell YAML structure (`spell-yaml.md`), enum vocabularies (`enums.md`)
 
+## Pull Request Convention
+
+### Title format
+
+```
+[Stage B / PR 2.2] Vocabulary enums
+```
+
+Stage letter + PR number (matching `docs/plans/implementation-plan.md`) followed by the plain-English name from the plan. No `feat:` prefix.
+
+### Body structure
+
+```markdown
+## What
+One paragraph. What was built and any non-obvious decisions made.
+
+## Spec / plan reference
+- Stage X, PR Y.Z — per `docs/plans/implementation-plan.md`
+- Relevant schema or spec docs consulted
+
+## Tests added
+- `tests/path/to/FooTest.php` — what it covers
+
+## Gate status
+- [x] `composer run check` green
+- [x] All new tests pass
+- [ ] Rebased on latest epic branch tip
+
+## Decisions / deviations
+Any place the implementation diverged from the plan, and why. Omit section if none.
+
+## Unblocks
+Which PRs can now start or proceed.
+```
+
+**Gate status convention:** pre-check boxes that the agent verified before opening the PR; unchecked boxes require human or post-merge verification (e.g. rebase on latest epic tip).
+
 ## Current Status
 
 Track and update progress in `docs/plans/checklist.md`. Keep it current as PRs are completed.
