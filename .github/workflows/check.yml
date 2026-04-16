@@ -18,8 +18,10 @@ jobs:
         uses: shivammathur/setup-php@v2
         with:
           php-version: '8.4'
-          extensions: mbstring, pdo_sqlite, pcov
-          coverage: pcov
+          extensions: mbstring, pdo_sqlite, xdebug
+          coverage: xdebug
+        env:
+          XDEBUG_MODE: coverage
 
       - name: Setup Node
         uses: actions/setup-node@v4

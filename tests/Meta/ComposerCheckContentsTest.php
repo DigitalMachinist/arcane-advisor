@@ -50,7 +50,7 @@ test('composer scripts.check:ci adds the deferred heavy gates', function (): voi
         'vite build' => 'npm run build',
         'build group' => 'artisan test --group=build',
         'type coverage' => 'pest --type-coverage --min=100',
-        'mutation testing' => 'pest --mutate',
+        'mutation testing' => 'pest --mutate --everything --covered-only',
     ];
 
     foreach ($expected as $label => $needle) {

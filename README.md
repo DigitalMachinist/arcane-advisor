@@ -21,7 +21,7 @@ Under the hood, the system parses your prompt into tactical goals, stylistic cue
 
 ## Prerequisites
 
-- PHP 8.4+
+- PHP 8.4+ (with `php8.4-xdebug` for `composer run check:ci` — mutation testing needs a coverage driver)
 - Node.js 18+
 - Docker & Docker Compose
 - Composer
