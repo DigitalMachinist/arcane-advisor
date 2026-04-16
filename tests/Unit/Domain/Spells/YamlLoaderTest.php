@@ -3,6 +3,9 @@
 declare(strict_types=1);
 
 use App\Domain\Spells\Data\SpellData;
+use App\Domain\Spells\Enums\DamageType;
+use App\Domain\Spells\Enums\Qualifier;
+use App\Domain\Spells\Enums\School;
 use App\Domain\Spells\YamlLoader;
 
 function spellPath(string $filename): string
@@ -26,7 +29,7 @@ test('loader returns correct SpellData for fireball', function (): void {
     expect($spell->slug)->toBe('fireball')
         ->and($spell->name)->toBe('Fireball')
         ->and($spell->level)->toBe(3)
-        ->and($spell->school)->toBe('evocation');
+        ->and($spell->school)->toBe(School::Evocation);
 });
 
 test('loader returns correct SpellData for mage-hand', function (): void {
@@ -45,7 +48,7 @@ test('loader returns correct SpellData for alarm', function (): void {
     $spell = $loader->load(spellPath('alarm.yaml'));
 
     expect($spell->slug)->toBe('alarm')
-        ->and($spell->qualifiers)->toContain('ritual')
+        ->and($spell->qualifiers)->toContain(Qualifier::Ritual)
         ->and($spell->savingThrow)->toBeNull();
 });
 
@@ -94,5 +97,5 @@ test('fireball SpellData has a non-empty damage array', function (): void {
 
     expect($spell->damage)->not->toBeEmpty()
         ->and($spell->damage[0]['dice'])->toBe('8d6')
-        ->and($spell->damage[0]['type'])->toBe('fire');
+        ->and($spell->damage[0]['type'])->toBe(DamageType::Fire);
 });
