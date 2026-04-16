@@ -19,7 +19,7 @@ Dispatched 5 parallel research agents to investigate Laravel testing best practi
 5. **testing-antipatterns** — What NOT to test, over-mocking, testing boundaries, database testing strategies
 
 Produced three raw research notes in `docs/notes/`:
-- `2026-03-29-laravel-testing-anti-patterns-research.md`
+- `2026-03-29-01-laravel-testing-anti-patterns-research.md`
 - `2026-03-29-laravel-php-style-conventions-research.md`
 - `2026-03-29-php-laravel-style-enforcement-static-analysis-research.md`
 
@@ -40,7 +40,7 @@ Focused on two concerns:
 
 Decided on categorization approach (option C): tests needing MySQL get tagged with `->group('mysql')`, excluded from the default SQLite suite, and run in CI against real MySQL.
 
-Design spec written to `docs/specs/2026-03-29-testing-strategy-improvements-design.md`.
+Design spec written to `docs/notes/2026-03-29-04-testing-strategy-improvements-spec.md`.
 
 ### 4. Implementation (8 Tasks, Subagent-Driven)
 
@@ -88,9 +88,9 @@ Additional commits:
 |---|---|
 | `docs/testing-strategy.md` | Permanent documentation |
 | `docs/style-guide.md` | Permanent documentation (first draft) |
-| `docs/specs/2026-03-29-testing-strategy-improvements-design.md` | Design spec |
-| `docs/plans/2026-03-29-testing-strategy-improvements.md` | Implementation plan |
-| `docs/notes/2026-03-29-laravel-testing-anti-patterns-research.md` | Research notes |
+| `docs/notes/2026-03-29-04-testing-strategy-improvements-spec.md` | Design spec |
+| `docs/notes/2026-03-29-05-testing-strategy-improvements-plan.md` | Implementation plan |
+| `docs/notes/2026-03-29-01-laravel-testing-anti-patterns-research.md` | Research notes |
 | `docs/notes/2026-03-29-laravel-php-style-conventions-research.md` | Research notes |
 | `docs/notes/2026-03-29-php-laravel-style-enforcement-static-analysis-research.md` | Research notes |
 | `tests/Arch/ArchitectureTest.php` | 7 arch tests |

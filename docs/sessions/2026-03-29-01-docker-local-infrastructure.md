@@ -34,8 +34,8 @@ Add Docker containers for MySQL and Redis to support local Laravel development, 
 
 ## Artifacts
 
-- **Spec:** `docs/specs/2026-03-29-docker-local-infrastructure.md`
-- **Implementation plan:** `docs/plans/2026-03-29-docker-local-infrastructure-implementation.md`
+- **Spec:** `docs/notes/2026-03-29-02-docker-local-infrastructure-spec.md`
+- **Implementation plan:** `docs/notes/2026-03-29-03-docker-local-infrastructure-plan.md`
 
 ## Post-Session Note
 

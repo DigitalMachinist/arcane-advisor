@@ -62,7 +62,7 @@ The project is thoroughly specced and planned. Start here:
 - `CLAUDE.md` — rules, commands, and conventions for working in this repo
 - `docs/specs/00-index.md` — canonical map and dependency graph for all 8 feature specs
 - `docs/plans/implementation-plan.md` — build order (Stages A–I), per-PR test lists
-- `docs/notes/checklist.md` — current completion status
+- `docs/plans/checklist.md` — current completion status
 - `docs/style-guide.md` — code style and architectural patterns
 - `docs/testing-strategy.md` — test philosophy and coverage expectations
 - `docs/conventions.md` — naming rules and process conventions

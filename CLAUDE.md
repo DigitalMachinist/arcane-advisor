@@ -103,11 +103,11 @@ npm run build             # Production build (Vite)
 Quick index of where things live. See `docs/conventions.md` for the filename-format rules (point-in-time artifacts vs. living references) and how to pick between them when adding a new doc.
 
 - **Chat Sessions** (`docs/sessions/`) — records of chat sessions (only when requested).
-- **Mocks** (`docs/mocks/`) — design mockups and related artifacts.
-- **Notes** (`docs/notes/`) — research notes, audit results, working documents.
+- **Notes** (`docs/notes/`) — research notes, audit results, historical design docs and executed plans, working documents.
 - **Specs** (`docs/specs/`) — feature specifications.
-- **Plans** (`docs/plans/`) — implementation plans.
+- **Plans** (`docs/plans/`) — implementation plans and the progress checklist.
 - **Schemas** (`docs/schemas/`) — data schemas and API contracts.
+- **Mockups** (`docs/mockups/`) — visual design artifacts (HTML). Canonical spec mockups, component sheets, archived variants.
 - **Guides** (`docs/`) — permanent documentation (conventions, style guide, testing strategy).
 
 ## Key References
@@ -118,7 +118,7 @@ Quick index of where things live. See `docs/conventions.md` for the filename-for
 
 ## Current Status
 
-Track and update progress in `docs/notes/checklist.md`. Keep it current as PRs are completed.
+Track and update progress in `docs/plans/checklist.md`. Keep it current as PRs are completed.
 
 ## Testing Strategy
 

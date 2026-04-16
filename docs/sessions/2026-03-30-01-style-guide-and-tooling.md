@@ -21,7 +21,7 @@ Starting from the first-draft style guide (produced in the testing strategy sess
 
 ### 2. Designed the Spec
 
-Wrote `docs/specs/2026-03-30-style-guide-and-tooling-design.md` covering:
+Wrote `docs/notes/2026-03-30-01-style-guide-and-tooling-spec.md` covering:
 - All style guide rules with changes from the draft
 - Enforcement matrix (tool-enforced vs convention)
 - Tooling configuration (Pint, Larastan, Rector)
@@ -30,7 +30,7 @@ Wrote `docs/specs/2026-03-30-style-guide-and-tooling-design.md` covering:
 
 ### 3. Wrote the Implementation Plan
 
-Created `docs/plans/2026-03-30-style-guide-and-tooling.md` with 8 tasks:
+Created `docs/notes/2026-03-30-02-style-guide-and-tooling-plan.md` with 8 tasks:
 1. Configure Pint strict rules
 2. Install and configure Larastan
 3. Install and configure Rector
@@ -86,8 +86,8 @@ Dispatched fresh subagents per task with two-stage review (spec compliance + cod
 | File | Type |
 |---|---|
 | `docs/style-guide.md` | Permanent documentation (13-section style reference) |
-| `docs/specs/2026-03-30-style-guide-and-tooling-design.md` | Design spec |
-| `docs/plans/2026-03-30-style-guide-and-tooling.md` | Implementation plan |
+| `docs/notes/2026-03-30-01-style-guide-and-tooling-spec.md` | Design spec |
+| `docs/notes/2026-03-30-02-style-guide-and-tooling-plan.md` | Implementation plan |
 | `pint.json` | Pint strict rules config |
 | `phpstan.neon` | Larastan level 6 config |
 | `rector.php` | Rector code quality + Laravel rules config |

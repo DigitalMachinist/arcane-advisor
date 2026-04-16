@@ -8,7 +8,7 @@
 
 **Tech Stack:** Pest v3, pestphp/pest-plugin-laravel, pestphp/pest-plugin-type-coverage, PHPUnit 12 (internal), GitHub Actions
 
-**Spec:** `docs/specs/2026-03-29-testing-strategy-improvements-design.md`
+**Spec:** `docs/notes/2026-03-29-04-testing-strategy-improvements-spec.md`
 
 ---
 

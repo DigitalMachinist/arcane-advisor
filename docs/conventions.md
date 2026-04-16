@@ -18,21 +18,28 @@ Identifier mechanics *within* a single language (PHP class = PascalCase, method 
 
 ## Documentation file naming
 
-Two categories of doc, with different lifecycle rules.
+Three categories of doc, each with its own lifecycle rules.
 
 ### Point-in-time artifacts
 
-Filename format: `YYYY-MM-DD-##-description.md`. These accumulate; old ones are rarely edited.
+Filename format: `YYYY-MM-DD-##-description.md`. The `##` is a within-day sequence (`01`, `02`, …) so same-day artifacts stay deterministically ordered. These accumulate; old ones are rarely edited.
 
 - `docs/sessions/` — records of chat sessions (only when requested).
-- `docs/mocks/` — design mockups and related artifacts.
-- `docs/notes/` — research notes, audit results, working documents that don't fit another category.
+- `docs/notes/` — research notes, audit results, historical design docs and implementation plans that have been executed, working documents that don't fit another category.
 
 ### Living references
 
 Filename format: descriptive non-dated kebab-case (e.g. `api-consult.md`, `implementation-plan.md`). These are the current truth, edited in place, with stable linkable names.
 
 - `docs/specs/` — feature specifications. Numeric-prefixed for build ordering (`00-index.md`, `01-prompt-box-and-landing.md`).
-- `docs/plans/` — implementation plans.
+- `docs/plans/` — implementation plans (`implementation-plan.md`, `checklist.md`).
 - `docs/schemas/` — data schemas and API contracts.
 - `docs/` — permanent guides (this file, `style-guide.md`, `testing-strategy.md`).
+
+### Mockups (`docs/mockups/`)
+
+A living-reference directory with its own structure because visual design artifacts don't map cleanly to either of the rules above. HTML files are rendered in-browser for review.
+
+- `spec-NN-canonical.html` — the canonical mockup for a numbered spec. Edited in place; the visual source of truth when prose and mockup disagree.
+- `components/<name>.html` — canonical anatomy for a reusable component (e.g. `spell-card.html`, `whimsy-dial.html`).
+- `archive/<name>.html` — historical design variants, kept for reference. Naming inside `archive/` is intentionally flexible (letter-prefixed iteration series like `A-open-tome.html` … `Z-sigil-orbit.html`, or descriptive variant tags like `spec-07-variation-A.html`).

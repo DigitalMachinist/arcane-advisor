@@ -8,7 +8,7 @@
 
 **Tech Stack:** Laravel 13, PHP 8.3+, Laravel Pint, Larastan (PHPStan), Rector, Pest v4, GitHub Actions
 
-**Spec:** `docs/specs/2026-03-30-style-guide-and-tooling-design.md`
+**Spec:** `docs/notes/2026-03-30-01-style-guide-and-tooling-spec.md`
 
 ---
 
@@ -499,7 +499,7 @@ git commit -m "Add Rector, Larastan, and mutation testing to CI pipeline"
 
 - [ ] **Step 1: Create `docs/style-guide.md`**
 
-Write the complete style guide document following the structure defined in the spec (`docs/specs/2026-03-30-style-guide-and-tooling-design.md`, "Style Guide Document Structure" section). The document must cover all 13 sections:
+Write the complete style guide document following the structure defined in the spec (`docs/notes/2026-03-30-01-style-guide-and-tooling-spec.md`, "Style Guide Document Structure" section). The document must cover all 13 sections:
 
 1. **Enforcement Toolchain** — List all tools (Pint, Larastan, Rector, Pest arch tests) with what each enforces, how to run them, and the `composer run check` command. Include the "Enforced by" table from the spec's "Enforcement: Tooling vs Convention" section. Note which rules are convention-only (code review).
 
@@ -531,7 +531,7 @@ The tone should be direct and prescriptive (like the testing strategy doc), with
 
 - [ ] **Step 2: Review the document against the spec**
 
-Read through `docs/style-guide.md` and cross-reference against every section of `docs/specs/2026-03-30-style-guide-and-tooling-design.md` under "Style Guide Rules". Confirm no rules are missing, no rules contradict, and all code examples match the conventions described.
+Read through `docs/style-guide.md` and cross-reference against every section of `docs/notes/2026-03-30-01-style-guide-and-tooling-spec.md` under "Style Guide Rules". Confirm no rules are missing, no rules contradict, and all code examples match the conventions described.
 
 - [ ] **Step 3: Commit**
 
