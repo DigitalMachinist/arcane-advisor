@@ -17,8 +17,8 @@ Tracks completion across all stages. Check items only when the PR is merged and 
 
 ## Stage B — Spec 2: Spell database
 
-- [ ] PR 2.1 — YAML schema lock + fixture spells
-- [ ] PR 2.2 — Vocabulary enums (11 string-backed)
+- [x] PR 2.1 — YAML schema lock + fixture spells
+- [x] PR 2.2 — Vocabulary enums (11 string-backed)
 - [ ] PR 2.3 — Migrations, Eloquent models, factories
 - [ ] PR 2.4 — `SpellsImportAction` + `spells:import` command
 - [ ] PR 2.5 — `SpellRepository` read API
