@@ -83,7 +83,7 @@ npm run build             # Production build (Vite)
 
 ## Architecture
 
-- **Database**: MySQL 8.4 (`laravel_13_template`) in Docker, with Redis for cache, queue, and sessions
+- **Database**: MySQL 8.4 (`arcane_advisor`) in Docker, with Redis for cache, queue, and sessions
 - **Infrastructure**: `docker-compose.yml` runs MySQL + Redis; PHP/artisan/Vite run natively on macOS
 - **Frontend**: Tailwind CSS 4 via `@tailwindcss/vite` plugin, entry points in `resources/css/app.css` and `resources/js/app.js`
 - **Routing**: `routes/web.php` (HTTP), `routes/console.php` (Artisan commands); health check at `/up`

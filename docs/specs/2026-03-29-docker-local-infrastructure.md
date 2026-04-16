@@ -15,7 +15,7 @@ Two services at the project root, both bound to `127.0.0.1`:
 - Image: `mysql:8.4`
 - Port: `127.0.0.1:3306:3306`
 - Environment:
-  - `MYSQL_DATABASE=laravel_13_template`
+  - `MYSQL_DATABASE=arcane_advisor`
   - `MYSQL_ROOT_PASSWORD=password`
   - `MYSQL_ALLOW_EMPTY_PASSWORD=no`
 - Volume: `mysql-data:/var/lib/mysql` (named, persists across restarts)
