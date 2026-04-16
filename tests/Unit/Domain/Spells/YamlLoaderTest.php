@@ -5,11 +5,15 @@ declare(strict_types=1);
 use App\Domain\Spells\Data\SpellData;
 use App\Domain\Spells\YamlLoader;
 
+function spellPath(string $filename): string
+{
+    return dirname(__DIR__, 4).'/database/spells/'.$filename;
+}
+
 test('loader returns a SpellData DTO, not a raw array', function (): void {
     $loader = new YamlLoader;
-    $path = database_path('spells/fireball.yaml');
 
-    $result = $loader->load($path);
+    $result = $loader->load(spellPath('fireball.yaml'));
 
     expect($result)->toBeInstanceOf(SpellData::class);
 });
@@ -17,7 +21,7 @@ test('loader returns a SpellData DTO, not a raw array', function (): void {
 test('loader returns correct SpellData for fireball', function (): void {
     $loader = new YamlLoader;
 
-    $spell = $loader->load(database_path('spells/fireball.yaml'));
+    $spell = $loader->load(spellPath('fireball.yaml'));
 
     expect($spell->slug)->toBe('fireball')
         ->and($spell->name)->toBe('Fireball')
@@ -28,7 +32,7 @@ test('loader returns correct SpellData for fireball', function (): void {
 test('loader returns correct SpellData for mage-hand', function (): void {
     $loader = new YamlLoader;
 
-    $spell = $loader->load(database_path('spells/mage-hand.yaml'));
+    $spell = $loader->load(spellPath('mage-hand.yaml'));
 
     expect($spell->slug)->toBe('mage-hand')
         ->and($spell->level)->toBe(0)
@@ -38,7 +42,7 @@ test('loader returns correct SpellData for mage-hand', function (): void {
 test('loader returns correct SpellData for alarm', function (): void {
     $loader = new YamlLoader;
 
-    $spell = $loader->load(database_path('spells/alarm.yaml'));
+    $spell = $loader->load(spellPath('alarm.yaml'));
 
     expect($spell->slug)->toBe('alarm')
         ->and($spell->qualifiers)->toContain('ritual')
@@ -77,7 +81,7 @@ test('loader throws when YAML does not pass schema validation', function (): voi
 });
 
 test('mage-hand SpellData has null savingThrow and null attackRoll', function (): void {
-    $spell = (new YamlLoader)->load(database_path('spells/mage-hand.yaml'));
+    $spell = (new YamlLoader)->load(spellPath('mage-hand.yaml'));
 
     expect($spell->savingThrow)->toBeNull()
         ->and($spell->attackRoll)->toBeNull()
@@ -86,7 +90,7 @@ test('mage-hand SpellData has null savingThrow and null attackRoll', function ()
 });
 
 test('fireball SpellData has a non-empty damage array', function (): void {
-    $spell = (new YamlLoader)->load(database_path('spells/fireball.yaml'));
+    $spell = (new YamlLoader)->load(spellPath('fireball.yaml'));
 
     expect($spell->damage)->not->toBeEmpty()
         ->and($spell->damage[0]['dice'])->toBe('8d6')
