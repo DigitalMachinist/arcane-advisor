@@ -13,10 +13,12 @@ test('no test file calls Http::get/post/send without Http::fake or Http::prevent
     $offenders = [];
 
     foreach ($iterator as $file) {
-        if (! $file->isFile() || $file->getExtension() !== 'php') {
+        if (! $file->isFile()) {
             continue;
         }
-
+        if ($file->getExtension() !== 'php') {
+            continue;
+        }
         $contents = (string) file_get_contents($file->getPathname());
 
         if (! preg_match('/\bHttp::(?:get|post|send|put|patch|delete|head)\b/', $contents)) {

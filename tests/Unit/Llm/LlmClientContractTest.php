@@ -5,6 +5,7 @@ declare(strict_types=1);
 use App\Domain\Llm\Clients\CloudflareClient;
 use App\Domain\Llm\Clients\FixtureClient;
 use App\Domain\Llm\LlmClient;
+use App\Domain\Llm\LlmResponse;
 
 test('FixtureClient implements the LlmClient interface', function (): void {
     expect(new FixtureClient)->toBeInstanceOf(LlmClient::class);
@@ -31,5 +32,5 @@ test('LlmClient interface declares complete(string): LlmResponse', function (): 
         ->and($reflection->getParameters())->toHaveCount(1)
         ->and($reflection->getParameters()[0]->getName())->toBe('prompt')
         ->and((string) $reflection->getParameters()[0]->getType())->toBe('string')
-        ->and((string) $reflection->getReturnType())->toBe('App\Domain\Llm\LlmResponse');
+        ->and((string) $reflection->getReturnType())->toBe(LlmResponse::class);
 });

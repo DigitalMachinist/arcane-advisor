@@ -14,12 +14,14 @@ test('every class under App\Domain\\**\\Actions exposes a single public execute'
         $iterator = new RecursiveIteratorIterator(new RecursiveDirectoryIterator($domainPath));
 
         foreach ($iterator as $file) {
-            if (! $file->isFile() || $file->getExtension() !== 'php') {
+            if (! $file->isFile()) {
                 continue;
             }
-
+            if ($file->getExtension() !== 'php') {
+                continue;
+            }
             $path = $file->getPathname();
-            if (! str_contains($path, '/Actions/')) {
+            if (! str_contains((string) $path, '/Actions/')) {
                 continue;
             }
 

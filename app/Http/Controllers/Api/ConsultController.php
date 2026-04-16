@@ -8,9 +8,9 @@ use App\Domain\Consult\Actions\ConsultAction;
 use App\Http\Requests\ConsultRequest;
 use Illuminate\Http\JsonResponse;
 
-final class ConsultController
+final readonly class ConsultController
 {
-    public function __construct(private readonly ConsultAction $action) {}
+    public function __construct(private ConsultAction $action) {}
 
     public function __invoke(ConsultRequest $request): JsonResponse
     {

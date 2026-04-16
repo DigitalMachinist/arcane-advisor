@@ -12,17 +12,17 @@ uses(TestCase::class);
 test('container resolves the fixture driver by default', function (): void {
     config()->set('llm.driver', 'fixture');
 
-    expect(app(LlmClient::class))->toBeInstanceOf(FixtureClient::class);
+    expect(resolve(LlmClient::class))->toBeInstanceOf(FixtureClient::class);
 });
 
 test('container resolves the cloudflare driver when configured', function (): void {
     config()->set('llm.driver', 'cloudflare');
 
-    expect(app(LlmClient::class))->toBeInstanceOf(CloudflareClient::class);
+    expect(resolve(LlmClient::class))->toBeInstanceOf(CloudflareClient::class);
 });
 
 test('container defaults to fixture when no driver is configured', function (): void {
     config()->offsetUnset('llm.driver');
 
-    expect(app(LlmClient::class))->toBeInstanceOf(FixtureClient::class);
+    expect(resolve(LlmClient::class))->toBeInstanceOf(FixtureClient::class);
 });

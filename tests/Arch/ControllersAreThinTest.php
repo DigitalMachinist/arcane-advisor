@@ -2,6 +2,7 @@
 
 declare(strict_types=1);
 
+use App\Http\Controllers\Controller;
 use Tests\TestCase;
 
 uses(TestCase::class);
@@ -12,7 +13,7 @@ arch('API controllers are invokable')
 
 arch('API controllers do not extend the base Controller')
     ->expect('App\Http\Controllers\Api')
-    ->not->toExtend('App\Http\Controllers\Controller');
+    ->not->toExtend(Controller::class);
 
 test('every API controller exposes only __construct and __invoke', function (): void {
     $namespace = 'App\\Http\\Controllers\\Api\\';

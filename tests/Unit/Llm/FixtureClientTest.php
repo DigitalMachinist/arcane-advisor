@@ -25,13 +25,13 @@ test('returns the registered embedding fixture for a known key', function (): vo
 test('throws FixtureNotFoundException for an unknown completion key', function (): void {
     $client = new FixtureClient;
 
-    expect(fn () => $client->complete('missing'))
+    expect(fn (): LlmResponse => $client->complete('missing'))
         ->toThrow(FixtureNotFoundException::class, 'No completion fixture registered for key: missing');
 });
 
 test('throws FixtureNotFoundException for an unknown embedding key', function (): void {
     $client = new FixtureClient;
 
-    expect(fn () => $client->embed('missing'))
+    expect(fn (): array => $client->embed('missing'))
         ->toThrow(FixtureNotFoundException::class, 'No embedding fixture registered for key: missing');
 });

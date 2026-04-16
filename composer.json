@@ -83,7 +83,8 @@
             "npm run build",
             "@composer check",
             "@php artisan test --group=build",
-            "./vendor/bin/pest --type-coverage --min=100"
+            "./vendor/bin/pest --type-coverage --min=100",
+            "./vendor/bin/pest --mutate --min=0"
         ],
         "post-autoload-dump": [
             "Illuminate\\Foundation\\ComposerScripts::postAutoloadDump",
