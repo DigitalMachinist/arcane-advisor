@@ -244,8 +244,8 @@ test('DurationCategory::tryFrom() returns null for unknown values', function ():
 });
 
 // CombatRole
-test('CombatRole has 21 cases', function (): void {
-    expect(CombatRole::cases())->toHaveCount(21);
+test('CombatRole has 20 cases', function (): void {
+    expect(CombatRole::cases())->toHaveCount(20);
 });
 
 test('CombatRole contains known values', function (): void {
