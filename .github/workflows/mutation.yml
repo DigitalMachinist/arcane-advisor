@@ -1,0 +1,44 @@
+name: Mutation Testing
+
+on:
+  schedule:
+    - cron: '0 9 * * 1'  # Mondays at 09:00 UTC
+  workflow_dispatch:
+
+jobs:
+  mutation:
+    name: pest --mutate
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: '8.4'
+          extensions: mbstring, pdo_sqlite, xdebug
+          coverage: xdebug
+        env:
+          XDEBUG_MODE: coverage
+
+      - name: Cache Composer dependencies
+        uses: actions/cache@v4
+        with:
+          path: vendor
+          key: composer-${{ hashFiles('composer.lock') }}
+          restore-keys: composer-
+
+      - name: Install Composer dependencies
+        run: composer install --no-interaction --prefer-dist
+
+      - name: Prepare environment
+        run: |
+          cp .env.example .env
+          php artisan key:generate
+
+      - name: Mutation testing
+        run: ./vendor/bin/pest --mutate --everything --covered-only --min=0
+        env:
+          LARAVEL_BYPASS_ENV_CHECK: '1'
+          XDEBUG_MODE: coverage

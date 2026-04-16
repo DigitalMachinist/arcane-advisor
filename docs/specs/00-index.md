@@ -2,7 +2,7 @@
 
 Canonical map of every spec number to its title, file, and status. Update this file whenever a spec is added, renamed, or renumbered. Any document that refers to a "Spec N" by number must match the mapping below — if it does not, this index is correct and the referencing document is wrong.
 
-See [../spec.md](../spec.md) for the product overview and [MVP-REVIEW.md](MVP-REVIEW.md) for the open-gap audit.
+See [../spec.md](../spec.md) for the product overview and [mvp-review.md](mvp-review.md) for the open-gap audit.
 
 ---
 
@@ -82,7 +82,7 @@ Not part of the MVP. Referenced in passing by the MVP specs but not yet written.
 | Topic | Referenced in | Status |
 |---|---|---|
 | Spell combos | Spec 4 (Handling Multiple Spell Recommendations vs Combos) | Deferred — no spec file yet |
-| Example prompts / first-run onboarding | Master spec (example queries), MVP-REVIEW §3 | Deferred — own spec eventually |
+| Example prompts / first-run onboarding | Master spec (example queries), mvp-review §3 | Deferred — own spec eventually |
 | Upcast / "At Higher Levels" awareness | Master spec (Future Work) | Deferred — own spec eventually |
 | User accounts & login | Spec 1 (header reserves a slot) | Deferred |
 | Shareable / URL-addressable queries | Spec 1 out-of-scope | Deferred |

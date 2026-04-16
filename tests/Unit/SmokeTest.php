@@ -2,6 +2,6 @@
 
 declare(strict_types=1);
 
-test('that true is true', function (): void {
+test('pest v4 smoke test', function (): void {
     expect(true)->toBeTrue();
 });

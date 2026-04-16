@@ -73,11 +73,21 @@
         ],
         "check": [
             "./vendor/bin/pint --test",
-            "vendor/bin/rector process --dry-run",
             "vendor/bin/phpstan analyse",
             "@php artisan config:clear --ansi",
             "@php artisan test",
-            "./vendor/bin/pest --type-coverage --min=100"
+            "npx vitest run"
+        ],
+        "check:ci": [
+            "vendor/bin/rector process --dry-run",
+            "npm run build",
+            "@composer check",
+            "@php artisan test --group=build",
+            "./vendor/bin/pest --type-coverage --min=100",
+            "XDEBUG_MODE=coverage ./vendor/bin/pest --mutate --everything --covered-only"
+        ],
+        "check:mutation": [
+            "./vendor/bin/pest --mutate --everything --covered-only --min=0"
         ],
         "post-autoload-dump": [
             "Illuminate\\Foundation\\ComposerScripts::postAutoloadDump",
@@ -106,6 +116,7 @@
     "config": {
         "optimize-autoloader": true,
         "preferred-install": "dist",
+        "process-timeout": 0,
         "sort-packages": true,
         "allow-plugins": {
             "pestphp/pest-plugin": true,

@@ -59,15 +59,18 @@ php artisan test --group=mysql                # Run MySQL-dependent tests (requi
 ./vendor/bin/pest --profile                   # Identify slow tests
 ```
 
-Tests use **Pest v4** as the test framework. The default test suite runs against an **in-memory SQLite database** (configured in phpunit.xml). Tests tagged with `->group('mysql')` are excluded by default and require a running MySQL instance.
+Tests use **Pest v4** as the test framework. The default test suite runs against an **in-memory SQLite database** (configured in phpunit.xml). Tests tagged with `->group('mysql')`, `->group('redis')`, or `->group('build')` are excluded by default and require a running service / built frontend.
 
-### Code Style
+### Code Style and Gates
 ```bash
 composer run lint          # Fix code style (Laravel Pint)
 composer run lint:check    # Check style without fixing
 composer run analysis      # Run static analysis (Larastan/PHPStan)
-composer run check         # Run all checks: Pint + Rector + Larastan + tests + type coverage
+composer run check         # Local fast gate: Pint + Larastan + Pest + Vitest
+composer run check:ci      # Full CI gate: adds Rector, npm run build, build-group tests, pest --type-coverage
 ```
+
+The split exists so `composer run check` can stay fast enough for pre-commit iteration. `composer run check:ci` is what `.github/workflows/check.yml` runs on every push/PR.
 
 ### Database
 ```bash
@@ -83,7 +86,7 @@ npm run build             # Production build (Vite)
 
 ## Architecture
 
-- **Database**: MySQL 8.4 (`laravel_13_template`) in Docker, with Redis for cache, queue, and sessions
+- **Database**: MySQL 8.4 (`arcane_advisor`) in Docker, with Redis for cache, queue, and sessions
 - **Infrastructure**: `docker-compose.yml` runs MySQL + Redis; PHP/artisan/Vite run natively on macOS
 - **Frontend**: Tailwind CSS 4 via `@tailwindcss/vite` plugin, entry points in `resources/css/app.css` and `resources/js/app.js`
 - **Routing**: `routes/web.php` (HTTP), `routes/console.php` (Artisan commands); health check at `/up`
@@ -97,22 +100,15 @@ npm run build             # Production build (Vite)
 
 ## Documentation
 
-### Point-in-Time Artifacts
+Quick index of where things live. See `docs/conventions.md` for the filename-format rules (point-in-time artifacts vs. living references) and how to pick between them when adding a new doc.
 
-Date-prefixed filenames (`YYYY-MM-DD-##-description.md`). These accumulate; old ones are rarely edited.
-
-- **Chat Sessions** (`docs/sessions/`) — records of chat sessions (only when requested). Format: `YYYY-MM-DD-short-description.md`.
-- **Mocks** (`docs/mocks/`) — design mockups and related artifacts.
-- **Notes** (`docs/notes/`) — research notes, audit results, working documents that don't fit another category.
-
-### Living References
-
-Descriptive non-dated kebab-case filenames (e.g. `api-consult.md`, `implementation-plan.md`). These are the current truth, edited in place, with stable linkable names.
-
-- **Specs** (`docs/specs/`) — feature specifications. Use numeric prefixes for build ordering (`00-index.md`, `01-prompt-box-and-landing.md`).
-- **Plans** (`docs/plans/`) — implementation plans.
+- **Chat Sessions** (`docs/sessions/`) — records of chat sessions (only when requested).
+- **Notes** (`docs/notes/`) — research notes, audit results, historical design docs and executed plans, working documents.
+- **Specs** (`docs/specs/`) — feature specifications.
+- **Plans** (`docs/plans/`) — implementation plans and the progress checklist.
 - **Schemas** (`docs/schemas/`) — data schemas and API contracts.
-- **Guides** (`docs/`) — permanent documentation (style guide, testing strategy). Descriptive kebab-case names.
+- **Mockups** (`docs/mockups/`) — visual design artifacts (HTML). Canonical spec mockups, component sheets, archived variants.
+- **Guides** (`docs/`) — permanent documentation (conventions, style guide, testing strategy).
 
 ## Key References
 
@@ -122,7 +118,7 @@ Descriptive non-dated kebab-case filenames (e.g. `api-consult.md`, `implementati
 
 ## Current Status
 
-Track and update progress in `docs/notes/checklist.md`. Keep it current as PRs are completed.
+Track and update progress in `docs/plans/checklist.md`. Keep it current as PRs are completed.
 
 ## Testing Strategy
 

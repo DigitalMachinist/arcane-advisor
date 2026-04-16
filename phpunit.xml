@@ -11,10 +11,15 @@
         <testsuite name="Feature">
             <directory>tests/Feature</directory>
         </testsuite>
+        <testsuite name="Meta">
+            <directory>tests/Meta</directory>
+        </testsuite>
     </testsuites>
     <groups>
         <exclude>
             <group>mysql</group>
+            <group>redis</group>
+            <group>build</group>
         </exclude>
     </groups>
     <source>

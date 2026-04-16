@@ -36,7 +36,7 @@ services:
     ports:
       - "127.0.0.1:3306:3306"
     environment:
-      MYSQL_DATABASE: laravel_13_template
+      MYSQL_DATABASE: arcane_advisor
       MYSQL_ROOT_PASSWORD: password
       MYSQL_ALLOW_EMPTY_PASSWORD: "no"
     volumes:
@@ -251,13 +251,13 @@ docker compose down -v     # Stop containers AND delete all data
 Update the Architecture section's Database line from:
 
 ```
-- **Database**: MySQL (`laravel_13_template`), with database-driven sessions, cache, and queue
+- **Database**: MySQL (`arcane_advisor`), with database-driven sessions, cache, and queue
 ```
 
 To:
 
 ```
-- **Database**: MySQL 8.4 (`laravel_13_template`) in Docker, with Redis for cache, queue, and sessions
+- **Database**: MySQL 8.4 (`arcane_advisor`) in Docker, with Redis for cache, queue, and sessions
 - **Infrastructure**: `docker-compose.yml` runs MySQL + Redis; PHP/artisan/Vite run natively on macOS
 ```
 
