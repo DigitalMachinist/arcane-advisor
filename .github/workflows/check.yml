@@ -7,8 +7,8 @@ on:
     branches: [main]
 
 jobs:
-  check:
-    name: composer run check:ci
+  static:
+    name: static analysis (rector + pint + phpstan)
     runs-on: ubuntu-latest
 
     steps:
@@ -18,10 +18,46 @@ jobs:
         uses: shivammathur/setup-php@v2
         with:
           php-version: '8.4'
-          extensions: mbstring, pdo_sqlite, xdebug
-          coverage: xdebug
+          extensions: mbstring, pdo_sqlite
+
+      - name: Cache Composer dependencies
+        uses: actions/cache@v4
+        with:
+          path: vendor
+          key: composer-${{ hashFiles('composer.lock') }}
+          restore-keys: composer-
+
+      - name: Install Composer dependencies
+        run: composer install --no-interaction --prefer-dist
+
+      - name: Prepare environment
+        run: |
+          cp .env.example .env
+          php artisan key:generate
+
+      - name: Rector dry-run
+        run: vendor/bin/rector process --dry-run
         env:
-          XDEBUG_MODE: coverage
+          LARAVEL_BYPASS_ENV_CHECK: '1'
+
+      - name: Pint
+        run: ./vendor/bin/pint --test
+
+      - name: PHPStan
+        run: vendor/bin/phpstan analyse
+
+  frontend:
+    name: frontend (build + vitest + build-group tests)
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: '8.4'
+          extensions: mbstring, pdo_sqlite
 
       - name: Setup Node
         uses: actions/setup-node@v4
@@ -47,8 +83,52 @@ jobs:
           cp .env.example .env
           php artisan key:generate
 
-      - name: composer run check:ci
-        run: composer run check:ci
+      - name: Build
+        run: npm run build
+
+      - name: Vitest
+        run: npx vitest run
+
+      - name: Build-group tests
+        run: php artisan test --group=build
+        env:
+          LARAVEL_BYPASS_ENV_CHECK: '1'
+
+  php-tests:
+    name: php tests (pest + type coverage)
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: '8.4'
+          extensions: mbstring, pdo_sqlite
+
+      - name: Cache Composer dependencies
+        uses: actions/cache@v4
+        with:
+          path: vendor
+          key: composer-${{ hashFiles('composer.lock') }}
+          restore-keys: composer-
+
+      - name: Install Composer dependencies
+        run: composer install --no-interaction --prefer-dist
+
+      - name: Prepare environment
+        run: |
+          cp .env.example .env
+          php artisan key:generate
+
+      - name: Pest
+        run: php artisan test
+        env:
+          LARAVEL_BYPASS_ENV_CHECK: '1'
+
+      - name: Type coverage
+        run: ./vendor/bin/pest --type-coverage --min=100
         env:
           LARAVEL_BYPASS_ENV_CHECK: '1'
 

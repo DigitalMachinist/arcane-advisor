@@ -83,7 +83,9 @@
             "npm run build",
             "@composer check",
             "@php artisan test --group=build",
-            "./vendor/bin/pest --type-coverage --min=100",
+            "./vendor/bin/pest --type-coverage --min=100"
+        ],
+        "check:mutation": [
             "./vendor/bin/pest --mutate --everything --covered-only --min=0"
         ],
         "post-autoload-dump": [
