@@ -18,6 +18,7 @@
     <groups>
         <exclude>
             <group>mysql</group>
+            <group>redis</group>
         </exclude>
     </groups>
     <source>
