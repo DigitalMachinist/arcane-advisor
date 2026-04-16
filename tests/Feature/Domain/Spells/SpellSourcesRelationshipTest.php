@@ -12,11 +12,13 @@ uses(RefreshDatabase::class);
 covers(Spell::class);
 
 test('spell can have multiple source records', function (): void {
+    // Factory inserts PHB; add a second source book.
     $spell = Spell::factory()->create();
 
     DB::table('spell_sources')->insert([
-        ['spell_id' => $spell->id, 'code' => SourceCode::PlayersHandbook->value, 'page' => 241],
-        ['spell_id' => $spell->id, 'code' => SourceCode::XanatharsGuideToEverything->value, 'page' => 15],
+        'spell_id' => $spell->id,
+        'code' => SourceCode::XanatharsGuideToEverything->value,
+        'page' => 15,
     ]);
 
     expect($spell->sources()->count())->toBe(2);
@@ -25,28 +27,17 @@ test('spell can have multiple source records', function (): void {
 test('spell sources returns correct data', function (): void {
     $spell = Spell::factory()->create();
 
-    DB::table('spell_sources')->insert([
-        'spell_id' => $spell->id,
-        'code' => SourceCode::TashasCauldronOfEverything->value,
-        'page' => 107,
-    ]);
-
+    // Factory inserts PHB; retrieve it to verify the data shape.
     $source = $spell->sources()->first();
 
-    expect($source->code)->toBe(SourceCode::TashasCauldronOfEverything->value)
-        ->and($source->page)->toBe(107);
+    expect($source->code)->toBe(SourceCode::PlayersHandbook)
+        ->and($source->page)->toBeInt();
 })->group('mysql');
 
 test('deleting a spell cascades to spell sources', function (): void {
     $spell = Spell::factory()->create();
-
-    DB::table('spell_sources')->insert([
-        'spell_id' => $spell->id,
-        'code' => SourceCode::PlayersHandbook->value,
-        'page' => 241,
-    ]);
-
     $spellId = $spell->id;
+
     $spell->delete();
 
     $this->assertDatabaseMissing('spell_sources', ['spell_id' => $spellId]);

@@ -34,7 +34,7 @@ test('damage entry stores dice and type correctly', function (): void {
     $entry = $spell->damage()->first();
 
     expect($entry->dice)->toBe('6d6')
-        ->and($entry->type)->toBe(DamageType::Lightning->value);
+        ->and($entry->type)->toBe(DamageType::Lightning);
 })->group('mysql');
 
 test('deleting a spell cascades to spell damage', function (): void {
