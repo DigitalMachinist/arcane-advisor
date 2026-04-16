@@ -49,6 +49,8 @@ jobs:
 
       - name: composer run check:ci
         run: composer run check:ci
+        env:
+          LARAVEL_BYPASS_ENV_CHECK: '1'
 
   mysql-tests:
     name: MySQL Tests
