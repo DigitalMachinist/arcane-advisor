@@ -100,22 +100,15 @@ npm run build             # Production build (Vite)
 
 ## Documentation
 
-### Point-in-Time Artifacts
+Quick index of where things live. See `docs/conventions.md` for the filename-format rules (point-in-time artifacts vs. living references) and how to pick between them when adding a new doc.
 
-Date-prefixed filenames (`YYYY-MM-DD-##-description.md`). These accumulate; old ones are rarely edited.
-
-- **Chat Sessions** (`docs/sessions/`) — records of chat sessions (only when requested). Format: `YYYY-MM-DD-short-description.md`.
+- **Chat Sessions** (`docs/sessions/`) — records of chat sessions (only when requested).
 - **Mocks** (`docs/mocks/`) — design mockups and related artifacts.
-- **Notes** (`docs/notes/`) — research notes, audit results, working documents that don't fit another category.
-
-### Living References
-
-Descriptive non-dated kebab-case filenames (e.g. `api-consult.md`, `implementation-plan.md`). These are the current truth, edited in place, with stable linkable names.
-
-- **Specs** (`docs/specs/`) — feature specifications. Use numeric prefixes for build ordering (`00-index.md`, `01-prompt-box-and-landing.md`).
+- **Notes** (`docs/notes/`) — research notes, audit results, working documents.
+- **Specs** (`docs/specs/`) — feature specifications.
 - **Plans** (`docs/plans/`) — implementation plans.
 - **Schemas** (`docs/schemas/`) — data schemas and API contracts.
-- **Guides** (`docs/`) — permanent documentation (style guide, testing strategy). Descriptive kebab-case names.
+- **Guides** (`docs/`) — permanent documentation (conventions, style guide, testing strategy).
 
 ## Key References
 
