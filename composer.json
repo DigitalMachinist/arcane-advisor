@@ -83,7 +83,8 @@
             "npm run build",
             "@composer check",
             "@php artisan test --group=build",
-            "./vendor/bin/pest --type-coverage --min=100"
+            "./vendor/bin/pest --type-coverage --min=100",
+            "XDEBUG_MODE=coverage ./vendor/bin/pest --mutate --everything --covered-only"
         ],
         "check:mutation": [
             "./vendor/bin/pest --mutate --everything --covered-only --min=0"
@@ -115,6 +116,7 @@
     "config": {
         "optimize-autoloader": true,
         "preferred-install": "dist",
+        "process-timeout": 0,
         "sort-packages": true,
         "allow-plugins": {
             "pestphp/pest-plugin": true,

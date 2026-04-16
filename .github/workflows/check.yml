@@ -7,6 +7,8 @@ on:
     branches: [main]
 
 jobs:
+  # Guards against code style drift, unsafe patterns, and type errors before any tests run.
+  # Catches: dead code, incorrect refactors, PHPStan violations, Pint style issues.
   static:
     name: static analysis (rector + pint + phpstan)
     runs-on: ubuntu-latest
@@ -35,17 +37,22 @@ jobs:
           cp .env.example .env
           php artisan key:generate
 
+      # Catches: PHP upgrade hazards, deprecated APIs, refactors Rector would auto-apply.
       - name: Rector dry-run
         run: vendor/bin/rector process --dry-run
         env:
           LARAVEL_BYPASS_ENV_CHECK: '1'
 
+      # Catches: formatting inconsistencies that violate the project style guide.
       - name: Pint
         run: ./vendor/bin/pint --test
 
+      # Catches: type mismatches, undefined methods/properties, unreachable code.
       - name: PHPStan
         run: vendor/bin/phpstan analyse
 
+  # Guards against frontend regressions and ensures the built assets are valid.
+  # Catches: broken Vite builds, failing JS unit tests, routes that break after a production build.
   frontend:
     name: frontend (build + vitest + build-group tests)
     runs-on: ubuntu-latest
@@ -83,17 +90,24 @@ jobs:
           cp .env.example .env
           php artisan key:generate
 
+      # Catches: missing imports, misconfigured Vite plugins, Tailwind/Vue compilation errors.
       - name: Build
         run: npm run build
 
+      # Catches: broken JS logic, component rendering errors, Pinia store bugs.
       - name: Vitest
         run: npx vitest run
+        env:
+          LARAVEL_BYPASS_ENV_CHECK: '1'
 
+      # Catches: PHP-side assertions that require a real built manifest (e.g. HomeRouteTest).
       - name: Build-group tests
         run: php artisan test --group=build
         env:
           LARAVEL_BYPASS_ENV_CHECK: '1'
 
+  # Guards against regressions in PHP business logic and type safety.
+  # Catches: broken routes, validation gaps, action/controller contract violations, missing types.
   php-tests:
     name: php tests (pest + type coverage)
     runs-on: ubuntu-latest
@@ -122,16 +136,20 @@ jobs:
           cp .env.example .env
           php artisan key:generate
 
+      # Catches: broken feature flows, unit contract violations, architectural rule breaches.
       - name: Pest
         run: php artisan test
         env:
           LARAVEL_BYPASS_ENV_CHECK: '1'
 
+      # Catches: missing return types, untyped parameters, PHPDoc/native type gaps.
       - name: Type coverage
         run: ./vendor/bin/pest --type-coverage --min=100
         env:
           LARAVEL_BYPASS_ENV_CHECK: '1'
 
+  # Guards against real database/cache integration regressions (PR-only; needs live services).
+  # Catches: query failures, migration issues, Redis connectivity problems, ORM edge cases.
   service-tests:
     name: service tests (mysql + redis)
     runs-on: ubuntu-latest
@@ -186,6 +204,7 @@ jobs:
           cp .env.example .env
           php artisan key:generate
 
+      # Catches: MySQL-specific query issues, migration failures, Eloquent model edge cases.
       - name: Run mysql group
         run: php artisan test --group=mysql
         env:
@@ -196,6 +215,7 @@ jobs:
           DB_USERNAME: root
           DB_PASSWORD: password
 
+      # Catches: Redis connection issues, cache/session/queue driver failures.
       - name: Run redis group
         run: php artisan test --group=redis
         env:
