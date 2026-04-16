@@ -1,0 +1,558 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Component Sheet — Sourcebook Selector</title>
+<link href="https://fonts.googleapis.com/css2?family=Cinzel+Decorative:wght@400;700;900&family=Cinzel:wght@400;600;700&family=EB+Garamond:ital,wght@0,400;0,500;0,600;1,400;1,500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --desk: #241811; --ink: #f3e7cf; --ink-dim: #b8a681; --ink-faint: #7a6944;
+    --scrap: #e9d5a6; --scrap-dim: #c9b789;
+    --gold: #c79a47; --gold-dim: #8b6a2f;
+    --arcane: #ffd57a; --arcane-deep: #e89a2a;
+    --arcane-glow: rgba(255, 200, 90, 0.75);
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html, body { height: 100%; }
+  body {
+    min-height: 100vh;
+    background: radial-gradient(ellipse at 50% 20%, #3a2818 0%, #120905 82%), var(--desk);
+    background-attachment: fixed;
+    font-family: 'EB Garamond', serif; color: var(--ink);
+    padding: 60px 40px 120px;
+  }
+  body::before {
+    content: ''; position: fixed; inset: 0;
+    background: repeating-linear-gradient(91deg, transparent 0 90px, rgba(0,0,0,0.1) 90px 91px);
+    pointer-events: none; z-index: 0;
+  }
+
+  .sheet { max-width: 880px; margin: 0 auto; position: relative; z-index: 2; }
+  .sheet-head { border-bottom: 1px solid rgba(184,166,129,0.25); padding-bottom: 28px; margin-bottom: 40px; }
+  .breadcrumb {
+    font-family: 'Cinzel Decorative', serif; font-size: 10px;
+    letter-spacing: 0.28em; text-transform: uppercase; color: var(--ink-faint);
+  }
+  .breadcrumb a { color: var(--ink-dim); text-decoration: none; }
+  .breadcrumb a:hover { color: var(--gold); }
+  .sheet-title {
+    font-family: 'Cinzel Decorative', serif; font-weight: 900;
+    font-size: 32px; color: var(--gold);
+    letter-spacing: 0.1em; text-transform: uppercase; margin: 8px 0 10px;
+  }
+  .sheet-sub {
+    font-family: 'EB Garamond', serif; font-style: italic;
+    color: var(--ink-dim); font-size: 15px; line-height: 22px; max-width: 640px;
+  }
+
+  .state { margin-bottom: 56px; }
+  .state-head { display: flex; align-items: baseline; gap: 16px; margin-bottom: 6px; }
+  .state-name {
+    font-family: 'Cinzel Decorative', serif; font-weight: 700;
+    font-size: 13px; letter-spacing: 0.28em; text-transform: uppercase; color: var(--gold);
+  }
+  .state-chip {
+    font-family: 'Cinzel', serif; font-size: 9px;
+    letter-spacing: 0.22em; text-transform: uppercase; color: var(--ink-faint);
+    padding: 2px 10px; border: 1px solid rgba(184,166,129,0.35); border-radius: 10px;
+  }
+  .state-note {
+    font-family: 'EB Garamond', serif; font-style: italic;
+    color: var(--ink-dim); font-size: 14px; line-height: 21px;
+    margin-bottom: 18px; max-width: 640px;
+  }
+
+  .frame {
+    padding: 40px; border: 1px dashed rgba(184,166,129,0.2);
+    border-radius: 2px; background: rgba(0,0,0,0.25);
+    display: flex; justify-content: flex-end; align-items: flex-start;
+    gap: 24px; position: relative; min-height: 120px;
+  }
+  .frame.show-expanded { min-height: 360px; padding-bottom: 60px; }
+  .frame-caption {
+    font-family: 'Cinzel', serif; font-size: 9px;
+    letter-spacing: 0.22em; text-transform: uppercase; color: var(--ink-faint);
+    position: absolute; bottom: 14px; left: 20px;
+  }
+
+  /* ============ COLLAPSED AFFORDANCE ============ */
+  .selector-affordance {
+    display: inline-flex; align-items: center; gap: 10px;
+    padding: 8px 14px; cursor: pointer;
+    font-family: 'Cinzel Decorative', serif;
+    font-size: 10px; letter-spacing: 0.22em; text-transform: uppercase;
+    color: var(--ink-dim); background: transparent;
+    border: 1px solid rgba(184,166,129,0.3);
+    transition: all 0.3s ease;
+  }
+  .selector-affordance:hover {
+    color: var(--arcane); border-color: var(--arcane);
+  }
+  .selector-affordance.open {
+    color: var(--arcane); border-color: var(--arcane);
+    background: rgba(255, 200, 90, 0.06);
+  }
+  .selector-affordance:focus-visible {
+    outline: 2px solid var(--arcane); outline-offset: 2px;
+  }
+  .selector-affordance .icon {
+    width: 14px; height: 14px;
+    stroke: currentColor; stroke-width: 1.5; fill: none;
+    stroke-linecap: round; stroke-linejoin: round;
+  }
+  .selector-affordance.open .icon {
+    filter: drop-shadow(0 0 4px var(--arcane-glow));
+  }
+  .selector-affordance .count {
+    font-family: 'EB Garamond', serif; font-style: italic;
+    font-size: 12px; letter-spacing: 0.02em;
+    color: inherit; text-transform: none;
+  }
+
+  /* ============ EXPANDED PANEL ============ */
+  .selector-panel {
+    position: absolute; top: 60px; right: 40px;
+    width: 300px;
+    background: var(--scrap);
+    color: #3a2818;
+    border: 1px solid var(--gold-dim);
+    box-shadow: 0 14px 40px rgba(0, 0, 0, 0.6), 0 0 0 1px rgba(199, 154, 71, 0.2);
+    font-family: 'EB Garamond', serif;
+    padding: 16px 0 0;
+    clip-path: polygon(
+      0 3%, 2% 0, 20% 1%, 40% 0, 58% 2%, 78% 0, 98% 1%, 100% 4%,
+      99% 20%, 100% 40%, 98% 60%, 100% 80%, 99% 97%,
+      96% 100%, 78% 98%, 56% 100%, 32% 99%, 12% 100%, 2% 98%, 0 96%,
+      1% 80%, 0 60%, 1% 40%, 0 20%
+    );
+  }
+  .selector-panel::before {
+    content: ''; position: absolute; inset: 0;
+    background:
+      radial-gradient(ellipse at 10% 12%, rgba(58, 40, 24, 0.14), transparent 35%),
+      radial-gradient(ellipse at 88% 85%, rgba(58, 40, 24, 0.18), transparent 40%),
+      repeating-linear-gradient(92deg, transparent 0 60px, rgba(139, 106, 47, 0.04) 60px 61px);
+    pointer-events: none;
+  }
+  .selector-panel .panel-title {
+    font-family: 'Cinzel Decorative', serif; font-weight: 700;
+    font-size: 11px; letter-spacing: 0.28em; text-transform: uppercase;
+    color: var(--gold-dim);
+    padding: 0 20px 10px; margin: 0;
+    border-bottom: 1px solid rgba(139, 106, 47, 0.25);
+    position: relative; z-index: 2;
+  }
+  .selector-panel .rows {
+    padding: 6px 0 4px; position: relative; z-index: 2;
+  }
+  .panel-row {
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 10px 20px;
+    cursor: pointer; user-select: none;
+    transition: background 0.15s ease;
+  }
+  .panel-row:hover { background: rgba(199, 154, 71, 0.1); }
+  .panel-row:focus-visible { outline: 2px solid var(--gold-dim); outline-offset: -2px; }
+  .panel-row .book-text { display: flex; flex-direction: column; gap: 2px; }
+  .panel-row .code {
+    font-family: 'Cinzel Decorative', serif; font-weight: 700;
+    font-size: 12px; letter-spacing: 0.22em; text-transform: uppercase;
+    color: #3a2818;
+  }
+  .panel-row .title {
+    font-family: 'EB Garamond', serif; font-style: italic;
+    font-size: 12px; color: #6b4f28; letter-spacing: 0.02em;
+  }
+
+  /* Toggle — parchment checkbox */
+  .toggle {
+    width: 22px; height: 22px; border-radius: 3px;
+    border: 1.5px solid var(--gold-dim);
+    background: rgba(255,255,255,0.18);
+    display: flex; align-items: center; justify-content: center;
+    flex-shrink: 0; transition: all 0.2s ease;
+  }
+  .toggle.on {
+    background: var(--arcane-deep);
+    border-color: var(--arcane-deep);
+    box-shadow: 0 0 8px rgba(232, 154, 42, 0.5);
+  }
+  .toggle.on::after {
+    content: ''; width: 10px; height: 6px;
+    border-left: 2px solid #fff8e2; border-bottom: 2px solid #fff8e2;
+    transform: rotate(-45deg) translate(1px, -1px);
+  }
+  .panel-row[data-locked="true"] { cursor: not-allowed; }
+  .panel-row[data-locked="true"]:hover { background: transparent; }
+  .panel-row[data-locked="true"] .toggle {
+    position: relative;
+  }
+  .panel-row[data-locked="true"].shake .toggle {
+    animation: refuse 0.4s ease-in-out;
+  }
+  @keyframes refuse {
+    0%, 100% { transform: translateX(0); }
+    25% { transform: translateX(-3px); }
+    75% { transform: translateX(3px); }
+  }
+
+  .panel-footnote {
+    font-family: 'EB Garamond', serif; font-style: italic;
+    font-size: 11px; color: #6b4f28; letter-spacing: 0.02em;
+    padding: 8px 20px 14px; text-align: center;
+    border-top: 1px solid rgba(139, 106, 47, 0.2);
+    margin-top: 2px;
+    position: relative; z-index: 2;
+    transition: color 0.3s ease;
+  }
+  .panel-footnote.emphasised {
+    color: #c03848; font-weight: 500;
+  }
+
+  /* Annotation labels */
+  .annot {
+    position: absolute; font-family: 'Cinzel', serif;
+    font-size: 9px; letter-spacing: 0.22em; text-transform: uppercase;
+    color: var(--ink-faint);
+  }
+</style>
+</head>
+<body>
+<div class="sheet">
+
+  <div class="sheet-head">
+    <div class="breadcrumb"><a href="index.html">Components</a> · Sourcebook Selector</div>
+    <h1 class="sheet-title">Sourcebook Selector</h1>
+    <p class="sheet-sub">
+      A header-level control for enabling or disabling official D&amp;D 5e wizard sourcebooks
+      (PHB, XGE, TCE, FTD, SCC). Collapsed: a stacked-tomes icon with a live count. Expanded:
+      a parchment dropdown with one row per book. Minimum one book must remain enabled; the
+      last toggle refuses. Canonical Spec 8 behaviour.
+    </p>
+  </div>
+
+  <!-- STATE 1 — Collapsed, all five -->
+  <section class="state">
+    <div class="state-head">
+      <div class="state-name">Collapsed · All five enabled</div>
+      <div class="state-chip">Default state</div>
+    </div>
+    <p class="state-note">
+      The baseline. On first visit and for most returning users. Icon plus the live count of
+      enabled books. Quiet register; sits among the other header affordances (rounds pips,
+      new-consultation button).
+    </p>
+    <div class="frame">
+      <button class="selector-affordance" aria-haspopup="true" aria-expanded="false">
+        <svg class="icon" viewBox="0 0 20 20">
+          <path d="M3 5 L9 5 L9 16 L3 16 Z"/>
+          <path d="M11 4 L17 4 L17 15 L11 15 Z"/>
+          <line x1="5" y1="8" x2="7" y2="8"/>
+          <line x1="5" y1="11" x2="7" y2="11"/>
+          <line x1="13" y1="7" x2="15" y2="7"/>
+          <line x1="13" y1="10" x2="15" y2="10"/>
+        </svg>
+        <span class="count">5 books</span>
+      </button>
+      <div class="frame-caption">Collapsed · 5 of 5</div>
+    </div>
+  </section>
+
+  <!-- STATE 2 — Collapsed, subset -->
+  <section class="state">
+    <div class="state-head">
+      <div class="state-name">Collapsed · Subset enabled</div>
+      <div class="state-chip">Partial selection</div>
+    </div>
+    <p class="state-note">
+      When the user has disabled one or more books the count shows "N of 5". This is the
+      honest signal — the icon does not change state or colour, only the label does.
+    </p>
+    <div class="frame">
+      <button class="selector-affordance" aria-haspopup="true" aria-expanded="false">
+        <svg class="icon" viewBox="0 0 20 20">
+          <path d="M3 5 L9 5 L9 16 L3 16 Z"/>
+          <path d="M11 4 L17 4 L17 15 L11 15 Z"/>
+          <line x1="5" y1="8" x2="7" y2="8"/>
+          <line x1="5" y1="11" x2="7" y2="11"/>
+          <line x1="13" y1="7" x2="15" y2="7"/>
+          <line x1="13" y1="10" x2="15" y2="10"/>
+        </svg>
+        <span class="count">3 of 5</span>
+      </button>
+      <div class="frame-caption">Collapsed · 3 of 5</div>
+    </div>
+  </section>
+
+  <!-- STATE 3 — Collapsed, single -->
+  <section class="state">
+    <div class="state-head">
+      <div class="state-name">Collapsed · Single book</div>
+      <div class="state-chip">Minimum selection</div>
+    </div>
+    <p class="state-note">
+      When only one book is active the label reads "1 book" (singular). This is the
+      lower-bound state — the dropdown will refuse to let the user disable the last one.
+    </p>
+    <div class="frame">
+      <button class="selector-affordance" aria-haspopup="true" aria-expanded="false">
+        <svg class="icon" viewBox="0 0 20 20">
+          <path d="M3 5 L9 5 L9 16 L3 16 Z"/>
+          <path d="M11 4 L17 4 L17 15 L11 15 Z"/>
+          <line x1="5" y1="8" x2="7" y2="8"/>
+          <line x1="5" y1="11" x2="7" y2="11"/>
+          <line x1="13" y1="7" x2="15" y2="7"/>
+          <line x1="13" y1="10" x2="15" y2="10"/>
+        </svg>
+        <span class="count">1 book</span>
+      </button>
+      <div class="frame-caption">Collapsed · 1 of 5</div>
+    </div>
+  </section>
+
+  <!-- STATE 4 — Hover and open affordance -->
+  <section class="state">
+    <div class="state-head">
+      <div class="state-name">Collapsed · Hover &amp; open</div>
+      <div class="state-chip">Affordance states</div>
+    </div>
+    <p class="state-note">
+      On hover, the border and label lift to the arcane amber. The open state (right)
+      additionally gains a faint warm fill and the icon picks up a small glow — signalling
+      the panel is live beneath it.
+    </p>
+    <div class="frame" style="justify-content: space-around;">
+      <button class="selector-affordance" style="color: var(--arcane); border-color: var(--arcane);">
+        <svg class="icon" viewBox="0 0 20 20">
+          <path d="M3 5 L9 5 L9 16 L3 16 Z"/>
+          <path d="M11 4 L17 4 L17 15 L11 15 Z"/>
+          <line x1="5" y1="8" x2="7" y2="8"/>
+          <line x1="5" y1="11" x2="7" y2="11"/>
+          <line x1="13" y1="7" x2="15" y2="7"/>
+          <line x1="13" y1="10" x2="15" y2="10"/>
+        </svg>
+        <span class="count">5 books</span>
+      </button>
+      <button class="selector-affordance open" aria-haspopup="true" aria-expanded="true">
+        <svg class="icon" viewBox="0 0 20 20">
+          <path d="M3 5 L9 5 L9 16 L3 16 Z"/>
+          <path d="M11 4 L17 4 L17 15 L11 15 Z"/>
+          <line x1="5" y1="8" x2="7" y2="8"/>
+          <line x1="5" y1="11" x2="7" y2="11"/>
+          <line x1="13" y1="7" x2="15" y2="7"/>
+          <line x1="13" y1="10" x2="15" y2="10"/>
+        </svg>
+        <span class="count">5 books</span>
+      </button>
+      <div class="frame-caption">Left: hover · Right: open (panel anchor)</div>
+    </div>
+  </section>
+
+  <!-- STATE 5 — Expanded, all five -->
+  <section class="state">
+    <div class="state-head">
+      <div class="state-name">Expanded · All five enabled</div>
+      <div class="state-chip">Dropdown · default</div>
+    </div>
+    <p class="state-note">
+      The dropdown is a torn-edged parchment strip anchored to the affordance. Five rows in
+      canonical order (PHB → SCC), each with the code, full title, and a toggle. Clicking
+      anywhere on the row toggles the book; the footnote reminds the user about the
+      minimum.
+    </p>
+    <div class="frame show-expanded">
+      <button class="selector-affordance open" aria-haspopup="true" aria-expanded="true">
+        <svg class="icon" viewBox="0 0 20 20">
+          <path d="M3 5 L9 5 L9 16 L3 16 Z"/>
+          <path d="M11 4 L17 4 L17 15 L11 15 Z"/>
+          <line x1="5" y1="8" x2="7" y2="8"/>
+          <line x1="5" y1="11" x2="7" y2="11"/>
+          <line x1="13" y1="7" x2="15" y2="7"/>
+          <line x1="13" y1="10" x2="15" y2="10"/>
+        </svg>
+        <span class="count">5 books</span>
+      </button>
+      <div class="selector-panel" role="menu">
+        <div class="panel-title">Sourcebooks</div>
+        <div class="rows">
+          <div class="panel-row" role="menuitemcheckbox" aria-checked="true" tabindex="0">
+            <div class="book-text">
+              <span class="code">PHB</span>
+              <span class="title">Player's Handbook</span>
+            </div>
+            <div class="toggle on"></div>
+          </div>
+          <div class="panel-row" role="menuitemcheckbox" aria-checked="true" tabindex="0">
+            <div class="book-text">
+              <span class="code">XGE</span>
+              <span class="title">Xanathar's Guide to Everything</span>
+            </div>
+            <div class="toggle on"></div>
+          </div>
+          <div class="panel-row" role="menuitemcheckbox" aria-checked="true" tabindex="0">
+            <div class="book-text">
+              <span class="code">TCE</span>
+              <span class="title">Tasha's Cauldron of Everything</span>
+            </div>
+            <div class="toggle on"></div>
+          </div>
+          <div class="panel-row" role="menuitemcheckbox" aria-checked="true" tabindex="0">
+            <div class="book-text">
+              <span class="code">FTD</span>
+              <span class="title">Fizban's Treasury of Dragons</span>
+            </div>
+            <div class="toggle on"></div>
+          </div>
+          <div class="panel-row" role="menuitemcheckbox" aria-checked="true" tabindex="0">
+            <div class="book-text">
+              <span class="code">SCC</span>
+              <span class="title">Strixhaven: A Curriculum of Chaos</span>
+            </div>
+            <div class="toggle on"></div>
+          </div>
+        </div>
+        <div class="panel-footnote">At least one book must be enabled.</div>
+      </div>
+      <div class="frame-caption">Expanded · all enabled</div>
+    </div>
+  </section>
+
+  <!-- STATE 6 — Expanded, subset -->
+  <section class="state">
+    <div class="state-head">
+      <div class="state-name">Expanded · Subset enabled</div>
+      <div class="state-chip">Mixed selection</div>
+    </div>
+    <p class="state-note">
+      A typical in-use selection. Disabled books show an empty toggle; the row itself is not
+      dimmed — the book is still legible, just not active for recommendations.
+    </p>
+    <div class="frame show-expanded">
+      <button class="selector-affordance open" aria-haspopup="true" aria-expanded="true">
+        <svg class="icon" viewBox="0 0 20 20">
+          <path d="M3 5 L9 5 L9 16 L3 16 Z"/>
+          <path d="M11 4 L17 4 L17 15 L11 15 Z"/>
+          <line x1="5" y1="8" x2="7" y2="8"/>
+          <line x1="5" y1="11" x2="7" y2="11"/>
+          <line x1="13" y1="7" x2="15" y2="7"/>
+          <line x1="13" y1="10" x2="15" y2="10"/>
+        </svg>
+        <span class="count">3 of 5</span>
+      </button>
+      <div class="selector-panel" role="menu">
+        <div class="panel-title">Sourcebooks</div>
+        <div class="rows">
+          <div class="panel-row" role="menuitemcheckbox" aria-checked="true" tabindex="0">
+            <div class="book-text">
+              <span class="code">PHB</span>
+              <span class="title">Player's Handbook</span>
+            </div>
+            <div class="toggle on"></div>
+          </div>
+          <div class="panel-row" role="menuitemcheckbox" aria-checked="true" tabindex="0">
+            <div class="book-text">
+              <span class="code">XGE</span>
+              <span class="title">Xanathar's Guide to Everything</span>
+            </div>
+            <div class="toggle on"></div>
+          </div>
+          <div class="panel-row" role="menuitemcheckbox" aria-checked="true" tabindex="0">
+            <div class="book-text">
+              <span class="code">TCE</span>
+              <span class="title">Tasha's Cauldron of Everything</span>
+            </div>
+            <div class="toggle on"></div>
+          </div>
+          <div class="panel-row" role="menuitemcheckbox" aria-checked="false" tabindex="0">
+            <div class="book-text">
+              <span class="code">FTD</span>
+              <span class="title">Fizban's Treasury of Dragons</span>
+            </div>
+            <div class="toggle"></div>
+          </div>
+          <div class="panel-row" role="menuitemcheckbox" aria-checked="false" tabindex="0">
+            <div class="book-text">
+              <span class="code">SCC</span>
+              <span class="title">Strixhaven: A Curriculum of Chaos</span>
+            </div>
+            <div class="toggle"></div>
+          </div>
+        </div>
+        <div class="panel-footnote">At least one book must be enabled.</div>
+      </div>
+      <div class="frame-caption">Expanded · 3 of 5</div>
+    </div>
+  </section>
+
+  <!-- STATE 7 — Expanded, last book refuse -->
+  <section class="state">
+    <div class="state-head">
+      <div class="state-name">Expanded · Refusing the last toggle</div>
+      <div class="state-chip">Minimum guard</div>
+    </div>
+    <p class="state-note">
+      When only one book remains enabled and the user clicks its toggle, the toggle refuses
+      — a small horizontal shake — and the footnote briefly emphasises in warning tone. No
+      modal, no error; the control simply declines the operation.
+    </p>
+    <div class="frame show-expanded">
+      <button class="selector-affordance open" aria-haspopup="true" aria-expanded="true">
+        <svg class="icon" viewBox="0 0 20 20">
+          <path d="M3 5 L9 5 L9 16 L3 16 Z"/>
+          <path d="M11 4 L17 4 L17 15 L11 15 Z"/>
+          <line x1="5" y1="8" x2="7" y2="8"/>
+          <line x1="5" y1="11" x2="7" y2="11"/>
+          <line x1="13" y1="7" x2="15" y2="7"/>
+          <line x1="13" y1="10" x2="15" y2="10"/>
+        </svg>
+        <span class="count">1 book</span>
+      </button>
+      <div class="selector-panel" role="menu">
+        <div class="panel-title">Sourcebooks</div>
+        <div class="rows">
+          <div class="panel-row shake" data-locked="true" role="menuitemcheckbox" aria-checked="true" aria-disabled="true" tabindex="0">
+            <div class="book-text">
+              <span class="code">PHB</span>
+              <span class="title">Player's Handbook</span>
+            </div>
+            <div class="toggle on"></div>
+          </div>
+          <div class="panel-row" role="menuitemcheckbox" aria-checked="false" tabindex="0">
+            <div class="book-text">
+              <span class="code">XGE</span>
+              <span class="title">Xanathar's Guide to Everything</span>
+            </div>
+            <div class="toggle"></div>
+          </div>
+          <div class="panel-row" role="menuitemcheckbox" aria-checked="false" tabindex="0">
+            <div class="book-text">
+              <span class="code">TCE</span>
+              <span class="title">Tasha's Cauldron of Everything</span>
+            </div>
+            <div class="toggle"></div>
+          </div>
+          <div class="panel-row" role="menuitemcheckbox" aria-checked="false" tabindex="0">
+            <div class="book-text">
+              <span class="code">FTD</span>
+              <span class="title">Fizban's Treasury of Dragons</span>
+            </div>
+            <div class="toggle"></div>
+          </div>
+          <div class="panel-row" role="menuitemcheckbox" aria-checked="false" tabindex="0">
+            <div class="book-text">
+              <span class="code">SCC</span>
+              <span class="title">Strixhaven: A Curriculum of Chaos</span>
+            </div>
+            <div class="toggle"></div>
+          </div>
+        </div>
+        <div class="panel-footnote emphasised">At least one book must be enabled.</div>
+      </div>
+      <div class="frame-caption">Expanded · refusing last toggle (PHB shakes, footnote emphasised)</div>
+    </div>
+  </section>
+
+</div>
+</body>
+</html>

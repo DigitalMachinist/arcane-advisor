@@ -1,0 +1,567 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Mockup N — Altar Refined</title>
+<link href="https://fonts.googleapis.com/css2?family=Cinzel+Decorative:wght@400;700;900&family=EB+Garamond:ital,wght@0,400;0,500;1,400&family=IM+Fell+English+SC&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --desk: #241811;
+    --ink: #f3e7cf;
+    --ink-dim: #b8a681;
+    --parchment: #efe0bc;
+    --scrap: #e9d5a6;
+    --leather: #4a2a18;
+    --leather-dark: #2e170c;
+    --leather-light: #6b3c22;
+    --brass: #c4a156;
+    --brass-light: #e9c87a;
+    --brass-dark: #806330;
+    --ribbon: #8b1e2b;
+    --ribbon-dark: #5e1018;
+    --gold: #c79a47;
+    --arcane: #ffd57a;
+    --arcane-deep: #e89a2a;
+    --arcane-glow: rgba(255, 200, 90, 0.75);
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    min-height: 100vh;
+    background:
+      radial-gradient(ellipse at 50% 38%, #3a2818 0%, #140a05 80%),
+      var(--desk);
+    font-family: 'EB Garamond', serif;
+    color: var(--ink);
+    overflow-x: hidden;
+  }
+  body::before {
+    content: '';
+    position: fixed; inset: 0;
+    background:
+      repeating-linear-gradient(91deg, transparent 0 90px, rgba(0,0,0,0.1) 90px 91px);
+    pointer-events: none;
+    z-index: 1;
+  }
+
+  .header {
+    position: relative; z-index: 5;
+    padding: 22px 40px;
+    display: flex; justify-content: space-between; align-items: center;
+    font-family: 'Cinzel Decorative', serif;
+    letter-spacing: 0.18em;
+    color: var(--ink-dim);
+  }
+  .header .brand { font-size: 18px; color: var(--gold); text-transform: uppercase; }
+  .header .nav { font-family: 'IM Fell English SC', serif; font-size: 13px; letter-spacing: 0.25em; }
+  .header .nav span { margin-left: 28px; opacity: 0.7; }
+
+  .stage {
+    position: relative;
+    width: 100%;
+    min-height: calc(100vh - 70px);
+    z-index: 2;
+  }
+
+  /* ---- Dominant casting circle, near top/center ---- */
+  .circle-wrap {
+    position: absolute;
+    top: 40px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 820px;
+    height: 820px;
+    z-index: 6;
+  }
+  .ritual-halo {
+    position: absolute; inset: -60px;
+    background: radial-gradient(circle at center,
+      rgba(255, 200, 90, 0.26) 0%,
+      rgba(255, 180, 60, 0.1) 40%,
+      transparent 72%);
+    animation: halo 5s ease-in-out infinite;
+    pointer-events: none;
+  }
+  @keyframes halo {
+    0%, 100% { opacity: 0.9; transform: scale(1); }
+    50% { opacity: 1; transform: scale(1.04); }
+  }
+  .circle-svg {
+    position: absolute; inset: 0;
+    width: 100%; height: 100%;
+    filter: drop-shadow(0 0 22px var(--arcane-glow)) drop-shadow(0 0 44px rgba(255,180,80,0.35));
+  }
+  .ring-outer { animation: spin 180s linear infinite; transform-origin: 410px 410px; }
+  .ring-inner { animation: spin 120s linear infinite reverse; transform-origin: 410px 410px; }
+  @keyframes spin { to { transform: rotate(360deg); } }
+
+  .needle-svg {
+    position: absolute; inset: 0;
+    width: 100%; height: 100%;
+    pointer-events: none;
+    z-index: 9;
+  }
+  .needle {
+    transform-origin: 410px 410px;
+    transition: transform 0.8s cubic-bezier(.3,1.4,.5,1);
+  }
+
+  /* Paper scrap — centered, smaller relative to circle so needle shows behind */
+  .scrap {
+    position: absolute;
+    top: 50%; left: 50%;
+    transform: translate(-50%, -50%) rotate(-1.5deg);
+    width: 300px;
+    min-height: 180px;
+    background: var(--scrap);
+    background-image:
+      repeating-linear-gradient(0deg, transparent 0 27px, rgba(74,52,32,0.18) 27px 28px),
+      radial-gradient(ellipse at 30% 10%, rgba(120,80,30,0.15), transparent 60%);
+    padding: 22px 24px;
+    clip-path: polygon(
+      2% 4%, 10% 1%, 22% 3%, 34% 0%, 46% 2%, 60% 1%, 74% 3%, 88% 0%, 99% 6%,
+      97% 20%, 100% 36%, 98% 52%, 100% 68%, 97% 82%, 99% 94%,
+      88% 98%, 74% 96%, 58% 99%, 42% 97%, 26% 100%, 10% 97%, 1% 92%,
+      3% 76%, 0% 60%, 2% 44%, 0% 28%, 3% 14%
+    );
+    box-shadow: 0 12px 36px rgba(0,0,0,0.6);
+    z-index: 11;
+  }
+  .scrap textarea {
+    width: 100%;
+    min-height: 118px;
+    background: transparent;
+    border: none;
+    outline: none;
+    resize: none;
+    font-family: 'EB Garamond', serif;
+    font-style: italic;
+    font-size: 17px;
+    line-height: 27px;
+    color: #3a2614;
+  }
+  .scrap textarea::placeholder { color: rgba(58,38,20,0.45); }
+  .scrap .submit-row {
+    display: flex; justify-content: flex-end; margin-top: 10px;
+  }
+  .scrap button {
+    font-family: 'Cinzel Decorative', serif;
+    background: transparent;
+    border: 1px solid rgba(74,52,32,0.5);
+    color: #3a2614;
+    padding: 6px 16px;
+    font-size: 10px;
+    letter-spacing: 0.2em;
+    cursor: pointer;
+    text-transform: uppercase;
+  }
+  .scrap button:hover {
+    background: rgba(255, 200, 90, 0.3);
+    border-color: var(--arcane-deep);
+    color: var(--arcane-deep);
+  }
+
+  /* Whimsy symbols — spread wide in the southern arc */
+  .symbols {
+    position: absolute; inset: 0;
+    pointer-events: none;
+    z-index: 10;
+  }
+  .symbol {
+    position: absolute;
+    width: 56px; height: 56px;
+    transform: translate(-50%, -50%);
+    display: flex; align-items: center; justify-content: center;
+    cursor: pointer;
+    pointer-events: auto;
+    transition: all 0.4s ease;
+  }
+  .symbol svg {
+    width: 36px; height: 36px;
+    stroke: var(--ink-dim);
+    stroke-width: 1.5;
+    fill: none;
+    transition: all 0.4s ease;
+  }
+  .symbol:hover svg {
+    stroke: var(--arcane);
+    filter: drop-shadow(0 0 6px var(--arcane-glow));
+  }
+  .symbol.active svg {
+    stroke: var(--arcane);
+    stroke-width: 2;
+    filter: drop-shadow(0 0 10px var(--arcane)) drop-shadow(0 0 20px var(--arcane-glow));
+  }
+  .symbol .label {
+    position: absolute;
+    top: 60px;
+    left: 50%; transform: translateX(-50%);
+    font-family: 'Cinzel Decorative', serif;
+    font-size: 10px;
+    letter-spacing: 0.25em;
+    color: var(--ink-dim);
+    text-transform: uppercase;
+    white-space: nowrap;
+    transition: color 0.4s ease;
+  }
+  .symbol.active .label {
+    color: var(--arcane);
+    text-shadow: 0 0 8px var(--arcane-glow);
+  }
+
+  /* ---- The tome, pushed far down, rendered as a proper leather-bound book ---- */
+  .tome-wrap {
+    position: absolute;
+    bottom: -120px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 960px;
+    height: 420px;
+    z-index: 3;
+    filter: drop-shadow(0 30px 40px rgba(0,0,0,0.8));
+  }
+  .tome-svg { width: 100%; height: 100%; display: block; }
+  .tome-underglow {
+    position: absolute;
+    top: -40px;
+    left: 50%; transform: translateX(-50%);
+    width: 680px; height: 130px;
+    background: radial-gradient(ellipse at center, var(--arcane-glow) 0%, rgba(255,160,60,0.12) 45%, transparent 80%);
+    filter: blur(10px);
+    animation: underpulse 4s ease-in-out infinite;
+    pointer-events: none;
+    z-index: 4;
+  }
+  @keyframes underpulse {
+    0%, 100% { opacity: 0.7; }
+    50% { opacity: 1; }
+  }
+
+  .hint {
+    position: fixed;
+    bottom: 22px; left: 50%;
+    transform: translateX(-50%);
+    font-family: 'IM Fell English SC', serif;
+    font-size: 11px;
+    letter-spacing: 0.3em;
+    color: var(--ink-dim);
+    opacity: 0.55;
+    text-transform: uppercase;
+    z-index: 20;
+  }
+</style>
+</head>
+<body>
+
+<div class="header">
+  <div class="brand">Arcane Advisor</div>
+  <div class="nav"><span>The Grimoire</span><span>The Archive</span><span>Enter</span></div>
+</div>
+
+<div class="stage">
+
+  <div class="circle-wrap">
+    <div class="ritual-halo"></div>
+
+    <!-- Compass-inspired casting circle: concentric rings, tick marks, cardinal runes, compass rose. NO polygons. -->
+    <svg class="circle-svg" viewBox="0 0 820 820">
+      <defs>
+        <radialGradient id="innerGlow" cx="0.5" cy="0.5" r="0.5">
+          <stop offset="0%" stop-color="rgba(255,220,140,0.22)"/>
+          <stop offset="70%" stop-color="rgba(255,180,80,0.06)"/>
+          <stop offset="100%" stop-color="transparent"/>
+        </radialGradient>
+      </defs>
+
+      <circle cx="410" cy="410" r="390" fill="url(#innerGlow)"/>
+
+      <!-- Outer ring band: degree ticks like a compass -->
+      <g class="ring-outer">
+        <circle cx="410" cy="410" r="390" fill="none" stroke="var(--arcane)" stroke-width="1.4" opacity="0.75"/>
+        <circle cx="410" cy="410" r="372" fill="none" stroke="var(--arcane-deep)" stroke-width="0.7" opacity="0.5"/>
+        <circle cx="410" cy="410" r="360" fill="none" stroke="var(--arcane)" stroke-width="0.5" opacity="0.35"/>
+
+        <!-- Major ticks every 15° -->
+        <g stroke="var(--arcane)" stroke-width="1.1" opacity="0.7" id="major-ticks">
+        </g>
+        <!-- Minor ticks every 5° -->
+        <g stroke="var(--arcane)" stroke-width="0.5" opacity="0.45" id="minor-ticks">
+        </g>
+
+        <!-- Cardinal runes at 4 compass points -->
+        <g font-family="serif" font-size="26" fill="var(--arcane)" text-anchor="middle" opacity="0.9">
+          <text x="410" y="12">✦</text>
+          <text x="820" y="420">✧</text>
+          <text x="410" y="820">✦</text>
+          <text x="0" y="420">✧</text>
+        </g>
+      </g>
+
+      <!-- Inner ring band -->
+      <g class="ring-inner">
+        <circle cx="410" cy="410" r="300" fill="none" stroke="var(--arcane)" stroke-width="1.1" opacity="0.65"/>
+        <circle cx="410" cy="410" r="288" fill="none" stroke="var(--arcane-deep)" stroke-width="0.6" opacity="0.45" stroke-dasharray="2 5"/>
+        <circle cx="410" cy="410" r="275" fill="none" stroke="var(--arcane)" stroke-width="0.5" opacity="0.35"/>
+      </g>
+
+      <!-- Static compass rose points (diamond arms along N/S/E/W) drawn as thin lines — compass face look -->
+      <g stroke="var(--arcane)" stroke-width="1" fill="none" opacity="0.55">
+        <line x1="410" y1="120" x2="410" y2="700"/>
+        <line x1="120" y1="410" x2="700" y2="410"/>
+      </g>
+
+      <!-- Cardinal letters (static, do not rotate) -->
+      <g font-family="'Cinzel Decorative', serif" font-size="15" fill="var(--arcane)" text-anchor="middle" opacity="0.9" letter-spacing="2">
+        <text x="410" y="76">N</text>
+        <text x="748" y="414">E</text>
+        <text x="72" y="414">W</text>
+      </g>
+
+      <!-- Central hub decorations -->
+      <circle cx="410" cy="410" r="18" fill="none" stroke="var(--arcane)" stroke-width="0.8" opacity="0.7"/>
+      <circle cx="410" cy="410" r="9" fill="var(--arcane-deep)" opacity="0.6"/>
+    </svg>
+
+    <!-- The compass needle — LARGE so it shows behind the paper -->
+    <svg class="needle-svg" viewBox="0 0 820 820">
+      <g class="needle" id="needle">
+        <!-- Dark northern half (shorter, dagger-like) -->
+        <polygon points="410,410 394,260 410,200 426,260" fill="#1b0f07" stroke="var(--arcane-deep)" stroke-width="0.8"/>
+        <polygon points="410,410 402,330 410,200 418,330" fill="#3a2414" opacity="0.8"/>
+        <!-- Bright southern half (longer, luminous) -->
+        <polygon points="410,410 388,560 410,700 432,560" fill="var(--arcane)" stroke="var(--arcane-deep)" stroke-width="0.8"
+                 style="filter: drop-shadow(0 0 8px var(--arcane)) drop-shadow(0 0 18px var(--arcane-glow));"/>
+        <polygon points="410,410 400,500 410,700 420,500" fill="var(--arcane-light, #fff3d0)" opacity="0.6"/>
+        <!-- Center hub (brass fitting) -->
+        <circle cx="410" cy="410" r="16" fill="var(--brass)" stroke="var(--arcane-deep)" stroke-width="1.2"/>
+        <circle cx="410" cy="410" r="10" fill="var(--brass-dark)"/>
+        <circle cx="410" cy="410" r="4" fill="#120906"/>
+      </g>
+    </svg>
+
+    <!-- Whimsy symbols — spread wide along southern arc (radius 440, angles from south: ±55°, ±28°, 0°) -->
+    <div class="symbols">
+      <!-- Positions computed: center(410,410), r=440, angle measured clockwise from north
+           Tactical: 235° → x = 410 + 440*sin(235°) = 410-360 = 50, y = 410 - 440*cos(235°) = 410+252 = 662
+           Balanced: 208° → x = 410+440*sin(208°) = 410-207=203, y = 410-440*cos(208°) = 410+389 = 799
+           Creative: 180° → x = 410, y = 410+440 = 850
+           Theatrical: 152° → x = 410+207=617, y = 799
+           Chaotic: 125° → x = 410+360=770, y = 662
+           But circle-wrap is 820px square; we need symbols inside or slightly outside it. Let's bring radius to 400.
+           Tactical 235°: x= 410+400*sin(235)=410-328=82, y=410+400*cos(55)=410+229=639 — wait cos(235)=-cos(55)? Let me redo.
+           sin(235°)=-sin(55°)=-0.819; cos(235°)=-cos(55°)=-0.574
+           x = 410 + 400*(-0.819) = 410-328 = 82
+           y = 410 - 400*(-0.574) = 410+229.6 = 640
+           Balanced 208°: sin=-0.469, cos=-0.883; x=410-188=222, y=410+353=763
+           Creative 180°: sin=0, cos=-1; x=410, y=810
+           Theatrical 152°: sin(152)=0.469, cos(152)=-0.883; x=410+188=598, y=763
+           Chaotic 125°: sin(125)=0.819, cos=-0.574; x=410+328=738, y=640
+      -->
+    </div>
+
+    <div class="symbols" id="symbols-layer">
+      <div class="symbol" data-angle="235" style="left: 82px; top: 640px;">
+        <svg viewBox="0 0 40 40"><path d="M8 8 L32 32 M32 8 L8 32 M8 8 L4 4 M32 8 L36 4 M8 32 L4 36 M32 32 L36 36"/></svg>
+        <span class="label">Tactical</span>
+      </div>
+      <div class="symbol" data-angle="208" style="left: 222px; top: 763px;">
+        <svg viewBox="0 0 40 40"><path d="M20 6 L20 34 M10 14 L30 14 M6 22 Q10 28 14 22 M26 22 Q30 28 34 22"/></svg>
+        <span class="label">Balanced</span>
+      </div>
+      <div class="symbol active" data-angle="180" style="left: 410px; top: 810px;">
+        <svg viewBox="0 0 40 40">
+          <path d="M20 8 Q28 14 20 20 Q12 26 20 32" />
+          <path d="M20 8 Q12 14 20 20 Q28 26 20 32" />
+          <circle cx="20" cy="20" r="3"/>
+        </svg>
+        <span class="label">Creative</span>
+      </div>
+      <div class="symbol" data-angle="152" style="left: 598px; top: 763px;">
+        <svg viewBox="0 0 40 40">
+          <circle cx="20" cy="20" r="5"/>
+          <path d="M20 4 L20 10 M20 30 L20 36 M4 20 L10 20 M30 20 L36 20 M8 8 L12 12 M28 28 L32 32 M8 32 L12 28 M28 12 L32 8"/>
+        </svg>
+        <span class="label">Theatrical</span>
+      </div>
+      <div class="symbol" data-angle="125" style="left: 738px; top: 640px;">
+        <svg viewBox="0 0 40 40"><path d="M20 4 L24 16 L36 18 L27 26 L30 38 L20 31 L10 38 L13 26 L4 18 L16 16 Z"/></svg>
+        <span class="label">Chaotic</span>
+      </div>
+    </div>
+
+    <!-- Paper scrap over the needle -->
+    <div class="scrap">
+      <textarea placeholder="Inscribe thy question..."></textarea>
+      <div class="submit-row">
+        <button>Consult</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- The tome — pushed far down, fully rendered as leather-bound volume -->
+  <div class="tome-wrap">
+    <div class="tome-underglow"></div>
+    <svg class="tome-svg" viewBox="0 0 960 420" preserveAspectRatio="xMidYMid meet">
+      <defs>
+        <!-- Leather cover gradient -->
+        <linearGradient id="leatherFace" x1="0" y1="0" x2="0" y2="1">
+          <stop offset="0%" stop-color="#5c331d"/>
+          <stop offset="40%" stop-color="#3f1f0f"/>
+          <stop offset="100%" stop-color="#1e0d06"/>
+        </linearGradient>
+        <linearGradient id="leatherSide" x1="0" y1="0" x2="0" y2="1">
+          <stop offset="0%" stop-color="#2a140a"/>
+          <stop offset="100%" stop-color="#120804"/>
+        </linearGradient>
+        <linearGradient id="pageStack" x1="0" y1="0" x2="0" y2="1">
+          <stop offset="0%" stop-color="#e8d4a0"/>
+          <stop offset="50%" stop-color="#c9ac72"/>
+          <stop offset="100%" stop-color="#8c6a3a"/>
+        </linearGradient>
+        <linearGradient id="brassGrad" x1="0" y1="0" x2="0" y2="1">
+          <stop offset="0%" stop-color="var(--brass-light)"/>
+          <stop offset="50%" stop-color="var(--brass)"/>
+          <stop offset="100%" stop-color="var(--brass-dark)"/>
+        </linearGradient>
+        <linearGradient id="ribbonGrad" x1="0" y1="0" x2="0" y2="1">
+          <stop offset="0%" stop-color="#c02a3b"/>
+          <stop offset="60%" stop-color="var(--ribbon)"/>
+          <stop offset="100%" stop-color="var(--ribbon-dark)"/>
+        </linearGradient>
+        <pattern id="pagesEdge" patternUnits="userSpaceOnUse" width="4" height="2" patternTransform="rotate(0)">
+          <rect width="4" height="2" fill="#d9bd83"/>
+          <line x1="0" y1="0" x2="4" y2="0" stroke="#8d6b36" stroke-width="0.3"/>
+        </pattern>
+      </defs>
+
+      <!-- Shadow ellipse below book -->
+      <ellipse cx="480" cy="400" rx="440" ry="14" fill="rgba(0,0,0,0.55)"/>
+
+      <!-- Book body: leather cover with slight perspective (top face angled, thickness visible) -->
+      <!-- Thickness / spine side (bottom of closed book) -->
+      <path d="M 60,180 L 900,180 L 910,330 L 50,330 Z" fill="url(#leatherSide)"/>
+
+      <!-- Deckle-cut page edges band (front edge of closed book, between cover face and bottom thickness) -->
+      <g>
+        <path d="M 70,178 L 890,178 L 898,230 L 62,230 Z" fill="url(#pageStack)"/>
+        <!-- individual page lines -->
+        <g stroke="#8d6b36" stroke-width="0.4" opacity="0.6">
+          <line x1="72" y1="188" x2="896" y2="188"/>
+          <line x1="72" y1="196" x2="896" y2="196"/>
+          <line x1="72" y1="204" x2="896" y2="204"/>
+          <line x1="72" y1="212" x2="896" y2="212"/>
+          <line x1="72" y1="220" x2="896" y2="220"/>
+        </g>
+        <!-- deckle irregularity: random bumps along the top edge -->
+        <path d="M 70,178 Q 90,176 110,179 Q 135,175 160,178 Q 190,177 220,176 Q 255,178 285,175 Q 320,177 355,178 Q 390,175 430,177 Q 470,178 510,175 Q 550,177 590,178 Q 630,176 670,178 Q 710,175 750,178 Q 790,177 830,176 Q 870,178 890,178"
+              stroke="#7e5c2f" stroke-width="0.7" fill="none" opacity="0.7"/>
+      </g>
+
+      <!-- Top cover face (leather) -->
+      <path d="M 60,50 L 900,50 L 900,180 L 60,180 Z" fill="url(#leatherFace)"/>
+      <!-- Leather texture / embossed border -->
+      <rect x="80" y="70" width="800" height="92" fill="none" stroke="#6e3f24" stroke-width="1.2" opacity="0.7"/>
+      <rect x="90" y="80" width="780" height="72" fill="none" stroke="#6e3f24" stroke-width="0.6" opacity="0.5"/>
+      <!-- Embossed central sigil -->
+      <g transform="translate(480 116)" opacity="0.8">
+        <circle r="24" fill="none" stroke="var(--brass-dark)" stroke-width="1.2"/>
+        <circle r="16" fill="none" stroke="var(--brass-dark)" stroke-width="0.8"/>
+        <path d="M 0,-20 L 0,20 M -20,0 L 20,0 M -14,-14 L 14,14 M -14,14 L 14,-14" stroke="var(--brass-dark)" stroke-width="0.7" opacity="0.8"/>
+        <text y="6" font-family="serif" font-size="18" fill="var(--brass)" text-anchor="middle" opacity="0.9">✦</text>
+      </g>
+      <!-- Title embossed along top -->
+      <text x="480" y="66" font-family="'Cinzel Decorative', serif" font-size="11" fill="var(--brass-dark)" text-anchor="middle" letter-spacing="4" opacity="0.75">
+        — THE GRIMOIRE —
+      </text>
+
+      <!-- Leather grain texture overlay -->
+      <g opacity="0.25">
+        <path d="M 60,50 Q 300,60 500,55 T 900,50" stroke="#2a1208" stroke-width="0.6" fill="none"/>
+        <path d="M 60,90 Q 300,100 500,95 T 900,90" stroke="#2a1208" stroke-width="0.5" fill="none"/>
+        <path d="M 60,130 Q 300,140 500,135 T 900,130" stroke="#2a1208" stroke-width="0.5" fill="none"/>
+      </g>
+
+      <!-- Brass corner fittings (4 corners) -->
+      <g fill="url(#brassGrad)" stroke="var(--brass-dark)" stroke-width="0.6">
+        <!-- Top-left -->
+        <path d="M 60,50 L 120,50 L 120,60 Q 100,60 80,70 Q 70,80 70,110 L 60,110 Z"/>
+        <circle cx="82" cy="72" r="2.5" fill="var(--brass-dark)"/>
+        <circle cx="110" cy="58" r="2" fill="var(--brass-dark)"/>
+        <!-- Top-right -->
+        <path d="M 900,50 L 840,50 L 840,60 Q 860,60 880,70 Q 890,80 890,110 L 900,110 Z"/>
+        <circle cx="878" cy="72" r="2.5" fill="var(--brass-dark)"/>
+        <circle cx="850" cy="58" r="2" fill="var(--brass-dark)"/>
+        <!-- Bottom-left -->
+        <path d="M 60,180 L 120,180 L 120,170 Q 100,170 80,160 Q 70,150 70,120 L 60,120 Z"/>
+        <circle cx="82" cy="158" r="2.5" fill="var(--brass-dark)"/>
+        <circle cx="110" cy="172" r="2" fill="var(--brass-dark)"/>
+        <!-- Bottom-right -->
+        <path d="M 900,180 L 840,180 L 840,170 Q 860,170 880,160 Q 890,150 890,120 L 900,120 Z"/>
+        <circle cx="878" cy="158" r="2.5" fill="var(--brass-dark)"/>
+        <circle cx="850" cy="172" r="2" fill="var(--brass-dark)"/>
+      </g>
+
+      <!-- Brass clasp (center, wrapping from top) -->
+      <g fill="url(#brassGrad)" stroke="var(--brass-dark)" stroke-width="0.7">
+        <rect x="460" y="44" width="40" height="18" rx="2"/>
+        <rect x="464" y="48" width="32" height="10" rx="1" fill="var(--brass-dark)" opacity="0.4"/>
+        <!-- Clasp plate extending over edge -->
+        <path d="M 452,170 L 508,170 L 508,200 Q 480,204 452,200 Z"/>
+        <circle cx="480" cy="186" r="5" fill="var(--brass-dark)"/>
+        <circle cx="480" cy="186" r="2" fill="var(--brass-light)"/>
+      </g>
+
+      <!-- Red ribbon bookmark dangling from spine -->
+      <g>
+        <!-- Ribbon entering from between pages -->
+        <path d="M 430,220 L 434,250 L 440,320 L 448,420 L 460,420 L 454,320 L 448,250 L 440,220 Z"
+              fill="url(#ribbonGrad)" stroke="var(--ribbon-dark)" stroke-width="0.4"/>
+        <!-- Ribbon notch at the bottom -->
+        <path d="M 440,420 L 450,410 L 460,420 Z" fill="var(--desk)"/>
+        <!-- Highlight fold -->
+        <path d="M 434,230 L 440,320 L 446,420" stroke="rgba(255,200,200,0.3)" stroke-width="0.8" fill="none"/>
+      </g>
+
+      <!-- Spine raised bands (horizontal ribs) — shown as subtle shadows across the cover -->
+      <g stroke="rgba(0,0,0,0.4)" stroke-width="1" opacity="0.5">
+        <line x1="200" y1="180" x2="200" y2="50" stroke-dasharray="2 3"/>
+        <line x1="760" y1="180" x2="760" y2="50" stroke-dasharray="2 3"/>
+      </g>
+    </svg>
+  </div>
+
+</div>
+
+<div class="hint">Turn the needle · inscribe thy question · commit the rite</div>
+
+<script>
+  // Generate tick marks
+  const major = document.getElementById('major-ticks');
+  const minor = document.getElementById('minor-ticks');
+  const cx = 410, cy = 410;
+  const svgNS = "http://www.w3.org/2000/svg";
+  for (let deg = 0; deg < 360; deg += 5) {
+    const isMajor = deg % 15 === 0;
+    const len = isMajor ? 18 : 8;
+    const r1 = 390, r2 = 390 - len;
+    const rad = (deg - 90) * Math.PI / 180;
+    const x1 = cx + r1 * Math.cos(rad), y1 = cy + r1 * Math.sin(rad);
+    const x2 = cx + r2 * Math.cos(rad), y2 = cy + r2 * Math.sin(rad);
+    const line = document.createElementNS(svgNS, 'line');
+    line.setAttribute('x1', x1); line.setAttribute('y1', y1);
+    line.setAttribute('x2', x2); line.setAttribute('y2', y2);
+    (isMajor ? major : minor).appendChild(line);
+  }
+
+  const needle = document.getElementById('needle');
+  const symbols = document.querySelectorAll('.symbol');
+  symbols.forEach(sym => {
+    sym.addEventListener('click', () => {
+      symbols.forEach(s => s.classList.remove('active'));
+      sym.classList.add('active');
+      const angle = parseFloat(sym.dataset.angle);
+      needle.style.transform = `rotate(${angle - 180}deg)`;
+    });
+  });
+</script>
+</body>
+</html>

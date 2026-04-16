@@ -1,0 +1,371 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Mockup J — Illuminated Scale</title>
+<link href="https://fonts.googleapis.com/css2?family=Cinzel+Decorative:wght@400;700&family=EB+Garamond:ital,wght@0,400;0,500;1,400&family=IM+Fell+English+SC&display=swap" rel="stylesheet">
+<style>
+:root {
+  --ink: #2a1a0a;
+  --ink-soft: #4a3420;
+  --page: #ead5a4;
+  --page-shadow: #c9b07e;
+  --leather: #3a1d0a;
+  --leather-dark: #1f0d04;
+  --desk: #2b1a0e;
+  --desk-grain: rgba(80,40,12,0.35);
+  --gold: #c8963a;
+  --gold-bright: #ebb947;
+  --gold-deep: #8a651f;
+  --vermilion: #a8221c;
+  --lapis: #253e68;
+}
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body { min-height: 100vh; background: var(--desk); font-family: 'EB Garamond', serif; color: var(--ink); overflow-x: hidden; }
+
+.desk-bg {
+  position: fixed; inset: 60px 0 0 0; z-index: 0;
+  background: var(--desk);
+  background-image:
+    repeating-linear-gradient(93deg, transparent 0 70px, var(--desk-grain) 70px 71px, transparent 71px 150px, rgba(0,0,0,0.1) 150px 152px, transparent 152px 270px, var(--desk-grain) 270px 272px),
+    repeating-linear-gradient(3deg, transparent 0 220px, rgba(0,0,0,0.07) 220px 222px);
+}
+.desk-bg::after {
+  content: ''; position: absolute; inset: 0;
+  background: radial-gradient(ellipse at 50% 45%, transparent 35%, rgba(0,0,0,0.55) 100%);
+}
+
+.header {
+  position: relative; z-index: 30;
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 0.9rem 2rem;
+  background: linear-gradient(to bottom, #0a0402, #1a0d04);
+  border-bottom: 2px solid rgba(0,0,0,0.6);
+  box-shadow: 0 6px 16px rgba(0,0,0,0.55);
+  color: var(--page);
+  font-family: 'IM Fell English SC', serif;
+}
+.header a { color: var(--page); text-decoration: none; margin-right: 1.5rem; opacity: 0.85; }
+.header-right { display: flex; align-items: center; gap: 1rem; }
+.theme-toggle { background: none; border: 1px solid var(--gold-deep); color: var(--gold-bright); padding: 0.3rem 0.7rem; border-radius: 2px; cursor: pointer; font-family: inherit; }
+
+.stage {
+  position: relative; z-index: 10;
+  min-height: calc(100vh - 60px);
+  display: flex; align-items: center; justify-content: center;
+  padding: 3rem 2rem;
+}
+
+.tome {
+  position: relative;
+  width: min(1100px, 95vw);
+  aspect-ratio: 16 / 10;
+  display: grid; grid-template-columns: 1fr 1fr;
+  background: var(--leather-dark);
+  border: 10px solid var(--leather);
+  border-radius: 6px;
+  box-shadow: 0 30px 80px rgba(0,0,0,0.7), inset 0 0 40px rgba(0,0,0,0.5);
+}
+.tome::before {
+  content: ''; position: absolute; top: 0; bottom: 0; left: 50%; width: 18px;
+  background: linear-gradient(90deg, rgba(0,0,0,0.5), rgba(0,0,0,0.85), rgba(0,0,0,0.5));
+  transform: translateX(-50%); z-index: 3;
+}
+.page {
+  background: var(--page);
+  background-image:
+    repeating-linear-gradient(0deg, transparent 0 2px, rgba(0,0,0,0.012) 2px 3px),
+    radial-gradient(ellipse at 50% 40%, transparent 40%, rgba(0,0,0,0.18) 100%);
+  padding: 2.5rem 3rem;
+  position: relative;
+}
+.page-left { border-right: 1px solid rgba(0,0,0,0.1); }
+
+.dropcap {
+  float: left;
+  font-family: 'Cinzel Decorative', serif;
+  font-size: 5.5rem; line-height: 0.9;
+  color: var(--vermilion);
+  padding: 0.5rem 0.7rem 0.2rem 0;
+  background: radial-gradient(circle at 30% 30%, rgba(235,185,71,0.25), transparent 70%);
+  text-shadow: 1px 1px 0 var(--gold-deep);
+}
+.left-body { font-size: 1.02rem; line-height: 1.7; color: var(--ink-soft); }
+.left-body p { margin-bottom: 1rem; text-align: justify; }
+
+.page-right { display: flex; flex-direction: column; gap: 1.5rem; }
+
+/* Illuminated scale across the top of right page */
+.scale-section {
+  padding: 0.2rem 0 0.6rem 0;
+  border-bottom: 1px solid rgba(138,111,60,0.35);
+  position: relative;
+}
+.scale-heading {
+  font-family: 'Cinzel Decorative', serif;
+  color: var(--ink-soft);
+  font-size: 0.78rem;
+  text-align: center;
+  letter-spacing: 0.2em;
+  margin-bottom: 0.6rem;
+}
+.scale-bar {
+  position: relative;
+  width: 100%;
+  height: 58px;
+  display: flex;
+  align-items: center;
+}
+/* The inked scale line with ornamental end caps */
+.scale-line {
+  position: absolute;
+  left: 4%; right: 4%; top: 50%;
+  height: 3px;
+  background: linear-gradient(to right, transparent 0, #2a1a0a 5%, #2a1a0a 95%, transparent 100%);
+  transform: translateY(-50%);
+}
+.scale-line::before, .scale-line::after {
+  content: '';
+  position: absolute; top: 50%; transform: translateY(-50%);
+  width: 18px; height: 12px;
+  background: radial-gradient(circle, #8a651f 30%, transparent 70%);
+}
+.scale-line::before { left: -12px; }
+.scale-line::after  { right: -12px; }
+
+.scale-positions {
+  position: relative;
+  display: flex; justify-content: space-between;
+  width: 92%; margin: 0 auto;
+}
+.scale-pos {
+  position: relative;
+  display: flex; flex-direction: column; align-items: center;
+  cursor: pointer;
+  padding: 4px 0;
+  min-width: 80px;
+}
+.scale-pos .pip {
+  width: 14px; height: 14px;
+  border-radius: 50%;
+  background: #2a1a0a;
+  border: 3px solid var(--page);
+  box-shadow: 0 0 0 1px #2a1a0a;
+  transition: all 0.25s ease;
+  position: relative;
+  z-index: 2;
+}
+.scale-pos .name {
+  margin-top: 10px;
+  font-family: 'IM Fell English SC', serif;
+  font-size: 0.8rem;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--ink-soft);
+  transition: color 0.2s;
+}
+.scale-pos:hover .name { color: var(--vermilion); }
+.scale-pos.active .pip {
+  width: 22px; height: 22px;
+  background: radial-gradient(circle at 35% 30%, #fff0b0 0%, #ebb947 40%, #8a651f 100%);
+  box-shadow:
+    0 0 0 2px var(--vermilion),
+    0 0 18px rgba(235,185,71,0.85),
+    0 0 30px rgba(235,185,71,0.5);
+  transform: translateY(-2px);
+}
+.scale-pos.active .name {
+  color: var(--vermilion);
+  font-weight: 600;
+  text-shadow: 0 0 6px rgba(235,185,71,0.4);
+}
+
+/* Illumination halo behind active pip */
+.scale-pos.active::before {
+  content: '';
+  position: absolute;
+  top: 4px; left: 50%; transform: translateX(-50%);
+  width: 60px; height: 20px;
+  background: radial-gradient(ellipse, rgba(235,185,71,0.55) 0%, transparent 70%);
+  pointer-events: none;
+  z-index: 1;
+}
+
+/* Marginalia flourish - small inked flourish under scale */
+.scale-flourish {
+  text-align: center;
+  font-family: 'Cinzel Decorative', serif;
+  color: var(--gold-deep);
+  font-size: 1rem;
+  margin-top: 0.4rem;
+  letter-spacing: 0.5em;
+  opacity: 0.6;
+}
+
+/* Prompt area */
+.prompt-wrap {
+  flex: 1;
+  display: flex; flex-direction: column; gap: 1rem;
+}
+.prompt-heading {
+  font-family: 'Cinzel Decorative', serif;
+  color: var(--ink-soft);
+  font-size: 0.85rem;
+  text-align: center;
+  letter-spacing: 0.15em;
+}
+.prompt-lines {
+  flex: 1;
+  background: repeating-linear-gradient(0deg, transparent 0 30px, rgba(0,0,0,0.09) 30px 31px);
+  padding: 0.5rem 0.3rem;
+}
+.prompt-input {
+  width: 100%; height: 100%;
+  background: transparent; border: none; outline: none; resize: none;
+  font-family: 'EB Garamond', serif; font-size: 1.15rem;
+  color: var(--ink); line-height: 30px; font-style: italic;
+}
+
+.meaning-note {
+  font-family: 'EB Garamond', serif; font-style: italic;
+  color: var(--ink-soft); font-size: 0.92rem;
+  text-align: center;
+  padding: 0 1rem;
+}
+
+.desk-item { position: absolute; z-index: 5; filter: drop-shadow(0 8px 18px rgba(0,0,0,0.6)); }
+.item-candle { top: 8%; right: -60px; width: 80px; }
+.item-potion { bottom: 12%; left: -50px; width: 70px; }
+.item-quill  { top: -30px; left: 15%; width: 180px; transform: rotate(-12deg); }
+.item-map    { bottom: -40px; right: 10%; width: 220px; transform: rotate(6deg); }
+
+.footer-note {
+  position: fixed; bottom: 1rem; left: 0; right: 0;
+  text-align: center; color: rgba(235,213,164,0.5);
+  font-family: 'IM Fell English SC', serif; font-size: 0.8rem;
+  letter-spacing: 0.15em;
+  z-index: 20;
+}
+</style>
+</head>
+<body>
+<div class="desk-bg"></div>
+
+<header class="header">
+  <nav>
+    <a href="#">About</a>
+    <a href="#">How it works</a>
+    <a href="#">Sourcebooks</a>
+  </nav>
+  <div class="header-right">
+    <button class="theme-toggle">Candlelight</button>
+    <span style="color:var(--gold); opacity:0.6;">Login</span>
+  </div>
+</header>
+
+<main class="stage">
+  <div class="tome">
+    <!-- Desk items -->
+    <svg class="desk-item item-candle" viewBox="0 0 80 120">
+      <defs>
+        <radialGradient id="flameJ" cx="50%" cy="40%"><stop offset="0%" stop-color="#fff4b0"/><stop offset="50%" stop-color="#f0a020"/><stop offset="100%" stop-color="#8a2010" stop-opacity="0"/></radialGradient>
+      </defs>
+      <ellipse cx="40" cy="30" rx="9" ry="22" fill="url(#flameJ)"/>
+      <rect x="30" y="45" width="20" height="70" fill="#e4d1a0" stroke="#8a6f3c" stroke-width="1"/>
+      <ellipse cx="40" cy="45" rx="10" ry="3" fill="#c2a876"/>
+    </svg>
+    <svg class="desk-item item-potion" viewBox="0 0 70 100">
+      <defs>
+        <linearGradient id="potionJ" x1="0" x2="0" y1="0" y2="1">
+          <stop offset="0%" stop-color="#7cc88a"/><stop offset="60%" stop-color="#3e7042"/><stop offset="100%" stop-color="#1f3a22"/>
+        </linearGradient>
+      </defs>
+      <rect x="28" y="5" width="14" height="18" fill="#3a1d0a"/>
+      <path d="M22 25 Q22 35 18 45 Q8 65 10 80 Q12 95 35 95 Q58 95 60 80 Q62 65 52 45 Q48 35 48 25 Z" fill="url(#potionJ)" stroke="#0f0502" stroke-width="1.5"/>
+    </svg>
+    <svg class="desk-item item-quill" viewBox="0 0 180 60">
+      <path d="M10 30 Q90 10 170 15 L165 22 Q90 20 15 35 Z" fill="#f0d89a" stroke="#8a6f3c" stroke-width="0.8"/>
+      <path d="M10 30 L2 40 L8 42 L14 36 Z" fill="#2a1a0a"/>
+    </svg>
+    <svg class="desk-item item-map" viewBox="0 0 220 160">
+      <rect x="0" y="0" width="220" height="160" fill="#d4b880" stroke="#8a6f3c" stroke-width="2"/>
+      <path d="M20 30 Q60 20 100 40 T200 35" stroke="#4a3420" stroke-width="1.5" fill="none"/>
+      <path d="M30 80 Q80 90 140 70 T210 90" stroke="#4a3420" stroke-width="1.5" fill="none"/>
+      <circle cx="60" cy="50" r="3" fill="#a8221c"/>
+      <circle cx="160" cy="90" r="3" fill="#a8221c"/>
+    </svg>
+
+    <!-- Left page -->
+    <div class="page page-left">
+      <p class="left-body">
+        <span class="dropcap">A</span>t the top of the right-hand page you will find a scale, inked across the margin and illuminated at one of its five stations. The lit point is the voice in which the tome will reply.
+      </p>
+      <p class="left-body">Touch another station to move the light. The ink remains; the illumination wanders. The tome remembers which station you favoured and returns there on your next visit.</p>
+      <p class="left-body" style="color: var(--ink); font-style: italic;">Set the station. Ink your question. Turn the page.</p>
+    </div>
+
+    <!-- Right page -->
+    <div class="page page-right">
+      <!-- Illuminated scale -->
+      <div class="scale-section">
+        <div class="scale-heading">— The Whimsy Scale —</div>
+        <div class="scale-bar">
+          <div class="scale-line"></div>
+          <div class="scale-positions">
+            <div class="scale-pos" data-name="Tactical">
+              <div class="pip"></div>
+              <div class="name">Tactical</div>
+            </div>
+            <div class="scale-pos" data-name="Balanced">
+              <div class="pip"></div>
+              <div class="name">Balanced</div>
+            </div>
+            <div class="scale-pos active" data-name="Creative">
+              <div class="pip"></div>
+              <div class="name">Creative</div>
+            </div>
+            <div class="scale-pos" data-name="Theatrical">
+              <div class="pip"></div>
+              <div class="name">Theatrical</div>
+            </div>
+            <div class="scale-pos" data-name="Chaotic">
+              <div class="pip"></div>
+              <div class="name">Chaotic</div>
+            </div>
+          </div>
+        </div>
+        <div class="scale-flourish">❦ · ❦ · ❦</div>
+        <div class="meaning-note" id="meaning">Lateral thinking and unexpected applications — the tome reaches for the clever angle.</div>
+      </div>
+
+      <!-- Prompt -->
+      <div class="prompt-wrap">
+        <div class="prompt-heading">— Your Query —</div>
+        <div class="prompt-lines">
+          <textarea class="prompt-input" placeholder="What's the most dramatic possible entrance to a king's banquet?"></textarea>
+        </div>
+      </div>
+    </div>
+  </div>
+</main>
+
+<div class="footer-note">Variation J — Illuminated Scale</div>
+
+<script>
+  const meanings = {
+    Tactical: 'Practical and mechanical — the tome speaks in the voice of a careful strategist.',
+    Balanced: 'A measured mix of practicality and flavour — the default voice of the tome.',
+    Creative: 'Lateral thinking and unexpected applications — the tome reaches for the clever angle.',
+    Theatrical: 'Maximum drama, maximum spectacle — every recommendation is a scene.',
+    Chaotic: 'Off-script, absurd, and sometimes wonderful — prepare to be surprised.'
+  };
+  document.querySelectorAll('.scale-pos').forEach(pos => {
+    pos.addEventListener('click', () => {
+      document.querySelectorAll('.scale-pos').forEach(p => p.classList.remove('active'));
+      pos.classList.add('active');
+      document.getElementById('meaning').textContent = meanings[pos.dataset.name];
+    });
+  });
+</script>
+</body>
+</html>

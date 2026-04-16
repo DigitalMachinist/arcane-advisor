@@ -1,0 +1,284 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Component Sheet — Casting Circle &amp; Needle</title>
+<link href="https://fonts.googleapis.com/css2?family=Cinzel+Decorative:wght@400;700;900&family=Cinzel:wght@400;600;700&family=EB+Garamond:ital,wght@0,400;0,500;0,600;1,400;1,500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --desk: #241811; --ink: #f3e7cf; --ink-dim: #b8a681; --ink-faint: #7a6944;
+    --gold: #c79a47;
+    --brass: #c4a156; --brass-dark: #806330;
+    --arcane: #ffd57a; --arcane-deep: #e89a2a;
+    --arcane-glow: rgba(255, 200, 90, 0.75);
+    --needle-bright: #ffd57a; --needle-inner: #fff3d0;
+  }
+  [data-whimsy="tactical"]   { --arcane:#9fc5e8; --arcane-deep:#3f78a8; --arcane-glow:rgba(120,180,230,0.75); --needle-bright:#9fc5e8; --needle-inner:#e6f2fb; }
+  [data-whimsy="balanced"]   { --arcane:#9fe3b8; --arcane-deep:#3fa870; --arcane-glow:rgba(110,220,160,0.75); --needle-bright:#9fe3b8; --needle-inner:#e2f7ec; }
+  [data-whimsy="creative"]   { --arcane:#ffd57a; --arcane-deep:#e89a2a; --arcane-glow:rgba(255,200,90,0.75);  --needle-bright:#ffd57a; --needle-inner:#fff3d0; }
+  [data-whimsy="theatrical"] { --arcane:#d8a8ee; --arcane-deep:#8a42b8; --arcane-glow:rgba(200,130,230,0.75); --needle-bright:#d8a8ee; --needle-inner:#f0e1f8; }
+  [data-whimsy="chaotic"]    { --arcane:#ff9aa0; --arcane-deep:#c03848; --arcane-glow:rgba(255,120,130,0.75); --needle-bright:#ff9aa0; --needle-inner:#fde4e6; }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html, body { height: 100%; }
+  body {
+    min-height: 100vh;
+    background: radial-gradient(ellipse at 50% 20%, #3a2818 0%, #120905 82%), var(--desk);
+    background-attachment: fixed;
+    font-family: 'EB Garamond', serif; color: var(--ink);
+    padding: 60px 40px 120px;
+  }
+  body::before {
+    content: ''; position: fixed; inset: 0;
+    background: repeating-linear-gradient(91deg, transparent 0 90px, rgba(0,0,0,0.1) 90px 91px);
+    pointer-events: none; z-index: 0;
+  }
+
+  .sheet { max-width: 880px; margin: 0 auto; position: relative; z-index: 2; }
+  .sheet-head { border-bottom: 1px solid rgba(184,166,129,0.25); padding-bottom: 28px; margin-bottom: 40px; }
+  .breadcrumb {
+    font-family: 'Cinzel Decorative', serif; font-size: 10px;
+    letter-spacing: 0.28em; text-transform: uppercase; color: var(--ink-faint);
+  }
+  .breadcrumb a { color: var(--ink-dim); text-decoration: none; }
+  .breadcrumb a:hover { color: var(--gold); }
+  .sheet-title {
+    font-family: 'Cinzel Decorative', serif; font-weight: 900;
+    font-size: 32px; color: var(--gold);
+    letter-spacing: 0.1em; text-transform: uppercase; margin: 8px 0 10px;
+  }
+  .sheet-sub {
+    font-family: 'EB Garamond', serif; font-style: italic;
+    color: var(--ink-dim); font-size: 15px; line-height: 22px; max-width: 640px;
+  }
+  .state { margin-bottom: 56px; }
+  .state-head { display: flex; align-items: baseline; gap: 16px; margin-bottom: 6px; }
+  .state-name {
+    font-family: 'Cinzel Decorative', serif; font-weight: 700;
+    font-size: 13px; letter-spacing: 0.28em; text-transform: uppercase; color: var(--gold);
+  }
+  .state-chip {
+    font-family: 'Cinzel', serif; font-size: 9px;
+    letter-spacing: 0.22em; text-transform: uppercase; color: var(--ink-faint);
+    padding: 2px 10px; border: 1px solid rgba(184,166,129,0.35); border-radius: 10px;
+  }
+  .state-note {
+    font-family: 'EB Garamond', serif; font-style: italic;
+    color: var(--ink-dim); font-size: 14px; line-height: 21px;
+    margin-bottom: 18px; max-width: 640px;
+  }
+
+  /* CASTING CIRCLE + NEEDLE — rendered inline at reduced size per theme */
+  .circle-grid {
+    display: grid; grid-template-columns: repeat(2, 1fr); gap: 24px;
+  }
+  .circle-card {
+    position: relative;
+    padding: 24px;
+    border: 1px dashed rgba(184,166,129,0.2);
+    border-radius: 2px;
+    background: rgba(0,0,0,0.3);
+    display: flex; flex-direction: column; align-items: center; gap: 12px;
+  }
+  .circle-wrap {
+    position: relative;
+    width: 300px; height: 300px;
+  }
+  .circle-wrap .bg-circle-svg,
+  .circle-wrap .needle-svg {
+    position: absolute; inset: 0; width: 100%; height: 100%;
+  }
+  .circle-wrap .bg-circle-svg {
+    opacity: 0.78; filter: drop-shadow(0 0 14px var(--arcane-glow));
+  }
+  .circle-wrap .needle-svg {
+    opacity: 0.85;
+  }
+  .circle-label {
+    font-family: 'Cinzel Decorative', serif; font-size: 10px;
+    letter-spacing: 0.28em; text-transform: uppercase;
+    color: var(--arcane);
+    display: flex; align-items: center; gap: 8px;
+  }
+  .circle-label::before {
+    content: ''; width: 10px; height: 10px; border-radius: 50%;
+    background: var(--arcane); box-shadow: 0 0 6px var(--arcane-glow);
+  }
+  .circle-caption {
+    font-family: 'Cinzel', serif; font-size: 9px;
+    letter-spacing: 0.22em; text-transform: uppercase; color: var(--ink-faint);
+    text-align: center;
+  }
+</style>
+</head>
+<body>
+<div class="sheet">
+
+  <div class="sheet-head">
+    <div class="breadcrumb"><a href="index.html">Components</a> · Casting Circle &amp; Needle</div>
+    <h1 class="sheet-title">Casting Circle &amp; Needle</h1>
+    <p class="sheet-sub">
+      The atmospheric background: an ornate arcane circle with a compass needle that rotates
+      to point at the active whimsy rune. Rendered at 300px here — in the live UI it scales
+      to 950px, centered and ghosted behind the transcript. Stroke and glow colours cascade
+      from the active whimsy; the needle rotation is set per symbol (tactical +30°, balanced
+      +15°, creative 0°, theatrical −15°, chaotic −30°) so the tip points down toward the
+      matching symbol in the linear dial (CSS rotate is clockwise, so +deg leans left).
+    </p>
+  </div>
+
+  <section class="state">
+    <div class="state-head">
+      <div class="state-name">Theme sweep — all five whimsy palettes</div>
+      <div class="state-chip">Palette / rotation</div>
+    </div>
+    <p class="state-note">
+      Each tile shows the circle + needle for one whimsy. Needle rotation matches the dial
+      position of the corresponding rune (see the Whimsy Dial sheet).
+    </p>
+    <div class="circle-grid">
+
+      <div class="circle-card" data-whimsy="tactical">
+        <div class="circle-label">Tactical</div>
+        <div class="circle-wrap" data-rotate="30"></div>
+        <div class="circle-caption">Needle +30° (points left)</div>
+      </div>
+
+      <div class="circle-card" data-whimsy="balanced">
+        <div class="circle-label">Balanced</div>
+        <div class="circle-wrap" data-rotate="15"></div>
+        <div class="circle-caption">Needle +15°</div>
+      </div>
+
+      <div class="circle-card" data-whimsy="creative">
+        <div class="circle-label">Creative</div>
+        <div class="circle-wrap" data-rotate="0"></div>
+        <div class="circle-caption">Needle 0° (due south)</div>
+      </div>
+
+      <div class="circle-card" data-whimsy="theatrical">
+        <div class="circle-label">Theatrical</div>
+        <div class="circle-wrap" data-rotate="-15"></div>
+        <div class="circle-caption">Needle −15°</div>
+      </div>
+
+      <div class="circle-card" data-whimsy="chaotic">
+        <div class="circle-label">Chaotic</div>
+        <div class="circle-wrap" data-rotate="-30"></div>
+        <div class="circle-caption">Needle −30° (points right)</div>
+      </div>
+
+      <div class="circle-card">
+        <div class="circle-label" style="color: var(--arcane);">Default (creative)</div>
+        <div class="circle-wrap" data-rotate="0"></div>
+        <div class="circle-caption">No data-whimsy set</div>
+      </div>
+
+    </div>
+  </section>
+
+</div>
+
+<script>
+  const svgNS = "http://www.w3.org/2000/svg";
+  const cx = 475, cy = 475;
+
+  function buildCircle(container, rotation) {
+    // Background circle SVG
+    const bg = document.createElementNS(svgNS, 'svg');
+    bg.setAttribute('class', 'bg-circle-svg');
+    bg.setAttribute('viewBox', '0 0 950 950');
+
+    const defs = document.createElementNS(svgNS, 'defs');
+    const id = 'glow-' + Math.random().toString(36).slice(2, 8);
+    const grad = document.createElementNS(svgNS, 'radialGradient');
+    grad.setAttribute('id', id); grad.setAttribute('cx', '0.5'); grad.setAttribute('cy', '0.5'); grad.setAttribute('r', '0.5');
+    grad.innerHTML =
+      '<stop offset="0%" stop-color="var(--arcane-glow)" stop-opacity="0.35"/>' +
+      '<stop offset="70%" stop-color="var(--arcane-glow)" stop-opacity="0.1"/>' +
+      '<stop offset="100%" stop-color="transparent"/>';
+    defs.appendChild(grad);
+    bg.appendChild(defs);
+
+    bg.insertAdjacentHTML('beforeend',
+      `<circle cx="${cx}" cy="${cy}" r="420" fill="url(#${id})"/>`+
+      `<circle cx="${cx}" cy="${cy}" r="420" fill="none" stroke="var(--arcane)" stroke-width="1.4" opacity="0.75"/>`+
+      `<circle cx="${cx}" cy="${cy}" r="405" fill="none" stroke="var(--arcane-deep)" stroke-width="0.6" opacity="0.5"/>`+
+      `<circle cx="${cx}" cy="${cy}" r="370" fill="none" stroke="var(--arcane)" stroke-width="1" opacity="0.65"/>`+
+      `<circle cx="${cx}" cy="${cy}" r="320" fill="none" stroke="var(--arcane)" stroke-width="1" opacity="0.65"/>`+
+      `<circle cx="${cx}" cy="${cy}" r="260" fill="none" stroke="var(--arcane)" stroke-width="0.9" opacity="0.6"/>`+
+      `<circle cx="${cx}" cy="${cy}" r="50"  fill="none" stroke="var(--arcane)" stroke-width="0.5" opacity="0.45"/>`+
+      `<circle cx="${cx}" cy="${cy}" r="18"  fill="none" stroke="var(--arcane)" stroke-width="0.8" opacity="0.7"/>`+
+      `<circle cx="${cx}" cy="${cy}" r="10"  fill="var(--arcane-deep)" opacity="0.6"/>`
+    );
+
+    // Ticks
+    const major = document.createElementNS(svgNS, 'g');
+    major.setAttribute('stroke', 'var(--arcane)'); major.setAttribute('stroke-width', '1.1'); major.setAttribute('opacity', '0.7');
+    const minor = document.createElementNS(svgNS, 'g');
+    minor.setAttribute('stroke', 'var(--arcane)'); minor.setAttribute('stroke-width', '0.5'); minor.setAttribute('opacity', '0.4');
+    for (let deg = 0; deg < 360; deg += 5) {
+      const isMajor = deg % 15 === 0;
+      const len = isMajor ? 16 : 7;
+      const r1 = 420, r2 = 420 - len;
+      const rad = (deg - 90) * Math.PI / 180;
+      const line = document.createElementNS(svgNS, 'line');
+      line.setAttribute('x1', cx + r1*Math.cos(rad));
+      line.setAttribute('y1', cy + r1*Math.sin(rad));
+      line.setAttribute('x2', cx + r2*Math.cos(rad));
+      line.setAttribute('y2', cy + r2*Math.sin(rad));
+      (isMajor ? major : minor).appendChild(line);
+    }
+    bg.appendChild(major); bg.appendChild(minor);
+
+    // Sector dividers + runes
+    const dividers = document.createElementNS(svgNS, 'g');
+    dividers.setAttribute('stroke', 'var(--arcane)'); dividers.setAttribute('stroke-width', '0.8'); dividers.setAttribute('opacity', '0.55');
+    const glyphs = document.createElementNS(svgNS, 'g');
+    glyphs.setAttribute('font-family', 'serif'); glyphs.setAttribute('font-size', '18');
+    glyphs.setAttribute('fill', 'var(--arcane)'); glyphs.setAttribute('text-anchor', 'middle'); glyphs.setAttribute('opacity', '0.75');
+    const runes = ['ᚠ','ᚢ','ᚦ','ᚨ','ᚱ','ᚲ','ᚷ','ᚹ','ᚺ','ᚾ','ᛁ','ᛃ'];
+    for (let i = 0; i < 12; i++) {
+      const deg = i * 30;
+      const rad = (deg - 90) * Math.PI / 180;
+      const line = document.createElementNS(svgNS, 'line');
+      line.setAttribute('x1', cx + 320*Math.cos(rad));
+      line.setAttribute('y1', cy + 320*Math.sin(rad));
+      line.setAttribute('x2', cx + 370*Math.cos(rad));
+      line.setAttribute('y2', cy + 370*Math.sin(rad));
+      dividers.appendChild(line);
+      const gDeg = deg + 15;
+      const gRad = (gDeg - 90) * Math.PI / 180;
+      const t = document.createElementNS(svgNS, 'text');
+      t.setAttribute('x', cx + 345*Math.cos(gRad));
+      t.setAttribute('y', cy + 345*Math.sin(gRad) + 6);
+      t.textContent = runes[i];
+      glyphs.appendChild(t);
+    }
+    bg.appendChild(dividers); bg.appendChild(glyphs);
+
+    container.appendChild(bg);
+
+    // Needle
+    const needle = document.createElementNS(svgNS, 'svg');
+    needle.setAttribute('class', 'needle-svg');
+    needle.setAttribute('viewBox', '0 0 950 950');
+    needle.innerHTML =
+      `<g style="transform: rotate(${rotation}deg); transform-origin: ${cx}px ${cy}px;">`+
+        `<polygon points="${cx},${cy} 439,295 ${cx},75 511,295" fill="#1b0f07" stroke="var(--arcane-deep)" stroke-width="0.8"/>`+
+        `<polygon points="${cx},${cy} 457,345 ${cx},75 493,345" fill="#3a2414" opacity="0.75"/>`+
+        `<polygon points="${cx},${cy} 435,655 ${cx},875 515,655" fill="var(--needle-bright)" stroke="var(--arcane-deep)" stroke-width="0.8" style="filter: drop-shadow(0 0 10px var(--needle-bright)) drop-shadow(0 0 22px var(--arcane-glow));"/>`+
+        `<polygon points="${cx},${cy} 457,605 ${cx},875 493,605" fill="var(--needle-inner)" opacity="0.6"/>`+
+        `<circle cx="${cx}" cy="${cy}" r="18" fill="var(--brass)" stroke="var(--arcane-deep)" stroke-width="1.2"/>`+
+        `<circle cx="${cx}" cy="${cy}" r="11" fill="var(--brass-dark)"/>`+
+        `<circle cx="${cx}" cy="${cy}" r="4"  fill="#120906"/>`+
+      `</g>`;
+    container.appendChild(needle);
+  }
+
+  document.querySelectorAll('.circle-wrap').forEach(wrap => {
+    buildCircle(wrap, parseFloat(wrap.dataset.rotate || '0'));
+  });
+</script>
+</body>
+</html>

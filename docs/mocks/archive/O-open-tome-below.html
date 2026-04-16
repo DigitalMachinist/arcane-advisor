@@ -1,0 +1,550 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Mockup O — Open Tome Below</title>
+<link href="https://fonts.googleapis.com/css2?family=Cinzel+Decorative:wght@400;700;900&family=EB+Garamond:ital,wght@0,400;0,500;1,400&family=IM+Fell+English+SC&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --desk: #241811;
+    --ink: #f3e7cf;
+    --ink-dim: #b8a681;
+    --parchment: #efe0bc;
+    --scrap: #e9d5a6;
+    --leather: #4a2a18;
+    --leather-dark: #2e170c;
+    --brass: #c4a156;
+    --brass-light: #e9c87a;
+    --brass-dark: #806330;
+    --ribbon: #8b1e2b;
+    --ribbon-dark: #5e1018;
+    --gold: #c79a47;
+    --arcane: #ffd57a;
+    --arcane-deep: #e89a2a;
+    --arcane-glow: rgba(255, 200, 90, 0.75);
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    min-height: 100vh;
+    background:
+      radial-gradient(ellipse at 50% 32%, #3a2818 0%, #140a05 78%),
+      var(--desk);
+    font-family: 'EB Garamond', serif;
+    color: var(--ink);
+    overflow-x: hidden;
+  }
+  body::before {
+    content: '';
+    position: fixed; inset: 0;
+    background: repeating-linear-gradient(91deg, transparent 0 90px, rgba(0,0,0,0.1) 90px 91px);
+    pointer-events: none;
+    z-index: 1;
+  }
+
+  .header {
+    position: relative; z-index: 5;
+    padding: 22px 40px;
+    display: flex; justify-content: space-between; align-items: center;
+    font-family: 'Cinzel Decorative', serif;
+    letter-spacing: 0.18em;
+    color: var(--ink-dim);
+  }
+  .header .brand { font-size: 18px; color: var(--gold); text-transform: uppercase; }
+  .header .nav { font-family: 'IM Fell English SC', serif; font-size: 13px; letter-spacing: 0.25em; }
+  .header .nav span { margin-left: 28px; opacity: 0.7; }
+
+  .stage {
+    position: relative;
+    width: 100%;
+    min-height: calc(100vh - 70px);
+    z-index: 2;
+  }
+
+  /* Huge dominant casting circle */
+  .circle-wrap {
+    position: absolute;
+    top: 10px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 880px;
+    height: 880px;
+    z-index: 6;
+  }
+  .ritual-halo {
+    position: absolute; inset: -70px;
+    background: radial-gradient(circle at center,
+      rgba(255, 200, 90, 0.28) 0%,
+      rgba(255, 180, 60, 0.1) 42%,
+      transparent 72%);
+    animation: halo 5s ease-in-out infinite;
+    pointer-events: none;
+  }
+  @keyframes halo {
+    0%, 100% { opacity: 0.9; transform: scale(1); }
+    50% { opacity: 1; transform: scale(1.04); }
+  }
+  .circle-svg {
+    position: absolute; inset: 0;
+    width: 100%; height: 100%;
+    filter: drop-shadow(0 0 24px var(--arcane-glow)) drop-shadow(0 0 48px rgba(255,180,80,0.35));
+  }
+  .ring-outer { animation: spin 200s linear infinite; transform-origin: 440px 440px; }
+  .ring-inner { animation: spin 130s linear infinite reverse; transform-origin: 440px 440px; }
+  @keyframes spin { to { transform: rotate(360deg); } }
+
+  .needle-svg {
+    position: absolute; inset: 0;
+    width: 100%; height: 100%;
+    pointer-events: none;
+    z-index: 9;
+  }
+  .needle {
+    transform-origin: 440px 440px;
+    transition: transform 0.8s cubic-bezier(.3,1.4,.5,1);
+  }
+
+  .scrap {
+    position: absolute;
+    top: 50%; left: 50%;
+    transform: translate(-50%, -50%) rotate(-1.5deg);
+    width: 310px;
+    min-height: 180px;
+    background: var(--scrap);
+    background-image:
+      repeating-linear-gradient(0deg, transparent 0 27px, rgba(74,52,32,0.18) 27px 28px),
+      radial-gradient(ellipse at 30% 10%, rgba(120,80,30,0.15), transparent 60%);
+    padding: 22px 24px;
+    clip-path: polygon(
+      2% 4%, 10% 1%, 22% 3%, 34% 0%, 46% 2%, 60% 1%, 74% 3%, 88% 0%, 99% 6%,
+      97% 20%, 100% 36%, 98% 52%, 100% 68%, 97% 82%, 99% 94%,
+      88% 98%, 74% 96%, 58% 99%, 42% 97%, 26% 100%, 10% 97%, 1% 92%,
+      3% 76%, 0% 60%, 2% 44%, 0% 28%, 3% 14%
+    );
+    box-shadow: 0 12px 36px rgba(0,0,0,0.6);
+    z-index: 11;
+  }
+  .scrap textarea {
+    width: 100%;
+    min-height: 118px;
+    background: transparent;
+    border: none;
+    outline: none;
+    resize: none;
+    font-family: 'EB Garamond', serif;
+    font-style: italic;
+    font-size: 18px;
+    line-height: 27px;
+    color: #3a2614;
+  }
+  .scrap textarea::placeholder { color: rgba(58,38,20,0.45); }
+  .scrap .submit-row { display: flex; justify-content: flex-end; margin-top: 10px; }
+  .scrap button {
+    font-family: 'Cinzel Decorative', serif;
+    background: transparent;
+    border: 1px solid rgba(74,52,32,0.5);
+    color: #3a2614;
+    padding: 6px 16px;
+    font-size: 10px;
+    letter-spacing: 0.2em;
+    cursor: pointer;
+    text-transform: uppercase;
+  }
+  .scrap button:hover {
+    background: rgba(255, 200, 90, 0.3);
+    border-color: var(--arcane-deep);
+    color: var(--arcane-deep);
+  }
+
+  .symbols {
+    position: absolute; inset: 0;
+    pointer-events: none;
+    z-index: 10;
+  }
+  .symbol {
+    position: absolute;
+    width: 58px; height: 58px;
+    transform: translate(-50%, -50%);
+    display: flex; align-items: center; justify-content: center;
+    cursor: pointer;
+    pointer-events: auto;
+    transition: all 0.4s ease;
+  }
+  .symbol svg {
+    width: 38px; height: 38px;
+    stroke: var(--ink-dim);
+    stroke-width: 1.5;
+    fill: none;
+    transition: all 0.4s ease;
+  }
+  .symbol:hover svg { stroke: var(--arcane); filter: drop-shadow(0 0 6px var(--arcane-glow)); }
+  .symbol.active svg {
+    stroke: var(--arcane);
+    stroke-width: 2;
+    filter: drop-shadow(0 0 10px var(--arcane)) drop-shadow(0 0 20px var(--arcane-glow));
+  }
+  .symbol .label {
+    position: absolute;
+    top: 62px;
+    left: 50%; transform: translateX(-50%);
+    font-family: 'Cinzel Decorative', serif;
+    font-size: 11px;
+    letter-spacing: 0.28em;
+    color: var(--ink-dim);
+    text-transform: uppercase;
+    white-space: nowrap;
+    transition: color 0.4s ease;
+  }
+  .symbol.active .label {
+    color: var(--arcane);
+    text-shadow: 0 0 8px var(--arcane-glow);
+  }
+
+  /* Open tome below — showing both covers and pages spread */
+  .tome-wrap {
+    position: absolute;
+    bottom: -200px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 1180px;
+    height: 520px;
+    z-index: 3;
+    filter: drop-shadow(0 40px 50px rgba(0,0,0,0.8));
+  }
+  .tome-svg { width: 100%; height: 100%; display: block; }
+  .tome-underglow {
+    position: absolute;
+    top: 20px;
+    left: 50%; transform: translateX(-50%);
+    width: 800px; height: 180px;
+    background: radial-gradient(ellipse at center, var(--arcane-glow) 0%, rgba(255,160,60,0.15) 45%, transparent 78%);
+    filter: blur(14px);
+    animation: underpulse 4s ease-in-out infinite;
+    pointer-events: none;
+    z-index: 4;
+  }
+  @keyframes underpulse {
+    0%, 100% { opacity: 0.7; }
+    50% { opacity: 1; }
+  }
+
+  .hint {
+    position: fixed;
+    bottom: 22px; left: 50%;
+    transform: translateX(-50%);
+    font-family: 'IM Fell English SC', serif;
+    font-size: 11px;
+    letter-spacing: 0.3em;
+    color: var(--ink-dim);
+    opacity: 0.55;
+    text-transform: uppercase;
+    z-index: 20;
+  }
+</style>
+</head>
+<body>
+
+<div class="header">
+  <div class="brand">Arcane Advisor</div>
+  <div class="nav"><span>The Grimoire</span><span>The Archive</span><span>Enter</span></div>
+</div>
+
+<div class="stage">
+
+  <div class="circle-wrap">
+    <div class="ritual-halo"></div>
+
+    <svg class="circle-svg" viewBox="0 0 880 880">
+      <defs>
+        <radialGradient id="innerGlow-o" cx="0.5" cy="0.5" r="0.5">
+          <stop offset="0%" stop-color="rgba(255,220,140,0.22)"/>
+          <stop offset="70%" stop-color="rgba(255,180,80,0.06)"/>
+          <stop offset="100%" stop-color="transparent"/>
+        </radialGradient>
+      </defs>
+
+      <circle cx="440" cy="440" r="420" fill="url(#innerGlow-o)"/>
+
+      <g class="ring-outer">
+        <circle cx="440" cy="440" r="420" fill="none" stroke="var(--arcane)" stroke-width="1.4" opacity="0.75"/>
+        <circle cx="440" cy="440" r="402" fill="none" stroke="var(--arcane-deep)" stroke-width="0.7" opacity="0.5"/>
+        <circle cx="440" cy="440" r="390" fill="none" stroke="var(--arcane)" stroke-width="0.5" opacity="0.35"/>
+
+        <g stroke="var(--arcane)" stroke-width="1.1" opacity="0.7" id="major-ticks-o"></g>
+        <g stroke="var(--arcane)" stroke-width="0.5" opacity="0.45" id="minor-ticks-o"></g>
+
+        <!-- 8 rune marks -->
+        <g font-family="serif" font-size="28" fill="var(--arcane)" text-anchor="middle" opacity="0.9">
+          <text x="440" y="12">✦</text>
+          <text x="742" y="140">◈</text>
+          <text x="876" y="448">✧</text>
+          <text x="742" y="760">❈</text>
+          <text x="440" y="880">✦</text>
+          <text x="138" y="760">◈</text>
+          <text x="4" y="448">✧</text>
+          <text x="138" y="140">❈</text>
+        </g>
+      </g>
+
+      <g class="ring-inner">
+        <circle cx="440" cy="440" r="322" fill="none" stroke="var(--arcane)" stroke-width="1.1" opacity="0.65"/>
+        <circle cx="440" cy="440" r="308" fill="none" stroke="var(--arcane-deep)" stroke-width="0.6" opacity="0.45" stroke-dasharray="2 5"/>
+        <circle cx="440" cy="440" r="295" fill="none" stroke="var(--arcane)" stroke-width="0.5" opacity="0.35"/>
+      </g>
+
+      <!-- Compass face crosshair -->
+      <g stroke="var(--arcane)" stroke-width="1" fill="none" opacity="0.5">
+        <line x1="440" y1="130" x2="440" y2="750"/>
+        <line x1="130" y1="440" x2="750" y2="440"/>
+      </g>
+
+      <g font-family="'Cinzel Decorative', serif" font-size="16" fill="var(--arcane)" text-anchor="middle" opacity="0.9" letter-spacing="2">
+        <text x="440" y="90">N</text>
+        <text x="788" y="444">E</text>
+        <text x="92" y="444">W</text>
+      </g>
+
+      <circle cx="440" cy="440" r="20" fill="none" stroke="var(--arcane)" stroke-width="0.8" opacity="0.7"/>
+      <circle cx="440" cy="440" r="10" fill="var(--arcane-deep)" opacity="0.6"/>
+    </svg>
+
+    <svg class="needle-svg" viewBox="0 0 880 880">
+      <g class="needle" id="needle">
+        <polygon points="440,440 422,270 440,200 458,270" fill="#1b0f07" stroke="var(--arcane-deep)" stroke-width="0.8"/>
+        <polygon points="440,440 432,340 440,200 448,340" fill="#3a2414" opacity="0.8"/>
+        <polygon points="440,440 416,600 440,752 464,600" fill="var(--arcane)" stroke="var(--arcane-deep)" stroke-width="0.8"
+                 style="filter: drop-shadow(0 0 8px var(--arcane)) drop-shadow(0 0 18px var(--arcane-glow));"/>
+        <polygon points="440,440 430,540 440,752 450,540" fill="#fff3d0" opacity="0.6"/>
+        <circle cx="440" cy="440" r="18" fill="var(--brass)" stroke="var(--arcane-deep)" stroke-width="1.3"/>
+        <circle cx="440" cy="440" r="11" fill="var(--brass-dark)"/>
+        <circle cx="440" cy="440" r="4" fill="#120906"/>
+      </g>
+    </svg>
+
+    <!-- Symbols spread WIDE along southern arc, radius 470 -->
+    <!-- Tactical 235°: x=440+470*sin(235)=440-385=55, y=440-470*cos(235)=440+270=710
+         Balanced 208°: x=440+470*(-0.469)=440-220=220, y=440-470*(-0.883)=440+415=855
+         Creative 180°: x=440, y=440+470=910 → too far, let's use radius 450
+           Tactical 235: x = 440+450*sin(235)=440-369=71, y=440+450*(-cos(235))=440+258=698 (cos(235)=-0.574 so -(-0.574)=0.574)
+           wait: y = cy + r*sin? no. Using angle from north clockwise:
+              x = cx + r * sin(θ)
+              y = cy - r * cos(θ)    (north is up, so cos=1 → y=cy-r)
+           θ=235: sin=-0.819, cos=-0.574
+              x = 440 + 450*(-0.819) = 440-369 = 71
+              y = 440 - 450*(-0.574) = 440+258 = 698
+           θ=205: sin=-0.423, cos=-0.906
+              x = 440 - 190 = 250
+              y = 440 + 408 = 848
+           θ=180: sin=0, cos=-1; x=440, y=440+450=890
+           θ=155: sin=0.423, cos=-0.906; x=440+190=630, y=848
+           θ=125: sin=0.819, cos=-0.574; x=440+369=809, y=698
+    -->
+    <div class="symbols">
+      <div class="symbol" data-angle="235" style="left: 71px; top: 698px;">
+        <svg viewBox="0 0 40 40"><path d="M8 8 L32 32 M32 8 L8 32 M8 8 L4 4 M32 8 L36 4 M8 32 L4 36 M32 32 L36 36"/></svg>
+        <span class="label">Tactical</span>
+      </div>
+      <div class="symbol" data-angle="205" style="left: 250px; top: 848px;">
+        <svg viewBox="0 0 40 40"><path d="M20 6 L20 34 M10 14 L30 14 M6 22 Q10 28 14 22 M26 22 Q30 28 34 22"/></svg>
+        <span class="label">Balanced</span>
+      </div>
+      <div class="symbol active" data-angle="180" style="left: 440px; top: 890px;">
+        <svg viewBox="0 0 40 40">
+          <path d="M20 8 Q28 14 20 20 Q12 26 20 32" />
+          <path d="M20 8 Q12 14 20 20 Q28 26 20 32" />
+          <circle cx="20" cy="20" r="3"/>
+        </svg>
+        <span class="label">Creative</span>
+      </div>
+      <div class="symbol" data-angle="155" style="left: 630px; top: 848px;">
+        <svg viewBox="0 0 40 40">
+          <circle cx="20" cy="20" r="5"/>
+          <path d="M20 4 L20 10 M20 30 L20 36 M4 20 L10 20 M30 20 L36 20 M8 8 L12 12 M28 28 L32 32 M8 32 L12 28 M28 12 L32 8"/>
+        </svg>
+        <span class="label">Theatrical</span>
+      </div>
+      <div class="symbol" data-angle="125" style="left: 809px; top: 698px;">
+        <svg viewBox="0 0 40 40"><path d="M20 4 L24 16 L36 18 L27 26 L30 38 L20 31 L10 38 L13 26 L4 18 L16 16 Z"/></svg>
+        <span class="label">Chaotic</span>
+      </div>
+    </div>
+
+    <div class="scrap">
+      <textarea placeholder="Inscribe thy question..."></textarea>
+      <div class="submit-row">
+        <button>Consult</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Open tome below, showing full spread with covers -->
+  <div class="tome-wrap">
+    <div class="tome-underglow"></div>
+    <svg class="tome-svg" viewBox="0 0 1180 520" preserveAspectRatio="xMidYMid meet">
+      <defs>
+        <linearGradient id="leatherO" x1="0" y1="0" x2="0" y2="1">
+          <stop offset="0%" stop-color="#6b3c22"/>
+          <stop offset="45%" stop-color="#422110"/>
+          <stop offset="100%" stop-color="#1e0d06"/>
+        </linearGradient>
+        <linearGradient id="leatherCover" x1="0" y1="0" x2="1" y2="0">
+          <stop offset="0%" stop-color="#2e170c"/>
+          <stop offset="50%" stop-color="#5c331d"/>
+          <stop offset="100%" stop-color="#2e170c"/>
+        </linearGradient>
+        <linearGradient id="pagesO" x1="0" y1="0" x2="0" y2="1">
+          <stop offset="0%" stop-color="#efe0bc"/>
+          <stop offset="60%" stop-color="#d9c28f"/>
+          <stop offset="100%" stop-color="#9b7b45"/>
+        </linearGradient>
+        <linearGradient id="brassO" x1="0" y1="0" x2="0" y2="1">
+          <stop offset="0%" stop-color="#e9c87a"/>
+          <stop offset="50%" stop-color="#c4a156"/>
+          <stop offset="100%" stop-color="#806330"/>
+        </linearGradient>
+        <linearGradient id="ribbonO" x1="0" y1="0" x2="0" y2="1">
+          <stop offset="0%" stop-color="#c02a3b"/>
+          <stop offset="60%" stop-color="#8b1e2b"/>
+          <stop offset="100%" stop-color="#5e1018"/>
+        </linearGradient>
+      </defs>
+
+      <!-- Ground shadow -->
+      <ellipse cx="590" cy="500" rx="560" ry="14" fill="rgba(0,0,0,0.6)"/>
+
+      <!-- Back cover slab (left) -->
+      <path d="M 40,140 L 580,100 L 580,380 L 40,400 Z" fill="url(#leatherO)"/>
+      <!-- Back cover slab (right) -->
+      <path d="M 1140,140 L 600,100 L 600,380 L 1140,400 Z" fill="url(#leatherO)"/>
+
+      <!-- Thickness of cover (bottom edge) -->
+      <path d="M 40,400 L 580,380 L 580,400 L 40,420 Z" fill="#180a04"/>
+      <path d="M 1140,400 L 600,380 L 600,400 L 1140,420 Z" fill="#180a04"/>
+
+      <!-- Page stack — left -->
+      <path d="M 70,135 L 585,105 L 585,375 L 70,395 Z" fill="url(#pagesO)"/>
+      <!-- Page stack — right -->
+      <path d="M 1110,135 L 595,105 L 595,375 L 1110,395 Z" fill="url(#pagesO)"/>
+      <!-- Page edge striations -->
+      <g stroke="#8d6b36" stroke-width="0.35" opacity="0.55">
+        <path d="M 70,150 L 585,120" />
+        <path d="M 70,160 L 585,130" />
+        <path d="M 70,170 L 585,140" />
+        <path d="M 70,365 L 585,345" />
+        <path d="M 70,355 L 585,335" />
+        <path d="M 70,345 L 585,325" />
+        <path d="M 1110,150 L 595,120" />
+        <path d="M 1110,160 L 595,130" />
+        <path d="M 1110,170 L 595,140" />
+        <path d="M 1110,365 L 595,345" />
+        <path d="M 1110,355 L 595,335" />
+        <path d="M 1110,345 L 595,325" />
+      </g>
+
+      <!-- Deckle bumps on page edges (front edges) -->
+      <path d="M 70,395 Q 140,394 200,393 Q 260,395 320,393 Q 390,396 460,394 Q 520,392 585,395"
+            stroke="#7e5c2f" stroke-width="0.8" fill="none" opacity="0.7"/>
+      <path d="M 595,395 Q 660,393 720,394 Q 790,396 860,393 Q 920,395 980,392 Q 1050,396 1110,395"
+            stroke="#7e5c2f" stroke-width="0.8" fill="none" opacity="0.7"/>
+
+      <!-- Open page surface (the actual spread the viewer is reading) - lightly tinted on each side -->
+      <path d="M 90,130 L 585,108 L 585,350 L 90,370 Z" fill="#efe0bc" opacity="0.95"/>
+      <path d="M 1090,130 L 595,108 L 595,350 L 1090,370 Z" fill="#efe0bc" opacity="0.95"/>
+
+      <!-- Gutter shadow -->
+      <path d="M 578,100 L 602,100 L 602,380 L 578,380 Z" fill="url(#leatherCover)" opacity="0.85"/>
+      <g opacity="0.5">
+        <path d="M 585,108 Q 590,240 585,350" stroke="rgba(50,25,10,0.6)" stroke-width="3" fill="none"/>
+        <path d="M 595,108 Q 590,240 595,350" stroke="rgba(50,25,10,0.6)" stroke-width="3" fill="none"/>
+      </g>
+
+      <!-- Page text -->
+      <g font-family="'IM Fell English SC', serif" fill="#4a3420" opacity="0.9">
+        <text x="340" y="140" font-family="'Cinzel Decorative', serif" font-size="13" text-anchor="middle" fill="#5c3b1c" letter-spacing="3">— OF THE RITE —</text>
+        <text x="110" y="170" font-size="12" letter-spacing="1">Set the needle upon the sigil that names</text>
+        <text x="110" y="188" font-size="12" letter-spacing="1">thy temper, from tactical to chaotic.</text>
+        <text x="110" y="220" font-family="'Cinzel Decorative', serif" font-size="11" fill="#a67a2e" letter-spacing="3">I. TURN THE DIAL</text>
+        <text x="110" y="240" font-size="11">The southern tip of the arm seeks the</text>
+        <text x="110" y="256" font-size="11">flavour of thy working — mark it well.</text>
+        <text x="110" y="286" font-family="'Cinzel Decorative', serif" font-size="11" fill="#a67a2e" letter-spacing="3">II. INSCRIBE</text>
+        <text x="110" y="306" font-size="11">Upon the scrap held within the circle,</text>
+        <text x="110" y="322" font-size="11">write thy question plainly, whether foe</text>
+        <text x="110" y="338" font-size="11">or puzzle or hour in need of counsel.</text>
+
+        <text x="880" y="140" font-family="'Cinzel Decorative', serif" font-size="13" text-anchor="middle" fill="#5c3b1c" letter-spacing="3">— THE UTTERANCE —</text>
+        <text x="650" y="170" font-size="12" letter-spacing="1">Speak the word Consult and the</text>
+        <text x="650" y="188" font-size="12" letter-spacing="1">grimoire shall answer in kind.</text>
+        <text x="650" y="220" font-family="'Cinzel Decorative', serif" font-size="11" fill="#a67a2e" letter-spacing="3">III. COMMIT THE RITE</text>
+        <text x="650" y="240" font-size="11">Five workings shall be drawn from the</text>
+        <text x="650" y="256" font-size="11">art, shaped by thy temper and thy need.</text>
+        <text x="650" y="286" font-family="'Cinzel Decorative', serif" font-size="11" fill="#a67a2e" letter-spacing="3">IV. RECONSIDER</text>
+        <text x="650" y="306" font-size="11">Re-turn the needle to a new sigil and</text>
+        <text x="650" y="322" font-size="11">the counsel shall re-shape itself in</text>
+        <text x="650" y="338" font-size="11">accord with thy altered temper.</text>
+      </g>
+
+      <!-- Brass corner fittings on both covers -->
+      <g fill="url(#brassO)" stroke="#806330" stroke-width="0.7">
+        <!-- left cover - top-left corner -->
+        <path d="M 40,140 L 100,136 L 100,148 Q 80,152 68,168 Q 60,186 58,200 L 44,202 Z"/>
+        <circle cx="72" cy="172" r="2.8" fill="#806330"/>
+        <circle cx="94" cy="146" r="2" fill="#806330"/>
+        <!-- left cover - bottom-left corner -->
+        <path d="M 40,400 L 100,395 L 100,382 Q 80,378 68,362 Q 60,344 58,328 L 44,330 Z"/>
+        <circle cx="72" cy="358" r="2.8" fill="#806330"/>
+        <circle cx="94" cy="388" r="2" fill="#806330"/>
+        <!-- right cover - top-right corner -->
+        <path d="M 1140,140 L 1080,136 L 1080,148 Q 1100,152 1112,168 Q 1120,186 1122,200 L 1136,202 Z"/>
+        <circle cx="1108" cy="172" r="2.8" fill="#806330"/>
+        <circle cx="1086" cy="146" r="2" fill="#806330"/>
+        <!-- right cover - bottom-right corner -->
+        <path d="M 1140,400 L 1080,395 L 1080,382 Q 1100,378 1112,362 Q 1120,344 1122,328 L 1136,330 Z"/>
+        <circle cx="1108" cy="358" r="2.8" fill="#806330"/>
+        <circle cx="1086" cy="388" r="2" fill="#806330"/>
+      </g>
+
+      <!-- Red ribbon bookmark — emerges from gutter and trails down -->
+      <g>
+        <path d="M 585,180 L 588,250 L 595,400 L 602,510 L 620,510 L 612,400 L 604,250 L 598,180 Z"
+              fill="url(#ribbonO)" stroke="#5e1018" stroke-width="0.5"/>
+        <!-- notched end -->
+        <path d="M 602,510 L 611,500 L 620,510 Z" fill="var(--desk)"/>
+        <path d="M 590,200 L 598,400 L 606,510" stroke="rgba(255,200,200,0.3)" stroke-width="0.8" fill="none"/>
+      </g>
+    </svg>
+  </div>
+
+</div>
+
+<div class="hint">Turn the needle · inscribe thy question · commit the rite</div>
+
+<script>
+  const majorO = document.getElementById('major-ticks-o');
+  const minorO = document.getElementById('minor-ticks-o');
+  const cx = 440, cy = 440;
+  const svgNS = "http://www.w3.org/2000/svg";
+  for (let deg = 0; deg < 360; deg += 5) {
+    const isMajor = deg % 15 === 0;
+    const len = isMajor ? 20 : 9;
+    const r1 = 420, r2 = 420 - len;
+    const rad = (deg - 90) * Math.PI / 180;
+    const x1 = cx + r1 * Math.cos(rad), y1 = cy + r1 * Math.sin(rad);
+    const x2 = cx + r2 * Math.cos(rad), y2 = cy + r2 * Math.sin(rad);
+    const line = document.createElementNS(svgNS, 'line');
+    line.setAttribute('x1', x1); line.setAttribute('y1', y1);
+    line.setAttribute('x2', x2); line.setAttribute('y2', y2);
+    (isMajor ? majorO : minorO).appendChild(line);
+  }
+
+  const needle = document.getElementById('needle');
+  const symbols = document.querySelectorAll('.symbol');
+  symbols.forEach(sym => {
+    sym.addEventListener('click', () => {
+      symbols.forEach(s => s.classList.remove('active'));
+      sym.classList.add('active');
+      const angle = parseFloat(sym.dataset.angle);
+      needle.style.transform = `rotate(${angle - 180}deg)`;
+    });
+  });
+</script>
+</body>
+</html>

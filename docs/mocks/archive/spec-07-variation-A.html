@@ -1,0 +1,973 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Spec 7 — Variation A — Healthy Conversation (Rewritten)</title>
+<link href="https://fonts.googleapis.com/css2?family=Cinzel+Decorative:wght@400;700;900&family=Cinzel:wght@400;600;700&family=EB+Garamond:ital,wght@0,400;0,500;0,600;1,400;1,500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --desk: #241811; --ink: #f3e7cf; --ink-dim: #b8a681; --ink-faint: #7a6944;
+    --scrap: #e9d5a6; --scrap-dim: #c9b789; --card: #efdbb0; --card-edge: #b79b65;
+    --brass: #c4a156; --brass-dark: #806330;
+    --gold: #c79a47;
+    --arcane: #ffd57a; --arcane-deep: #e89a2a;
+    --arcane-glow: rgba(255, 200, 90, 0.75);
+    --needle-bright: #ffd57a; --needle-inner: #fff3d0;
+  }
+  body[data-whimsy="tactical"]   { --arcane:#9fc5e8; --arcane-deep:#3f78a8; --arcane-glow:rgba(120,180,230,0.75); --needle-bright:#9fc5e8; --needle-inner:#e6f2fb; }
+  body[data-whimsy="balanced"]   { --arcane:#9fe3b8; --arcane-deep:#3fa870; --arcane-glow:rgba(110,220,160,0.75); --needle-bright:#9fe3b8; --needle-inner:#e2f7ec; }
+  body[data-whimsy="creative"]   { --arcane:#ffd57a; --arcane-deep:#e89a2a; --arcane-glow:rgba(255,200,90,0.75);  --needle-bright:#ffd57a; --needle-inner:#fff3d0; }
+  body[data-whimsy="theatrical"] { --arcane:#d8a8ee; --arcane-deep:#8a42b8; --arcane-glow:rgba(200,130,230,0.75); --needle-bright:#d8a8ee; --needle-inner:#f0e1f8; }
+  body[data-whimsy="chaotic"]    { --arcane:#ff9aa0; --arcane-deep:#c03848; --arcane-glow:rgba(255,120,130,0.75); --needle-bright:#ff9aa0; --needle-inner:#fde4e6; }
+
+  /* Per-symbol palette — each dial symbol always shows its own Spec 6 colour */
+  .whimsy-symbol[data-theme="tactical"]   { --sym-arc:#9fc5e8; --sym-deep:#3f78a8; --sym-glow:rgba(120,180,230,0.75); }
+  .whimsy-symbol[data-theme="balanced"]   { --sym-arc:#9fe3b8; --sym-deep:#3fa870; --sym-glow:rgba(110,220,160,0.75); }
+  .whimsy-symbol[data-theme="creative"]   { --sym-arc:#ffd57a; --sym-deep:#e89a2a; --sym-glow:rgba(255,200,90,0.75); }
+  .whimsy-symbol[data-theme="theatrical"] { --sym-arc:#d8a8ee; --sym-deep:#8a42b8; --sym-glow:rgba(200,130,230,0.75); }
+  .whimsy-symbol[data-theme="chaotic"]    { --sym-arc:#ff9aa0; --sym-deep:#c03848; --sym-glow:rgba(255,120,130,0.75); }
+
+  [data-turn-whimsy="tactical"]   { --turn-arc:#9fc5e8; --turn-deep:#3f78a8; }
+  [data-turn-whimsy="balanced"]   { --turn-arc:#9fe3b8; --turn-deep:#3fa870; }
+  [data-turn-whimsy="creative"]   { --turn-arc:#ffd57a; --turn-deep:#e89a2a; }
+  [data-turn-whimsy="theatrical"] { --turn-arc:#d8a8ee; --turn-deep:#8a42b8; }
+  [data-turn-whimsy="chaotic"]    { --turn-arc:#ff9aa0; --turn-deep:#c03848; }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html, body { height: 100%; }
+  body {
+    min-height: 100vh;
+    background: radial-gradient(ellipse at 50% 20%, #3a2818 0%, #120905 82%), var(--desk);
+    font-family: 'EB Garamond', serif; color: var(--ink);
+  }
+  body::before {
+    content: ''; position: fixed; inset: 0;
+    background: repeating-linear-gradient(91deg, transparent 0 90px, rgba(0,0,0,0.1) 90px 91px);
+    pointer-events: none; z-index: 1;
+  }
+
+  /* Background casting circle — fixed, centered, large, ghosted but legible */
+  .bg-circle {
+    position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%);
+    width: 950px; height: 950px; z-index: 2;
+    opacity: 0.48; filter: blur(0.6px) drop-shadow(0 0 40px var(--arcane-glow));
+    pointer-events: none;
+    transition: filter 0.6s ease, opacity 0.6s ease;
+  }
+
+  /* Compass needle — behind cards but visible; matches circle's blur weight */
+  .bg-needle-wrap {
+    position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%);
+    width: 950px; height: 950px; z-index: 3;
+    opacity: 0.55; filter: blur(0.6px);
+    pointer-events: none;
+    transition: filter 0.6s ease, opacity 0.6s ease;
+  }
+
+  .brand {
+    position: fixed; top: 22px; left: 40px;
+    font-family: 'Cinzel Decorative', serif;
+    font-size: 15px; color: var(--gold);
+    letter-spacing: 0.22em; text-transform: uppercase; z-index: 30;
+  }
+  .brand .sub {
+    display: block; font-family: 'EB Garamond', serif; font-style: italic;
+    font-size: 11px; color: var(--ink-dim); letter-spacing: 0.1em; margin-top: 2px; text-transform: none;
+  }
+
+  .top-right-stack {
+    position: fixed; top: 22px; right: 40px; z-index: 30;
+    display: flex; flex-direction: column; gap: 12px; align-items: flex-end;
+  }
+  .rounds-label {
+    font-family: 'Cinzel Decorative', serif; font-size: 10px; letter-spacing: 0.22em;
+    text-transform: uppercase; color: var(--ink-dim);
+    display: flex; align-items: center; gap: 10px;
+  }
+  .rounds-label .pips {
+    display: flex; gap: 4px;
+  }
+  .rounds-label .pip {
+    width: 6px; height: 6px; border-radius: 50%;
+    background: rgba(184,166,129,0.25); border: 1px solid rgba(184,166,129,0.4);
+  }
+  .rounds-label .pip.used {
+    background: var(--arcane); box-shadow: 0 0 6px var(--arcane-glow); border-color: var(--arcane-deep);
+  }
+  .new-consultation {
+    font-family: 'Cinzel Decorative', serif; font-size: 10px; letter-spacing: 0.22em; text-transform: uppercase;
+    color: var(--ink-dim); background: transparent;
+    border: 1px solid rgba(184,166,129,0.3); padding: 8px 16px; cursor: pointer;
+    transition: all 0.3s ease;
+  }
+  .new-consultation:hover { color: var(--arcane); border-color: var(--arcane); }
+
+  /* Main transcript — flows over the background circle */
+  .main {
+    position: relative; z-index: 10;
+    max-width: 780px; margin: 0 auto;
+    padding: 100px 40px 260px;
+  }
+
+  /* Transcript entry: user prompt */
+  .turn-user {
+    margin: 60px auto 24px; width: 560px; max-width: 100%;
+    position: relative;
+  }
+  .turn-user .mini-scrap {
+    background: var(--scrap); color: #3a2614;
+    padding: 18px 22px; font-family: 'EB Garamond', serif; font-style: italic;
+    font-size: 17px; line-height: 26px;
+    clip-path: polygon(2% 4%,10% 1%,22% 3%,34% 0%,46% 2%,60% 1%,74% 3%,88% 0%,99% 6%,97% 20%,100% 36%,98% 52%,100% 68%,97% 82%,99% 94%,88% 98%,74% 96%,58% 99%,42% 97%,26% 100%,10% 97%,1% 92%,3% 76%,0% 60%,2% 44%,0% 28%,3% 14%);
+    box-shadow: 0 8px 20px rgba(0,0,0,0.4);
+    background-image:
+      radial-gradient(ellipse at 20% 30%, rgba(130,90,50,0.08) 0%, transparent 45%),
+      radial-gradient(ellipse at 80% 70%, rgba(90,60,30,0.10) 0%, transparent 40%);
+    opacity: 0.92;
+  }
+  .turn-user .meta {
+    display: flex; align-items: center; gap: 10px; justify-content: flex-end;
+    margin-top: 8px; padding-right: 10px;
+    font-family: 'Cinzel Decorative', serif; font-size: 9px; letter-spacing: 0.22em;
+    text-transform: uppercase; color: var(--ink-faint);
+  }
+  .turn-user .turn-num { color: var(--ink-faint); }
+  .turn-user .whimsy-badge {
+    display: inline-flex; align-items: center; gap: 6px;
+    color: var(--turn-deep);
+  }
+  .turn-user .whimsy-badge::before {
+    content: ''; width: 8px; height: 8px; border-radius: 50%;
+    background: var(--turn-arc); box-shadow: 0 0 6px var(--turn-arc);
+  }
+
+  /* Transcript entry: system response */
+  .turn-system {
+    margin: 12px auto 50px; width: 100%;
+    display: flex; flex-direction: column; gap: 18px;
+  }
+  .turn-system .set-header {
+    font-family: 'EB Garamond', serif; font-style: italic;
+    font-size: 14px; color: var(--ink-dim);
+    padding: 0 12px; margin-bottom: 2px;
+    letter-spacing: 0.02em;
+  }
+
+  /* Spell card — full format always */
+  .card {
+    background: var(--card);
+    color: #2a1a0a;
+    border: 1px solid var(--card-edge);
+    border-radius: 2px;
+    padding: 22px 26px;
+    box-shadow: 0 8px 20px rgba(0,0,0,0.45), inset 0 0 0 1px rgba(255,240,200,0.3);
+    position: relative;
+    font-family: 'EB Garamond', serif;
+    background-image:
+      radial-gradient(ellipse at 15% 20%, rgba(140,100,60,0.06) 0%, transparent 40%),
+      radial-gradient(ellipse at 85% 75%, rgba(90,60,30,0.08) 0%, transparent 38%);
+  }
+  .card::before {
+    content: ''; position: absolute; top: 6px; left: 6px; right: 6px; bottom: 6px;
+    border: 1px solid rgba(133,98,55,0.25);
+    pointer-events: none;
+  }
+  .card-head {
+    display: flex; align-items: baseline; justify-content: space-between;
+    gap: 16px; margin-bottom: 10px;
+  }
+  .card-title {
+    font-family: 'Cinzel Decorative', serif; font-weight: 700;
+    font-size: 22px; color: #3a2614; letter-spacing: 0.04em;
+  }
+  .card-meta {
+    font-family: 'Cinzel', serif; font-size: 10px;
+    letter-spacing: 0.2em; text-transform: uppercase;
+    color: #6a4a20;
+  }
+  .card-subline {
+    font-family: 'EB Garamond', serif; font-style: italic;
+    color: #6a4a20; font-size: 13px;
+    margin-bottom: 14px; border-bottom: 1px dashed rgba(133,98,55,0.4);
+    padding-bottom: 12px;
+  }
+  .stat-grid {
+    display: grid; grid-template-columns: repeat(4, 1fr);
+    gap: 10px 18px;
+    font-size: 12px; color: #3a2614;
+    margin-bottom: 14px;
+  }
+  .stat-grid .label {
+    display: block;
+    font-family: 'Cinzel', serif; font-size: 8px;
+    letter-spacing: 0.22em; text-transform: uppercase;
+    color: #8a6a35; margin-bottom: 3px;
+  }
+  .stat-grid .val { font-family: 'EB Garamond', serif; font-size: 14px; }
+  .stat-badges {
+    display: flex; gap: 8px; margin-bottom: 14px; flex-wrap: wrap;
+  }
+  .badge {
+    font-family: 'Cinzel', serif; font-size: 9px; letter-spacing: 0.16em;
+    text-transform: uppercase;
+    padding: 3px 10px;
+    border: 1px solid #8a6a35; color: #6a4a20; background: rgba(255,240,200,0.35);
+    border-radius: 2px;
+  }
+  .badge.concentration { border-color: #8a4a20; color: #8a4a20; }
+  .badge.ritual { border-color: #4a6a35; color: #4a6a35; }
+  .why {
+    font-family: 'EB Garamond', serif; font-style: italic;
+    color: #2a1a0a; font-size: 15px; line-height: 23px;
+    border-left: 2px solid var(--arcane-deep);
+    padding: 6px 0 6px 14px;
+    margin: 4px 0 16px;
+    background: linear-gradient(90deg, rgba(255,200,90,0.08), transparent 60%);
+  }
+  .why .lead {
+    font-family: 'Cinzel Decorative', serif; font-style: normal;
+    font-size: 9px; letter-spacing: 0.24em; text-transform: uppercase;
+    color: var(--arcane-deep); display: block; margin-bottom: 4px;
+  }
+  .pinned-from {
+    font-family: 'Cinzel', serif; font-size: 9px; letter-spacing: 0.22em;
+    text-transform: uppercase; color: #8a6a35;
+    margin-bottom: 10px;
+    display: flex; align-items: center; gap: 6px;
+  }
+  .pinned-from .link-glyph {
+    width: 14px; height: 2px; background: #8a6a35; position: relative;
+  }
+  .pinned-from .link-glyph::after {
+    content: ''; position: absolute; right: -3px; top: -2px;
+    border-left: 4px solid #8a6a35; border-top: 3px solid transparent; border-bottom: 3px solid transparent;
+  }
+  .tags {
+    display: flex; gap: 6px; flex-wrap: wrap;
+    margin-bottom: 14px;
+  }
+  .tag {
+    font-family: 'EB Garamond', serif; font-size: 12px;
+    color: #6a4a20; padding: 2px 10px;
+    background: rgba(140,100,50,0.12);
+    border-radius: 10px;
+  }
+  .card-foot {
+    display: flex; gap: 8px; justify-content: space-between; align-items: center;
+    padding-top: 12px;
+    border-top: 1px solid rgba(133,98,55,0.3);
+  }
+  .card-actions { display: flex; gap: 10px; }
+  .card-btn {
+    font-family: 'Cinzel Decorative', serif; background: transparent;
+    border: 1px solid rgba(133,98,55,0.5); color: #6a4a20;
+    padding: 5px 14px; font-size: 9px; letter-spacing: 0.22em;
+    text-transform: uppercase; cursor: pointer; transition: all 0.3s ease;
+  }
+  .card-btn:hover { background: rgba(255,200,90,0.25); border-color: var(--arcane-deep); color: var(--arcane-deep); }
+  .expand {
+    font-family: 'EB Garamond', serif; background: transparent; border: none;
+    color: #8a6a35; cursor: pointer; font-size: 12px; font-style: italic;
+    display: flex; align-items: center; gap: 6px;
+  }
+  .expand .chev { transition: transform 0.3s; display: inline-block; }
+  .card.expanded .expand .chev { transform: rotate(180deg); }
+  .full-description {
+    display: none;
+    margin-top: 14px; padding-top: 14px;
+    border-top: 1px dashed rgba(133,98,55,0.4);
+    font-family: 'EB Garamond', serif; font-size: 13.5px; line-height: 22px;
+    color: #3a2614;
+  }
+  .card.expanded .full-description { display: block; }
+  .full-description p { margin-bottom: 10px; }
+  .full-description .section-label {
+    font-family: 'Cinzel', serif; font-size: 9px; letter-spacing: 0.22em;
+    text-transform: uppercase; color: #8a6a35; margin-top: 10px; margin-bottom: 2px; display: block;
+  }
+
+  /* Skeleton turn */
+  .turn-skeleton { margin: 12px auto 50px; width: 100%; }
+  .skeleton-card {
+    background: rgba(233,213,166,0.08);
+    border: 1px dashed rgba(184,166,129,0.35);
+    padding: 28px; margin-bottom: 14px;
+    position: relative; overflow: hidden;
+  }
+  .skeleton-card::after {
+    content: ''; position: absolute; inset: 0;
+    background: linear-gradient(90deg, transparent, rgba(255,200,90,0.08), transparent);
+    animation: shimmer 2s linear infinite;
+  }
+  @keyframes shimmer { 0%{transform:translateX(-100%)} 100%{transform:translateX(100%)} }
+  .skel-line { height: 10px; background: rgba(184,166,129,0.2); border-radius: 2px; margin-bottom: 10px; }
+  .skel-line.w60 { width: 60%; } .skel-line.w40 { width: 40%; } .skel-line.w90 { width: 90%; } .skel-line.w75 { width: 75%; }
+  .skeleton-note {
+    font-family: 'EB Garamond', serif; font-style: italic;
+    font-size: 13px; color: var(--ink-dim);
+    text-align: center; padding: 6px 0;
+    animation: pulse 2.5s ease-in-out infinite;
+  }
+  @keyframes pulse { 0%,100%{opacity:0.5} 50%{opacity:0.85} }
+
+  /* Turn divider */
+  .turn-divider {
+    width: 160px; height: 1px; margin: 30px auto;
+    background: linear-gradient(90deg, transparent, rgba(184,166,129,0.4), transparent);
+  }
+
+  /* Whimsy symbols — polar origin is the casting-circle center (viewport 50%/50%) */
+  .whimsy-dock {
+    position: fixed; bottom: 28px; left: 0; right: 0;
+    pointer-events: none; z-index: 22;
+  }
+  .whimsy-symbols {
+    display: flex; align-items: center; justify-content: center;
+    gap: 72px;
+    pointer-events: none;
+  }
+  .whimsy-symbol {
+    position: relative;
+    width: 52px; height: 52px;
+    display: flex; align-items: center; justify-content: center;
+    cursor: pointer; pointer-events: auto; transition: all 0.4s ease;
+    opacity: 1; filter: none;
+  }
+  .whimsy-symbol svg {
+    width: 34px; height: 34px;
+    stroke: var(--sym-arc, var(--ink-dim)); stroke-width: 1.6; fill: none;
+    stroke-linecap: round; stroke-linejoin: round;
+    opacity: 0.75;
+    transition: all 0.4s ease;
+  }
+  .whimsy-symbol:hover svg {
+    stroke: var(--sym-arc); stroke-width: 2;
+    opacity: 1;
+    filter: drop-shadow(0 0 6px var(--sym-glow));
+  }
+  .whimsy-symbol.active svg {
+    stroke: var(--sym-arc); stroke-width: 2.4; opacity: 1;
+    filter: drop-shadow(0 0 10px var(--sym-arc)) drop-shadow(0 0 20px var(--sym-glow));
+  }
+  .whimsy-symbol .label {
+    position: absolute; top: 54px; left: 50%; transform: translateX(-50%);
+    font-family: 'Cinzel Decorative', serif;
+    font-size: 10px; letter-spacing: 0.28em;
+    color: var(--ink-faint); text-transform: uppercase; white-space: nowrap;
+    opacity: 0.85;
+    transition: color 0.4s ease, opacity 0.4s ease;
+  }
+  .whimsy-symbol:hover .label { color: var(--sym-arc); opacity: 1; }
+  .whimsy-symbol.active .label { color: var(--sym-arc); opacity: 1; text-shadow: 0 0 8px var(--sym-glow); }
+
+  /* Docked prompt — fixed, sits above the whimsy symbols band */
+  .dock {
+    position: fixed; bottom: 72px; left: 0; right: 0; z-index: 20;
+    padding: 20px 40px 4px;
+    display: flex; justify-content: center;
+    pointer-events: none;
+  }
+  /* Backdrop — extends to viewport bottom so scrolled content doesn't bleed through.
+     Symbols (z-index 22) sit on top of backdrop and remain visible. */
+  .dock-backdrop {
+    position: fixed; bottom: 0; left: 0; right: 0; height: 300px; z-index: 18;
+    background: linear-gradient(to top,
+      rgba(18,9,5,0.98) 0%,
+      rgba(18,9,5,0.96) 40%,
+      rgba(18,9,5,0.78) 70%,
+      rgba(18,9,5,0.30) 90%,
+      transparent 100%);
+    pointer-events: none;
+  }
+  .dock-inner { position: relative; width: 760px; max-width: calc(100% - 80px); pointer-events: auto; }
+  .dock-scrap {
+    position: relative;
+    background: var(--scrap);
+    background-image:
+      radial-gradient(ellipse at 20% 30%, rgba(130,90,50,0.10) 0%, transparent 45%),
+      radial-gradient(ellipse at 80% 70%, rgba(90,60,30,0.12) 0%, transparent 40%);
+    padding: 12px 24px 14px;
+    clip-path: polygon(2% 4%,10% 1%,22% 3%,34% 0%,46% 2%,60% 1%,74% 3%,88% 0%,99% 6%,97% 20%,100% 36%,98% 52%,100% 68%,97% 82%,99% 94%,88% 98%,74% 96%,58% 99%,42% 97%,26% 100%,10% 97%,1% 92%,3% 76%,0% 60%,2% 44%,0% 28%,3% 14%);
+    box-shadow: 0 12px 36px rgba(0,0,0,0.6);
+    transform: rotate(-0.8deg);
+  }
+  .dock-scrap textarea {
+    width: 100%; height: 48px; min-height: 48px; max-height: 48px;
+    background: transparent; border: none; outline: none; resize: none;
+    font-family: 'EB Garamond', serif; font-style: italic;
+    font-size: 16px; line-height: 24px; color: #3a2614;
+    overflow: hidden;
+    caret-color: var(--arcane-deep);
+  }
+  .dock-scrap textarea::placeholder { color: rgba(58,38,20,0.4); }
+  .dock-bar {
+    display: flex; justify-content: space-between; align-items: center;
+    margin-top: 6px; padding: 0 8px;
+    font-family: 'Cinzel Decorative', serif;
+    font-size: 10px; letter-spacing: 0.22em; text-transform: uppercase;
+    color: var(--ink-faint);
+  }
+  .send-hint {
+    display: inline-flex; align-items: center; gap: 6px; color: var(--ink-faint);
+  }
+  .send-hint .key {
+    font-family: 'Cinzel Decorative', serif; font-size: 11px; letter-spacing: 0;
+    padding: 1px 6px; border: 1px solid rgba(184,166,129,0.4); border-radius: 3px;
+  }
+
+  /* Annotation styles */
+  .annotation {
+    position: fixed; font-family: 'Cinzel Decorative', serif; font-size: 8px;
+    letter-spacing: 0.2em; text-transform: uppercase;
+    color: var(--ink-faint); border: 1px dashed rgba(184,166,129,0.4);
+    padding: 4px 8px; white-space: nowrap; z-index: 25;
+    pointer-events: none;
+  }
+  .annotation-line {
+    position: fixed; border: 1px dashed rgba(184,166,129,0.35); z-index: 24;
+    pointer-events: none;
+  }
+</style>
+</head>
+<body data-whimsy="theatrical">
+
+<div class="brand">Arcane Advisor</div>
+
+<div class="top-right-stack">
+  <button class="new-consultation">Begin new consultation</button>
+  <div class="rounds-label">
+    <span>4 of 5</span>
+    <div class="pips">
+      <div class="pip used"></div>
+      <div class="pip used"></div>
+      <div class="pip used"></div>
+      <div class="pip used"></div>
+      <div class="pip"></div>
+    </div>
+  </div>
+</div>
+
+<!-- Bottom backdrop fade to keep prompt/symbol band legible -->
+<div class="dock-backdrop"></div>
+
+<!-- Background casting circle (ghosted) -->
+<div class="bg-circle" id="bgCircle">
+  <svg class="circle-svg" viewBox="0 0 950 950">
+    <defs>
+      <radialGradient id="glow-bg" cx="0.5" cy="0.5" r="0.5">
+        <stop offset="0%" stop-color="var(--arcane-glow)" stop-opacity="0.35"/>
+        <stop offset="70%" stop-color="var(--arcane-glow)" stop-opacity="0.1"/>
+        <stop offset="100%" stop-color="transparent"/>
+      </radialGradient>
+    </defs>
+    <circle cx="475" cy="475" r="420" fill="url(#glow-bg)"/>
+    <g class="ring-outer">
+      <circle cx="475" cy="475" r="420" fill="none" stroke="var(--arcane)" stroke-width="1.4" opacity="0.75"/>
+      <circle cx="475" cy="475" r="405" fill="none" stroke="var(--arcane-deep)" stroke-width="0.6" opacity="0.5"/>
+      <g stroke="var(--arcane)" stroke-width="1.1" opacity="0.7" id="major-ticks"></g>
+      <g stroke="var(--arcane)" stroke-width="0.5" opacity="0.4" id="minor-ticks"></g>
+    </g>
+    <g class="ring-mid">
+      <circle cx="475" cy="475" r="370" fill="none" stroke="var(--arcane)" stroke-width="1" opacity="0.65"/>
+      <circle cx="475" cy="475" r="320" fill="none" stroke="var(--arcane)" stroke-width="1" opacity="0.65"/>
+      <g stroke="var(--arcane)" stroke-width="0.8" opacity="0.55" id="sector-dividers"></g>
+      <g font-family="serif" font-size="18" fill="var(--arcane)" text-anchor="middle" opacity="0.75" id="sector-glyphs"></g>
+    </g>
+    <g class="ring-inner">
+      <circle cx="475" cy="475" r="260" fill="none" stroke="var(--arcane)" stroke-width="0.9" opacity="0.6"/>
+      <g stroke="var(--arcane)" stroke-width="0.7" opacity="0.55" id="mandala-spokes"></g>
+      <g stroke="var(--arcane)" stroke-width="0.6" fill="none" opacity="0.5" id="star-12"></g>
+    </g>
+    <circle cx="475" cy="475" r="50" fill="none" stroke="var(--arcane)" stroke-width="0.5" opacity="0.45"/>
+    <circle cx="475" cy="475" r="18" fill="none" stroke="var(--arcane)" stroke-width="0.8" opacity="0.7"/>
+    <circle cx="475" cy="475" r="10" fill="var(--arcane-deep)" opacity="0.6"/>
+  </svg>
+</div>
+
+<!-- Compass needle -->
+<div class="bg-needle-wrap">
+  <svg class="needle-svg" viewBox="0 0 950 950">
+    <g class="needle" id="needle" style="transform: rotate(15deg); transform-origin: 475px 475px;">
+      <polygon points="475,475 439,295 475,75 511,295" fill="#1b0f07" stroke="var(--arcane-deep)" stroke-width="0.8"/>
+      <polygon points="475,475 457,345 475,75 493,345" fill="#3a2414" opacity="0.75"/>
+      <polygon points="475,475 435,655 475,875 515,655" fill="var(--needle-bright)" stroke="var(--arcane-deep)" stroke-width="0.8"
+               style="filter: drop-shadow(0 0 10px var(--needle-bright)) drop-shadow(0 0 22px var(--arcane-glow));"/>
+      <polygon points="475,475 457,605 475,875 493,605" fill="var(--needle-inner)" opacity="0.6"/>
+      <circle cx="475" cy="475" r="18" fill="var(--brass)" stroke="var(--arcane-deep)" stroke-width="1.2"/>
+      <circle cx="475" cy="475" r="11" fill="var(--brass-dark)"/>
+      <circle cx="475" cy="475" r="4" fill="#120906"/>
+    </g>
+  </svg>
+</div>
+
+<!-- Main transcript -->
+<div class="main">
+
+  <!-- TURN 1 -->
+  <div class="turn-user" data-turn-whimsy="tactical">
+    <div class="mini-scrap">A rust monster is blocking a narrow corridor. My party has a fighter in plate, a wizard, a rogue, a cleric. What are my options?</div>
+    <div class="meta">
+      <span class="turn-num">Round 1</span>
+      <span class="whimsy-badge">Tactical</span>
+    </div>
+  </div>
+
+  <div class="turn-system">
+    <div class="set-header">Three approaches — control the ground, don't engage directly.</div>
+
+    <div class="card">
+      <div class="card-head">
+        <div class="card-title">Grease</div>
+        <div class="card-meta">Lvl 1 · Evocation</div>
+      </div>
+      <div class="stat-grid">
+        <div><span class="label">Cast</span><span class="val">1 action</span></div>
+        <div><span class="label">Range</span><span class="val">60 ft</span></div>
+        <div><span class="label">Components</span><span class="val">V, S, M</span></div>
+        <div><span class="label">Duration</span><span class="val">1 minute</span></div>
+      </div>
+      <div class="stat-badges"><span class="badge concentration">Concentration</span></div>
+      <div class="why">
+        <span class="lead">Why this spell</span>
+        Rust monsters scuttle on many thin legs. A greased ten-foot square at the mouth of a corridor turns a charging threat into a comedy of clattering.
+      </div>
+      <div class="tags">
+        <span class="tag">control</span><span class="tag">area denial</span><span class="tag">slapstick</span>
+      </div>
+      <div class="card-foot">
+        <div class="card-actions">
+          <button class="card-btn">More like this</button>
+        </div>
+        <button class="expand"><span>Read full description</span><span class="chev">▾</span></button>
+      </div>
+      <div class="full-description">
+        <span class="section-label">Casting Time</span><p>1 action</p>
+        <span class="section-label">Range</span><p>60 feet</p>
+        <span class="section-label">Components</span><p>V, S, M (a bit of pork rind or butter)</p>
+        <span class="section-label">Description</span>
+        <p>Slick grease covers the ground in a 10-foot square centered on a point within range and turns it into difficult terrain for the duration.</p>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-head">
+        <div class="card-title">Mold Earth</div>
+        <div class="card-meta">Cantrip · Transmutation</div>
+      </div>
+      <div class="stat-grid">
+        <div><span class="label">Cast</span><span class="val">1 action</span></div>
+        <div><span class="label">Range</span><span class="val">30 ft</span></div>
+        <div><span class="label">Components</span><span class="val">S</span></div>
+        <div><span class="label">Duration</span><span class="val">Instantaneous</span></div>
+      </div>
+      <div class="why">
+        <span class="lead">Why this spell</span>
+        Shape a knee-high stone knob or ridge across the corridor. No metal to tempt the beast, no slot burned, and it costs nothing to try again.
+      </div>
+      <div class="tags">
+        <span class="tag">cantrip</span><span class="tag">environment</span><span class="tag">utility</span>
+      </div>
+      <div class="card-foot">
+        <div class="card-actions">
+          <button class="card-btn">More like this</button>
+        </div>
+        <button class="expand"><span>Read full description</span><span class="chev">▾</span></button>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-head">
+        <div class="card-title">Earthen Grasp</div>
+        <div class="card-meta">Lvl 2 · Transmutation</div>
+      </div>
+      <div class="stat-grid">
+        <div><span class="label">Cast</span><span class="val">1 action</span></div>
+        <div><span class="label">Range</span><span class="val">30 ft</span></div>
+        <div><span class="label">Components</span><span class="val">V, S, M</span></div>
+        <div><span class="label">Duration</span><span class="val">1 minute</span></div>
+      </div>
+      <div class="stat-badges"><span class="badge concentration">Concentration</span></div>
+      <div class="why">
+        <span class="lead">Why this spell</span>
+        A fist of earth erupts from the floor and grapples the creature. Stone fingers don't feed its hunger — they just hold it still.
+      </div>
+      <div class="tags">
+        <span class="tag">control</span><span class="tag">grapple</span><span class="tag">ongoing</span>
+      </div>
+      <div class="card-foot">
+        <div class="card-actions">
+          <button class="card-btn">More like this</button>
+        </div>
+        <button class="expand"><span>Read full description</span><span class="chev">▾</span></button>
+      </div>
+    </div>
+  </div>
+
+  <div class="turn-divider"></div>
+
+  <!-- TURN 2 -->
+  <div class="turn-user" data-turn-whimsy="balanced">
+    <div class="mini-scrap">The fighter insists on engaging. Can we protect his armor while he does?</div>
+    <div class="meta">
+      <span class="turn-num">Round 2</span>
+      <span class="whimsy-badge">Balanced</span>
+    </div>
+  </div>
+
+  <div class="turn-system">
+    <div class="set-header">Mitigate damage to metal gear.</div>
+
+    <div class="card">
+      <div class="card-head">
+        <div class="card-title">Resistance</div>
+        <div class="card-meta">Cantrip · Abjuration</div>
+      </div>
+      <div class="stat-grid">
+        <div><span class="label">Cast</span><span class="val">1 action</span></div>
+        <div><span class="label">Range</span><span class="val">Touch</span></div>
+        <div><span class="label">Components</span><span class="val">V, S</span></div>
+        <div><span class="label">Duration</span><span class="val">Concentration, 1 min</span></div>
+      </div>
+      <div class="why">
+        <span class="lead">Why this spell</span>
+        Grant your fighter resistance to corrosion and rust damage while he stands tall. A modest boost, not flashy, but it keeps his armor intact.
+      </div>
+      <div class="tags">
+        <span class="tag">buff</span><span class="tag">damage reduction</span><span class="tag">support</span>
+      </div>
+      <div class="card-foot">
+        <div class="card-actions">
+          <button class="card-btn">More like this</button>
+        </div>
+        <button class="expand"><span>Read full description</span><span class="chev">▾</span></button>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-head">
+        <div class="card-title">Warding Bond</div>
+        <div class="card-meta">Lvl 2 · Abjuration</div>
+      </div>
+      <div class="stat-grid">
+        <div><span class="label">Cast</span><span class="val">1 action</span></div>
+        <div><span class="label">Range</span><span class="val">Touch</span></div>
+        <div><span class="label">Components</span><span class="val">V, S, M</span></div>
+        <div><span class="label">Duration</span><span class="val">1 hour</span></div>
+      </div>
+      <div class="stat-badges"><span class="badge concentration">Concentration</span></div>
+      <div class="why">
+        <span class="lead">Why this spell</span>
+        You and the fighter become magically linked. Any damage he takes is reduced, and you feel his pain — a profound gesture that reinforces your partnership.
+      </div>
+      <div class="tags">
+        <span class="tag">bond</span><span class="tag">damage reduction</span><span class="tag">protection</span>
+      </div>
+      <div class="card-foot">
+        <div class="card-actions">
+          <button class="card-btn">More like this</button>
+        </div>
+        <button class="expand"><span>Read full description</span><span class="chev">▾</span></button>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-head">
+        <div class="card-title">Protection from Energy</div>
+        <div class="card-meta">Lvl 3 · Abjuration</div>
+      </div>
+      <div class="stat-grid">
+        <div><span class="label">Cast</span><span class="val">1 action</span></div>
+        <div><span class="label">Range</span><span class="val">Touch</span></div>
+        <div><span class="label">Components</span><span class="val">V, S</span></div>
+        <div><span class="label">Duration</span><span class="val">Concentration, 1 hour</span></div>
+      </div>
+      <div class="stat-badges"><span class="badge concentration">Concentration</span></div>
+      <div class="why">
+        <span class="lead">Why this spell</span>
+        The fighter gains full resistance to one damage type of your choice — acid, cold, fire, lightning, or thunder. Against a rust monster's corroding bite, this is an amulet.
+      </div>
+      <div class="tags">
+        <span class="tag">resistance</span><span class="tag">protection</span><span class="tag">defensive</span>
+      </div>
+      <div class="card-foot">
+        <div class="card-actions">
+          <button class="card-btn">More like this</button>
+        </div>
+        <button class="expand"><span>Read full description</span><span class="chev">▾</span></button>
+      </div>
+    </div>
+  </div>
+
+  <div class="turn-divider"></div>
+
+  <!-- TURN 3 -->
+  <div class="turn-user" data-turn-whimsy="theatrical">
+    <div class="mini-scrap">What if we trapped it in ice and walked around?</div>
+    <div class="meta">
+      <span class="turn-num">Round 3</span>
+      <span class="whimsy-badge">Theatrical</span>
+    </div>
+  </div>
+
+  <div class="turn-system">
+    <div class="set-header">Freeze and bypass.</div>
+
+    <div class="card">
+      <div class="pinned-from"><span class="link-glyph"></span>Inspired by your mention of ice</div>
+      <div class="card-head">
+        <div class="card-title">Web</div>
+        <div class="card-meta">Lvl 2 · Conjuration</div>
+      </div>
+      <div class="stat-grid">
+        <div><span class="label">Cast</span><span class="val">1 action</span></div>
+        <div><span class="label">Range</span><span class="val">60 ft</span></div>
+        <div><span class="label">Components</span><span class="val">V, S, M</span></div>
+        <div><span class="label">Duration</span><span class="val">1 hour</span></div>
+      </div>
+      <div class="stat-badges"><span class="badge concentration">Concentration</span></div>
+      <div class="why">
+        <span class="lead">Why this spell</span>
+        A 20-foot cube of webbing plugs the corridor. Silk is not metal — the beast won't eat it, but it will get tangled in it. Breathing room.
+      </div>
+      <div class="tags">
+        <span class="tag">control</span><span class="tag">area</span><span class="tag">restrain</span>
+      </div>
+      <div class="card-foot">
+        <div class="card-actions">
+          <button class="card-btn">More like this</button>
+        </div>
+        <button class="expand"><span>Read full description</span><span class="chev">▾</span></button>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="pinned-from"><span class="link-glyph"></span>Inspired by your mention of ice</div>
+      <div class="card-head">
+        <div class="card-title">Sleet Storm</div>
+        <div class="card-meta">Lvl 3 · Conjuration</div>
+      </div>
+      <div class="stat-grid">
+        <div><span class="label">Cast</span><span class="val">1 action</span></div>
+        <div><span class="label">Range</span><span class="val">150 ft</span></div>
+        <div><span class="label">Components</span><span class="val">V, S, M</span></div>
+        <div><span class="label">Duration</span><span class="val">1 minute</span></div>
+      </div>
+      <div class="stat-badges"><span class="badge concentration">Concentration</span></div>
+      <div class="why">
+        <span class="lead">Why this spell</span>
+        Drop a 40-foot cylinder of freezing sleet across the corridor. The footing collapses to ice; all creatures falling prone can't stand. The rust monster will be staggering.
+      </div>
+      <div class="tags">
+        <span class="tag">area</span><span class="tag">difficult terrain</span><span class="tag">cold</span>
+      </div>
+      <div class="card-foot">
+        <div class="card-actions">
+          <button class="card-btn">More like this</button>
+        </div>
+        <button class="expand"><span>Read full description</span><span class="chev">▾</span></button>
+      </div>
+    </div>
+
+    <div class="card expanded">
+      <div class="pinned-from"><span class="link-glyph"></span>Inspired by your mention of ice</div>
+      <div class="card-head">
+        <div class="card-title">Wall of Ice</div>
+        <div class="card-meta">Lvl 6 · Evocation</div>
+      </div>
+      <div class="stat-grid">
+        <div><span class="label">Cast</span><span class="val">1 action</span></div>
+        <div><span class="label">Range</span><span class="val">120 ft</span></div>
+        <div><span class="label">Components</span><span class="val">V, S, M</span></div>
+        <div><span class="label">Duration</span><span class="val">Concentration, 10 min</span></div>
+      </div>
+      <div class="stat-badges"><span class="badge concentration">Concentration</span></div>
+      <div class="why">
+        <span class="lead">Why this spell</span>
+        Create a massive wall of solid ice across the corridor — the rust monster is now on the other side, trapped and frozen. Walk past without a glance. Maximum effect.
+      </div>
+      <div class="tags">
+        <span class="tag">wall</span><span class="tag">barrier</span><span class="tag">cold</span><span class="tag">dramatic</span>
+      </div>
+      <div class="card-foot">
+        <div class="card-actions">
+          <button class="card-btn">More like this</button>
+        </div>
+        <button class="expand"><span>Hide full description</span><span class="chev">▾</span></button>
+      </div>
+      <div class="full-description">
+        <span class="section-label">Description</span>
+        <p>You create a wall of ice on a solid surface you can see within range. You can shape the wall in any way you choose, as long as it is no more than 15 feet tall, and its perimeter is no more than 60 feet.</p>
+        <p>The wall is 1 foot thick and lasts for the duration. If the wall cuts through a creature's space when it appears, the creature within its area is pushed to one side of the wall and must make a Dexterity saving throw, taking 10d6 cold damage on a failed save, or half as much on a successful one.</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- TURN 4 (skeleton) -->
+  <div class="turn-user" data-turn-whimsy="theatrical" style="opacity:0.85;">
+    <div class="mini-scrap">Walk me through how to cast Wall of Ice for maximum effect.</div>
+    <div class="meta">
+      <span class="turn-num">Round 4</span>
+      <span class="whimsy-badge">Theatrical</span>
+    </div>
+  </div>
+
+  <div class="turn-skeleton">
+    <div class="skeleton-note">Consulting the spellbooks…</div>
+    <div class="skeleton-card">
+      <div class="skel-line w40"></div>
+      <div class="skel-line w90"></div>
+      <div class="skel-line w75"></div>
+      <div class="skel-line w60"></div>
+    </div>
+    <div class="skeleton-card">
+      <div class="skel-line w40"></div>
+      <div class="skel-line w90"></div>
+      <div class="skel-line w75"></div>
+    </div>
+  </div>
+
+</div>
+
+<!-- Whimsy symbols — bottom, arrayed on circle's southern arc -->
+<div class="whimsy-dock">
+  <div class="whimsy-symbols" id="whismySymbols">
+    <div class="whimsy-symbol" data-angle="150" data-theme="tactical">
+      <svg viewBox="0 0 40 40"><line x1="20" y1="6" x2="20" y2="34"/><line x1="20" y1="8" x2="10" y2="16"/><line x1="20" y1="8" x2="30" y2="16"/></svg>
+      <span class="label">Tactical</span>
+    </div>
+    <div class="whimsy-symbol" data-angle="165" data-theme="balanced">
+      <svg viewBox="0 0 40 40"><line x1="8" y1="8" x2="32" y2="32"/><line x1="32" y1="8" x2="8" y2="32"/><circle cx="20" cy="20" r="3"/></svg>
+      <span class="label">Balanced</span>
+    </div>
+    <div class="whimsy-symbol" data-angle="180" data-theme="creative">
+      <svg viewBox="0 0 40 40"><line x1="8" y1="8" x2="8" y2="32"/><line x1="32" y1="8" x2="32" y2="32"/><line x1="8" y1="8" x2="32" y2="32"/><line x1="32" y1="8" x2="8" y2="32"/></svg>
+      <span class="label">Creative</span>
+    </div>
+    <div class="whimsy-symbol active" data-angle="195" data-theme="theatrical">
+      <svg viewBox="0 0 40 40"><path d="M20 6 L20 34"/><path d="M20 12 Q12 16 10 22"/><path d="M20 22 Q28 26 30 32"/><circle cx="20" cy="6" r="2"/><circle cx="20" cy="34" r="2"/></svg>
+      <span class="label">Theatrical</span>
+    </div>
+    <div class="whimsy-symbol" data-angle="210" data-theme="chaotic">
+      <svg viewBox="0 0 40 40"><path d="M10 6 L10 34"/><path d="M10 8 L24 14 L10 20"/><path d="M24 14 L30 24 L20 30 L30 34"/></svg>
+      <span class="label">Chaotic</span>
+    </div>
+  </div>
+</div>
+
+<!-- Docked prompt -->
+<div class="dock">
+  <div class="dock-inner">
+    <div class="dock-scrap">
+      <textarea placeholder="The owlbear we tracked has cubs. Combat seems cruel..."></textarea>
+    </div>
+    <div class="dock-bar">
+      <div class="send-hint"><span>Send</span><span class="key">↵</span></div>
+    </div>
+  </div>
+</div>
+
+
+<script>
+  const svgNS = "http://www.w3.org/2000/svg";
+  const cx = 475, cy = 475;
+
+  // Generate ticks for background circle
+  const major = document.getElementById('major-ticks'), minor = document.getElementById('minor-ticks');
+  for (let deg = 0; deg < 360; deg += 5) {
+    const isMajor = deg % 15 === 0;
+    const len = isMajor ? 16 : 7;
+    const r1 = 420, r2 = 420 - len;
+    const rad = (deg - 90) * Math.PI / 180;
+    const line = document.createElementNS(svgNS, 'line');
+    line.setAttribute('x1', cx + r1*Math.cos(rad));
+    line.setAttribute('y1', cy + r1*Math.sin(rad));
+    line.setAttribute('x2', cx + r2*Math.cos(rad));
+    line.setAttribute('y2', cy + r2*Math.sin(rad));
+    (isMajor ? major : minor).appendChild(line);
+  }
+
+  const dividers = document.getElementById('sector-dividers');
+  const glyphs = document.getElementById('sector-glyphs');
+  const runeMarks = ['ᚠ','ᚢ','ᚦ','ᚨ','ᚱ','ᚲ','ᚷ','ᚹ','ᚺ','ᚾ','ᛁ','ᛃ'];
+  for (let i = 0; i < 12; i++) {
+    const deg = i * 30;
+    const rad = (deg - 90) * Math.PI / 180;
+    const line = document.createElementNS(svgNS, 'line');
+    line.setAttribute('x1', cx + 320*Math.cos(rad));
+    line.setAttribute('y1', cy + 320*Math.sin(rad));
+    line.setAttribute('x2', cx + 370*Math.cos(rad));
+    line.setAttribute('y2', cy + 370*Math.sin(rad));
+    dividers.appendChild(line);
+    const gDeg = deg + 15;
+    const gRad = (gDeg - 90) * Math.PI / 180;
+    const t = document.createElementNS(svgNS, 'text');
+    t.setAttribute('x', cx + 345*Math.cos(gRad));
+    t.setAttribute('y', cy + 345*Math.sin(gRad) + 6);
+    t.textContent = runeMarks[i];
+    glyphs.appendChild(t);
+  }
+
+  const spokes = document.getElementById('mandala-spokes');
+  for (let i = 0; i < 12; i++) {
+    const deg = i * 30;
+    const rad = (deg - 90) * Math.PI / 180;
+    const line = document.createElementNS(svgNS, 'line');
+    line.setAttribute('x1', cx + 160*Math.cos(rad));
+    line.setAttribute('y1', cy + 160*Math.sin(rad));
+    line.setAttribute('x2', cx + 245*Math.cos(rad));
+    line.setAttribute('y2', cy + 245*Math.sin(rad));
+    spokes.appendChild(line);
+  }
+
+  const star = document.getElementById('star-12');
+  function poly(r, offset, n) {
+    const pts = [];
+    for (let i = 0; i < n; i++) {
+      const deg = offset + (360/n)*i;
+      const rad = (deg - 90) * Math.PI / 180;
+      pts.push(`${cx + r*Math.cos(rad)},${cy + r*Math.sin(rad)}`);
+    }
+    return pts.join(' ');
+  }
+  [[0,1], [180,1], [30,0.6], [210,0.6]].forEach(([off, op]) => {
+    const p = document.createElementNS(svgNS, 'polygon');
+    p.setAttribute('points', poly(230, off, 3));
+    p.setAttribute('opacity', op);
+    star.appendChild(p);
+  });
+
+  // Whimsy swapping — needle points at active symbol, circle & needle take its colour
+  const needle = document.getElementById('needle');
+
+  document.querySelectorAll('.whimsy-symbol').forEach(sym => {
+    sym.addEventListener('click', () => {
+      document.querySelectorAll('.whimsy-symbol').forEach(s => s.classList.remove('active'));
+      sym.classList.add('active');
+      // Theme cascade: body[data-whimsy] flips the --arcane / --arcane-glow / --needle-* tokens
+      document.body.dataset.whimsy = sym.dataset.theme;
+      // Needle rotates to the symbol's angle (needle rest-direction is south = 180°)
+      needle.style.transform = `rotate(${parseFloat(sym.dataset.angle) - 180}deg)`;
+    });
+  });
+
+  // Expand/collapse cards
+  document.querySelectorAll('.expand').forEach(btn => {
+    btn.addEventListener('click', () => {
+      btn.closest('.card').classList.toggle('expanded');
+    });
+  });
+
+  // "More like this" button behavior
+  document.querySelectorAll('.card-btn').forEach(btn => {
+    if (btn.textContent.includes('More like this')) {
+      btn.addEventListener('click', () => {
+        const cardTitle = btn.closest('.card').querySelector('.card-title').textContent;
+        console.log(`Auto-submit: More spells like ${cardTitle} — similar feel and role.`);
+        btn.style.opacity = '0.5';
+        setTimeout(() => btn.style.opacity = '1', 300);
+      });
+    }
+  });
+</script>
+</body>
+</html>

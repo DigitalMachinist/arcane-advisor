@@ -1,0 +1,588 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Mockup K — Ritual Companion</title>
+<link href="https://fonts.googleapis.com/css2?family=Cinzel+Decorative:wght@400;700&family=EB+Garamond:ital,wght@0,400;0,500;1,400&family=IM+Fell+English+SC&display=swap" rel="stylesheet">
+<style>
+:root {
+  --ink: #2a1a0a;
+  --ink-soft: #4a3420;
+  --page: #ead5a4;
+  --page-shadow: #c9b07e;
+  --leather: #3a1d0a;
+  --leather-dark: #1f0d04;
+  --desk: #2b1a0e;
+  --desk-dark: #1a0c04;
+  --desk-grain: rgba(80,40,12,0.35);
+  --gold: #c8963a;
+  --gold-bright: #ebb947;
+  --gold-deep: #8a651f;
+  --vermilion: #a8221c;
+  --arcane: #ffd57a;
+  --arcane-deep: #e89a2a;
+  --arcane-glow: rgba(255, 200, 90, 0.65);
+  --circle-line: #f0cc78;
+  --scrap: #f1e0b6;
+  --scrap-shadow: #8a6f3c;
+}
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body { min-height: 100vh; background: var(--desk); font-family: 'EB Garamond', serif; color: var(--ink); overflow-x: hidden; }
+
+.desk-bg {
+  position: fixed; inset: 60px 0 0 0; z-index: 0;
+  background: var(--desk);
+  background-image:
+    repeating-linear-gradient(93deg, transparent 0 70px, var(--desk-grain) 70px 71px, transparent 71px 150px, rgba(0,0,0,0.1) 150px 152px, transparent 152px 270px, var(--desk-grain) 270px 272px),
+    repeating-linear-gradient(3deg, transparent 0 220px, rgba(0,0,0,0.07) 220px 222px);
+}
+.desk-bg::after {
+  content: ''; position: absolute; inset: 0;
+  background: radial-gradient(ellipse at 50% 50%, transparent 30%, rgba(0,0,0,0.6) 95%);
+}
+
+.header {
+  position: relative; z-index: 30;
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 0.9rem 2rem;
+  background: linear-gradient(to bottom, #0a0402, #1a0d04);
+  border-bottom: 2px solid rgba(0,0,0,0.6);
+  box-shadow: 0 6px 16px rgba(0,0,0,0.55);
+  color: var(--page);
+  font-family: 'IM Fell English SC', serif;
+}
+.header a { color: var(--page); text-decoration: none; margin-right: 1.5rem; opacity: 0.85; }
+.header-right { display: flex; align-items: center; gap: 1rem; }
+.theme-toggle { background: none; border: 1px solid var(--gold-deep); color: var(--gold-bright); padding: 0.3rem 0.7rem; border-radius: 2px; cursor: pointer; font-family: inherit; }
+
+.stage {
+  position: relative; z-index: 10;
+  min-height: calc(100vh - 60px);
+  display: flex; align-items: center; justify-content: center;
+  gap: 3rem;
+  padding: 3rem 4rem;
+}
+
+/* Open tome - similar in spirit to Mockup E but smaller */
+.tome {
+  position: relative;
+  flex: 0 0 auto;
+  width: 420px;
+  aspect-ratio: 8 / 10;
+  display: grid; grid-template-columns: 1fr 1fr;
+  background: var(--leather-dark);
+  border: 8px solid var(--leather);
+  border-radius: 5px;
+  box-shadow: 0 25px 60px rgba(0,0,0,0.75), inset 0 0 30px rgba(0,0,0,0.5);
+  transform: rotate(-2deg);
+}
+.tome::before {
+  content: ''; position: absolute; top: 0; bottom: 0; left: 50%; width: 14px;
+  background: linear-gradient(90deg, rgba(0,0,0,0.5), rgba(0,0,0,0.85), rgba(0,0,0,0.5));
+  transform: translateX(-50%); z-index: 3;
+}
+.tome-page {
+  background: var(--page);
+  background-image:
+    repeating-linear-gradient(0deg, transparent 0 2px, rgba(0,0,0,0.012) 2px 3px),
+    radial-gradient(ellipse at 50% 40%, transparent 40%, rgba(0,0,0,0.18) 100%);
+  padding: 1.5rem 1.4rem;
+  position: relative;
+  overflow: hidden;
+}
+.tome-page-left { border-right: 1px solid rgba(0,0,0,0.1); }
+
+.dropcap {
+  float: left;
+  font-family: 'Cinzel Decorative', serif;
+  font-size: 3.3rem;
+  line-height: 0.9;
+  color: var(--vermilion);
+  padding: 0.3rem 0.45rem 0.1rem 0;
+  background: radial-gradient(circle at 30% 30%, rgba(235,185,71,0.25), transparent 70%);
+  text-shadow: 1px 1px 0 var(--gold-deep);
+}
+.tome-body { font-size: 0.78rem; line-height: 1.55; color: var(--ink-soft); }
+.tome-body p { margin-bottom: 0.6rem; text-align: justify; }
+.tome-heading {
+  font-family: 'Cinzel Decorative', serif;
+  color: var(--vermilion);
+  font-size: 0.78rem;
+  text-align: center;
+  letter-spacing: 0.18em;
+  margin-bottom: 0.5rem;
+  border-bottom: 1px solid rgba(168,34,28,0.3);
+  padding-bottom: 0.3rem;
+}
+.tome-step {
+  display: flex; gap: 0.5rem;
+  margin-bottom: 0.6rem;
+}
+.tome-step-num {
+  font-family: 'Cinzel Decorative', serif;
+  color: var(--vermilion);
+  font-size: 1.1rem;
+  line-height: 1;
+  flex: 0 0 auto;
+}
+.tome-step-text { font-size: 0.75rem; line-height: 1.5; color: var(--ink-soft); }
+.tome-flourish {
+  text-align: center;
+  color: var(--gold-deep);
+  font-family: 'Cinzel Decorative', serif;
+  font-size: 0.9rem;
+  letter-spacing: 0.5em;
+  margin: 0.4rem 0;
+  opacity: 0.55;
+}
+
+/* Casting circle - the star of the show */
+.ritual-space {
+  flex: 0 0 auto;
+  width: 560px; height: 560px;
+  position: relative;
+  display: flex; align-items: center; justify-content: center;
+}
+.ritual-glow {
+  position: absolute; inset: -40px;
+  background: radial-gradient(circle at center, var(--arcane-glow) 0%, rgba(255,150,40,0.25) 40%, transparent 70%);
+  filter: blur(25px);
+  animation: pulse 4s ease-in-out infinite;
+  pointer-events: none;
+}
+@keyframes pulse {
+  0%, 100% { opacity: 0.7; transform: scale(1); }
+  50% { opacity: 1; transform: scale(1.05); }
+}
+
+.casting-circle {
+  position: absolute; inset: 0;
+  animation: spin-slow 120s linear infinite;
+}
+.casting-circle svg { width: 100%; height: 100%; display: block; }
+@keyframes spin-slow {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+.casting-circle-rev {
+  position: absolute; inset: 60px;
+  animation: spin-rev 90s linear infinite;
+  pointer-events: none;
+}
+@keyframes spin-rev {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(-360deg); }
+}
+
+/* The needle sits in a non-rotating layer */
+.needle-layer {
+  position: absolute; inset: 0;
+  pointer-events: none;
+  z-index: 5;
+}
+.needle-layer svg { width: 100%; height: 100%; display: block; overflow: visible; }
+.needle {
+  transform-origin: 280px 280px;
+  transition: transform 0.7s cubic-bezier(.3,1.4,.5,1);
+}
+
+/* Whimsy symbols in southern arc */
+.whimsy-symbols {
+  position: absolute; inset: 0;
+  z-index: 6;
+  pointer-events: none;
+}
+.whimsy-symbol {
+  position: absolute;
+  width: 56px; height: 56px;
+  display: flex; align-items: center; justify-content: center;
+  cursor: pointer;
+  pointer-events: auto;
+  transition: all 0.3s;
+  border-radius: 50%;
+}
+.whimsy-symbol svg { width: 40px; height: 40px; overflow: visible; }
+.whimsy-symbol svg * { stroke: var(--arcane-deep); fill: none; stroke-width: 1.6; }
+.whimsy-symbol:hover svg * { stroke: var(--arcane); filter: drop-shadow(0 0 4px var(--arcane-glow)); }
+.whimsy-symbol.active { transform: scale(1.15); }
+.whimsy-symbol.active svg * { stroke: var(--arcane); filter: drop-shadow(0 0 8px var(--arcane)) drop-shadow(0 0 14px var(--arcane-glow)); }
+.whimsy-symbol .label {
+  position: absolute;
+  bottom: -22px; left: 50%; transform: translateX(-50%);
+  font-family: 'IM Fell English SC', serif;
+  font-size: 0.65rem;
+  color: var(--arcane);
+  text-transform: uppercase;
+  letter-spacing: 0.15em;
+  white-space: nowrap;
+  opacity: 0.7;
+  transition: opacity 0.2s;
+  text-shadow: 0 0 6px rgba(0,0,0,0.8);
+}
+.whimsy-symbol:hover .label, .whimsy-symbol.active .label { opacity: 1; }
+.whimsy-symbol.active .label { color: var(--arcane); font-weight: 600; }
+
+/* Symbol positions around southern arc (angles measured from north, clockwise)
+   145°, 160°, 180°, 200°, 215° - centered around south */
+.sym-tactical   { bottom: 18%; left: 14%; }
+.sym-balanced   { bottom: 8%;  left: 28%; }
+.sym-creative   { bottom: 3%;  left: 50%; transform: translateX(-50%); }
+.sym-creative.active { transform: translateX(-50%) scale(1.15); }
+.sym-theatrical { bottom: 8%;  right: 28%; }
+.sym-chaotic    { bottom: 18%; right: 14%; }
+
+/* The paper scrap in the center */
+.scrap {
+  position: relative; z-index: 10;
+  width: 300px;
+  background: var(--scrap);
+  background-image:
+    repeating-linear-gradient(0deg, transparent 0 27px, rgba(74,52,32,0.18) 27px 28px);
+  padding: 1.4rem 1.3rem;
+  box-shadow:
+    0 8px 18px rgba(0,0,0,0.55),
+    0 0 0 1px rgba(138,111,60,0.4),
+    inset 0 0 20px rgba(138,111,60,0.15);
+  transform: rotate(-1.5deg);
+  min-height: 180px;
+  /* Torn edges via clip-path approximation */
+  border-top: 2px solid transparent;
+  border-image: linear-gradient(90deg, var(--scrap-shadow), transparent 20%, transparent 80%, var(--scrap-shadow)) 1;
+}
+.scrap::before {
+  content: ''; position: absolute; top: -8px; left: 0; right: 0; height: 10px;
+  background: var(--scrap);
+  clip-path: polygon(0 100%, 4% 30%, 10% 80%, 18% 20%, 25% 70%, 34% 30%, 42% 85%, 50% 25%, 58% 75%, 66% 35%, 74% 80%, 82% 30%, 90% 70%, 96% 25%, 100% 100%);
+}
+.scrap::after {
+  content: ''; position: absolute; bottom: -8px; left: 0; right: 0; height: 10px;
+  background: var(--scrap);
+  clip-path: polygon(0 0, 4% 60%, 10% 15%, 18% 70%, 25% 25%, 34% 65%, 42% 10%, 50% 70%, 58% 20%, 66% 65%, 74% 15%, 82% 70%, 90% 25%, 96% 65%, 100% 0);
+}
+.scrap-prompt {
+  width: 100%;
+  min-height: 140px;
+  background: transparent;
+  border: none; outline: none; resize: none;
+  font-family: 'EB Garamond', serif;
+  font-size: 1.08rem;
+  line-height: 28px;
+  color: var(--ink);
+  font-style: italic;
+}
+.scrap-prompt::placeholder { color: var(--ink-soft); opacity: 0.55; }
+
+/* Subtle shimmering runes on outer ring (CSS animation) */
+.shimmer {
+  animation: shimmer 3s ease-in-out infinite alternate;
+}
+@keyframes shimmer {
+  from { opacity: 0.65; }
+  to { opacity: 1; filter: drop-shadow(0 0 3px var(--arcane)); }
+}
+
+.hint {
+  position: absolute;
+  top: -42px; left: 50%; transform: translateX(-50%);
+  font-family: 'IM Fell English SC', serif;
+  font-size: 0.75rem;
+  color: var(--arcane);
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  text-shadow: 0 0 8px rgba(0,0,0,0.8), 0 0 12px var(--arcane-glow);
+  white-space: nowrap;
+  opacity: 0.8;
+}
+.whimsy-legend {
+  position: absolute;
+  bottom: -58px; left: 50%; transform: translateX(-50%);
+  font-family: 'EB Garamond', serif;
+  font-style: italic;
+  color: var(--arcane);
+  font-size: 0.95rem;
+  text-align: center;
+  text-shadow: 0 0 8px rgba(0,0,0,0.9);
+  white-space: nowrap;
+  opacity: 0.9;
+  letter-spacing: 0.02em;
+}
+
+.footer-note {
+  position: fixed; bottom: 1rem; left: 0; right: 0;
+  text-align: center; color: rgba(235,213,164,0.5);
+  font-family: 'IM Fell English SC', serif; font-size: 0.8rem;
+  letter-spacing: 0.15em;
+  z-index: 20;
+}
+</style>
+</head>
+<body>
+<div class="desk-bg"></div>
+
+<header class="header">
+  <nav>
+    <a href="#">About</a>
+    <a href="#">How it works</a>
+    <a href="#">Sourcebooks</a>
+  </nav>
+  <div class="header-right">
+    <button class="theme-toggle">Candlelight</button>
+    <span style="color:var(--gold); opacity:0.6;">Login</span>
+  </div>
+</header>
+
+<main class="stage">
+  <!-- The Tome (instructional, off to the side) -->
+  <div class="tome">
+    <div class="tome-page tome-page-left">
+      <p class="tome-body">
+        <span class="dropcap">A</span>rcane Advisor listens. Describe your situation and the circle will answer with spells worth casting.
+      </p>
+      <p class="tome-body">The southern needle of the compass shows the voice in which the tome will reply — from sober tactical counsel to unhinged inspiration.</p>
+      <p class="tome-flourish">✦ ✦ ✦</p>
+    </div>
+    <div class="tome-page">
+      <div class="tome-heading">— The Rite —</div>
+      <div class="tome-step">
+        <div class="tome-step-num">I.</div>
+        <div class="tome-step-text">Set the southern needle to your chosen voice.</div>
+      </div>
+      <div class="tome-step">
+        <div class="tome-step-num">II.</div>
+        <div class="tome-step-text">Inscribe your question on the paper within the circle.</div>
+      </div>
+      <div class="tome-step">
+        <div class="tome-step-num">III.</div>
+        <div class="tome-step-text">Commit the rite. The circle will respond with chosen spells.</div>
+      </div>
+      <div class="tome-flourish">❦</div>
+    </div>
+  </div>
+
+  <!-- The Casting Circle -->
+  <div class="ritual-space">
+    <div class="ritual-glow"></div>
+
+    <!-- Outer rotating circle with runes and geometry -->
+    <div class="casting-circle">
+      <svg viewBox="0 0 560 560">
+        <defs>
+          <filter id="arcane-glow">
+            <feGaussianBlur stdDeviation="1.2"/>
+          </filter>
+        </defs>
+        <g stroke="var(--circle-line)" fill="none" stroke-width="1.3" opacity="0.9">
+          <!-- Outermost ring -->
+          <circle cx="280" cy="280" r="260"/>
+          <circle cx="280" cy="280" r="252"/>
+          <!-- Rune ring tick marks -->
+          <g stroke-width="1">
+            <!-- 24 tick marks around ring -->
+            <line x1="280" y1="20" x2="280" y2="32"/>
+            <line x1="280" y1="528" x2="280" y2="540"/>
+            <line x1="20" y1="280" x2="32" y2="280"/>
+            <line x1="528" y1="280" x2="540" y2="280"/>
+          </g>
+          <!-- Sacred geometry: inscribed square rotated 45° -->
+          <circle cx="280" cy="280" r="220"/>
+          <rect x="100" y="100" width="360" height="360" transform="rotate(45 280 280)"/>
+          <!-- Inner pentagonal ring -->
+          <circle cx="280" cy="280" r="180"/>
+          <polygon points="280,120 337,238 461,246 369,330 396,456 280,390 164,456 191,330 99,246 223,238" opacity="0.5"/>
+          <!-- Center ring (compass body) -->
+          <circle cx="280" cy="280" r="148"/>
+          <circle cx="280" cy="280" r="140"/>
+        </g>
+        <!-- Runes inscribed around outer ring (stylized glyphs) -->
+        <g font-family="Cinzel Decorative, serif" font-size="14" fill="var(--circle-line)" text-anchor="middle" opacity="0.85">
+          <text x="280" y="12">✦</text>
+          <text x="475" y="96">◈</text>
+          <text x="545" y="285">✧</text>
+          <text x="475" y="475">❈</text>
+          <text x="280" y="555">✦</text>
+          <text x="85" y="475">❈</text>
+          <text x="15" y="285">✧</text>
+          <text x="85" y="96">◈</text>
+        </g>
+        <!-- Subtle tick marks every 15° around the outer band for a compass feel -->
+        <g stroke="var(--circle-line)" stroke-width="0.8" opacity="0.6">
+          <g transform="translate(280 280)">
+            <g id="ticks">
+              <line x1="0" y1="-260" x2="0" y2="-252"/>
+            </g>
+            <use href="#ticks" transform="rotate(15)"/>
+            <use href="#ticks" transform="rotate(30)"/>
+            <use href="#ticks" transform="rotate(45)"/>
+            <use href="#ticks" transform="rotate(60)"/>
+            <use href="#ticks" transform="rotate(75)"/>
+            <use href="#ticks" transform="rotate(90)"/>
+            <use href="#ticks" transform="rotate(105)"/>
+            <use href="#ticks" transform="rotate(120)"/>
+            <use href="#ticks" transform="rotate(135)"/>
+            <use href="#ticks" transform="rotate(150)"/>
+            <use href="#ticks" transform="rotate(165)"/>
+            <use href="#ticks" transform="rotate(180)"/>
+            <use href="#ticks" transform="rotate(195)"/>
+            <use href="#ticks" transform="rotate(210)"/>
+            <use href="#ticks" transform="rotate(225)"/>
+            <use href="#ticks" transform="rotate(240)"/>
+            <use href="#ticks" transform="rotate(255)"/>
+            <use href="#ticks" transform="rotate(270)"/>
+            <use href="#ticks" transform="rotate(285)"/>
+            <use href="#ticks" transform="rotate(300)"/>
+            <use href="#ticks" transform="rotate(315)"/>
+            <use href="#ticks" transform="rotate(330)"/>
+            <use href="#ticks" transform="rotate(345)"/>
+          </g>
+        </g>
+      </svg>
+    </div>
+
+    <!-- Secondary inner reverse-rotating layer with fine detail -->
+    <div class="casting-circle-rev">
+      <svg viewBox="0 0 440 440">
+        <g stroke="var(--circle-line)" fill="none" stroke-width="0.8" opacity="0.7">
+          <circle cx="220" cy="220" r="200"/>
+          <!-- Smaller six-pointed geometry -->
+          <g transform="translate(220 220)">
+            <polygon points="0,-180 156,-90 156,90 0,180 -156,90 -156,-90"/>
+            <polygon points="0,180 156,90 156,-90 0,-180 -156,-90 -156,90" opacity="0.6"/>
+          </g>
+          <!-- Cardinal marks inside -->
+          <g stroke-width="1">
+            <line x1="220" y1="30" x2="220" y2="50"/>
+            <line x1="220" y1="390" x2="220" y2="410"/>
+            <line x1="30" y1="220" x2="50" y2="220"/>
+            <line x1="390" y1="220" x2="410" y2="220"/>
+          </g>
+          <!-- Cardinal letters -->
+          <g font-family="Cinzel Decorative, serif" font-size="11" fill="var(--circle-line)" text-anchor="middle" opacity="0.75">
+            <text x="220" y="24">N</text>
+            <text x="220" y="422">S</text>
+            <text x="18" y="224">W</text>
+            <text x="422" y="224">E</text>
+          </g>
+        </g>
+      </svg>
+    </div>
+
+    <!-- The needle layer (does not rotate with the circle) -->
+    <div class="needle-layer">
+      <svg viewBox="0 0 560 560">
+        <g class="needle" id="needle">
+          <!-- North end (short, darker) -->
+          <polygon points="280,280 272,280 280,200 288,280" fill="var(--ink)" stroke="var(--arcane-deep)" stroke-width="0.8" opacity="0.8"/>
+          <!-- South end (long, bright, glowing - points to whimsy symbols) -->
+          <polygon points="280,280 272,280 280,440 288,280" fill="var(--arcane)" stroke="var(--arcane-deep)" stroke-width="0.8" filter="url(#arcane-glow)"/>
+          <polygon points="280,280 272,280 280,440 288,280" fill="var(--arcane)" stroke="var(--arcane-deep)" stroke-width="0.8" opacity="0.6"/>
+          <!-- Needle hub -->
+          <circle cx="280" cy="280" r="12" fill="var(--ink)" stroke="var(--arcane-deep)" stroke-width="1.5"/>
+          <circle cx="280" cy="280" r="6" fill="var(--arcane)"/>
+          <circle cx="280" cy="280" r="3" fill="var(--arcane-deep)"/>
+        </g>
+        <defs>
+          <filter id="arcane-glow" x="-50%" y="-50%" width="200%" height="200%">
+            <feGaussianBlur stdDeviation="2" result="blur"/>
+            <feMerge>
+              <feMergeNode in="blur"/>
+              <feMergeNode in="SourceGraphic"/>
+            </feMerge>
+          </filter>
+        </defs>
+      </svg>
+    </div>
+
+    <!-- Whimsy symbols arranged in southern arc -->
+    <div class="whimsy-symbols">
+      <div class="whimsy-symbol sym-tactical" data-name="Tactical" data-angle="-40">
+        <svg viewBox="0 0 40 40">
+          <!-- Crossed swords -->
+          <line x1="8" y1="8" x2="32" y2="32"/>
+          <line x1="32" y1="8" x2="8" y2="32"/>
+          <circle cx="20" cy="20" r="3"/>
+        </svg>
+        <span class="label">Tactical</span>
+      </div>
+      <div class="whimsy-symbol sym-balanced" data-name="Balanced" data-angle="-20">
+        <svg viewBox="0 0 40 40">
+          <!-- Balance scale -->
+          <line x1="20" y1="6" x2="20" y2="34"/>
+          <line x1="8" y1="14" x2="32" y2="14"/>
+          <path d="M8 14 Q4 22 8 26 L14 14" />
+          <path d="M32 14 Q36 22 32 26 L26 14" />
+          <circle cx="20" cy="34" r="2"/>
+        </svg>
+        <span class="label">Balanced</span>
+      </div>
+      <div class="whimsy-symbol sym-creative active" data-name="Creative" data-angle="0">
+        <svg viewBox="0 0 40 40">
+          <!-- Triskele / spiral -->
+          <path d="M20 20 Q24 14 28 18 T24 26 Q18 30 14 24 T22 16"/>
+          <circle cx="20" cy="20" r="15"/>
+          <path d="M20 5 Q14 11 20 15"/>
+          <path d="M35 20 Q29 26 25 20"/>
+          <path d="M20 35 Q26 29 20 25"/>
+        </svg>
+        <span class="label">Creative</span>
+      </div>
+      <div class="whimsy-symbol sym-theatrical" data-name="Theatrical" data-angle="20">
+        <svg viewBox="0 0 40 40">
+          <!-- Sunburst/rose -->
+          <circle cx="20" cy="20" r="6"/>
+          <g>
+            <line x1="20" y1="2" x2="20" y2="10"/>
+            <line x1="20" y1="30" x2="20" y2="38"/>
+            <line x1="2" y1="20" x2="10" y2="20"/>
+            <line x1="30" y1="20" x2="38" y2="20"/>
+            <line x1="7" y1="7" x2="13" y2="13"/>
+            <line x1="27" y1="27" x2="33" y2="33"/>
+            <line x1="33" y1="7" x2="27" y2="13"/>
+            <line x1="13" y1="27" x2="7" y2="33"/>
+          </g>
+        </svg>
+        <span class="label">Theatrical</span>
+      </div>
+      <div class="whimsy-symbol sym-chaotic" data-name="Chaotic" data-angle="40">
+        <svg viewBox="0 0 40 40">
+          <!-- Jagged star / lightning burst -->
+          <path d="M20 2 L24 14 L36 12 L26 20 L34 32 L20 26 L6 32 L14 20 L4 12 L16 14 Z"/>
+          <path d="M12 8 L28 32" opacity="0.6"/>
+        </svg>
+        <span class="label">Chaotic</span>
+      </div>
+    </div>
+
+    <!-- Central paper scrap for query -->
+    <div class="scrap">
+      <textarea class="scrap-prompt" placeholder="What's the most dramatic possible entrance to a king's banquet?"></textarea>
+    </div>
+
+    <div class="hint">— The Casting Circle —</div>
+    <div class="whimsy-legend">The southern needle points to <em id="whimsy-name">Creative</em></div>
+  </div>
+</main>
+
+<div class="footer-note">Variation K — Ritual Companion</div>
+
+<script>
+  const descriptions = {
+    Tactical: 'Tactical',
+    Balanced: 'Balanced',
+    Creative: 'Creative',
+    Theatrical: 'Theatrical',
+    Chaotic: 'Chaotic'
+  };
+  document.querySelectorAll('.whimsy-symbol').forEach(sym => {
+    sym.addEventListener('click', () => {
+      document.querySelectorAll('.whimsy-symbol').forEach(s => s.classList.remove('active'));
+      sym.classList.add('active');
+      const name = sym.dataset.name;
+      const angle = parseFloat(sym.dataset.angle);
+      document.getElementById('whimsy-name').textContent = descriptions[name];
+      const needle = document.getElementById('needle');
+      needle.style.transform = `rotate(${angle}deg)`;
+    });
+  });
+</script>
+</body>
+</html>

@@ -1,0 +1,263 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Component Sheet — Round Counter</title>
+<link href="https://fonts.googleapis.com/css2?family=Cinzel+Decorative:wght@400;700;900&family=Cinzel:wght@400;600;700&family=EB+Garamond:ital,wght@0,400;0,500;0,600;1,400;1,500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --desk: #241811; --ink: #f3e7cf; --ink-dim: #b8a681; --ink-faint: #7a6944;
+    --gold: #c79a47;
+    --arcane: #ffd57a; --arcane-deep: #e89a2a;
+    --arcane-glow: rgba(255, 200, 90, 0.75);
+  }
+  [data-whimsy="tactical"]   { --arcane:#9fc5e8; --arcane-deep:#3f78a8; --arcane-glow:rgba(120,180,230,0.75); }
+  [data-whimsy="balanced"]   { --arcane:#9fe3b8; --arcane-deep:#3fa870; --arcane-glow:rgba(110,220,160,0.75); }
+  [data-whimsy="creative"]   { --arcane:#ffd57a; --arcane-deep:#e89a2a; --arcane-glow:rgba(255,200,90,0.75);  }
+  [data-whimsy="theatrical"] { --arcane:#d8a8ee; --arcane-deep:#8a42b8; --arcane-glow:rgba(200,130,230,0.75); }
+  [data-whimsy="chaotic"]    { --arcane:#ff9aa0; --arcane-deep:#c03848; --arcane-glow:rgba(255,120,130,0.75); }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html, body { height: 100%; }
+  body {
+    min-height: 100vh;
+    background: radial-gradient(ellipse at 50% 20%, #3a2818 0%, #120905 82%), var(--desk);
+    background-attachment: fixed;
+    font-family: 'EB Garamond', serif; color: var(--ink);
+    padding: 60px 40px 120px;
+  }
+  body::before {
+    content: ''; position: fixed; inset: 0;
+    background: repeating-linear-gradient(91deg, transparent 0 90px, rgba(0,0,0,0.1) 90px 91px);
+    pointer-events: none; z-index: 0;
+  }
+
+  .sheet { max-width: 880px; margin: 0 auto; position: relative; z-index: 2; }
+  .sheet-head { border-bottom: 1px solid rgba(184,166,129,0.25); padding-bottom: 28px; margin-bottom: 40px; }
+  .breadcrumb {
+    font-family: 'Cinzel Decorative', serif; font-size: 10px;
+    letter-spacing: 0.28em; text-transform: uppercase; color: var(--ink-faint);
+  }
+  .breadcrumb a { color: var(--ink-dim); text-decoration: none; }
+  .breadcrumb a:hover { color: var(--gold); }
+  .sheet-title {
+    font-family: 'Cinzel Decorative', serif; font-weight: 900;
+    font-size: 32px; color: var(--gold);
+    letter-spacing: 0.1em; text-transform: uppercase; margin: 8px 0 10px;
+  }
+  .sheet-sub {
+    font-family: 'EB Garamond', serif; font-style: italic;
+    color: var(--ink-dim); font-size: 15px; line-height: 22px; max-width: 640px;
+  }
+  .state { margin-bottom: 56px; }
+  .state-head { display: flex; align-items: baseline; gap: 16px; margin-bottom: 6px; }
+  .state-name {
+    font-family: 'Cinzel Decorative', serif; font-weight: 700;
+    font-size: 13px; letter-spacing: 0.28em; text-transform: uppercase; color: var(--gold);
+  }
+  .state-chip {
+    font-family: 'Cinzel', serif; font-size: 9px;
+    letter-spacing: 0.22em; text-transform: uppercase; color: var(--ink-faint);
+    padding: 2px 10px; border: 1px solid rgba(184,166,129,0.35); border-radius: 10px;
+  }
+  .state-note {
+    font-family: 'EB Garamond', serif; font-style: italic;
+    color: var(--ink-dim); font-size: 14px; line-height: 21px;
+    margin-bottom: 18px; max-width: 640px;
+  }
+
+  /* ROUND COUNTER (component under study) */
+  .rounds-label {
+    font-family: 'Cinzel Decorative', serif; font-size: 10px; letter-spacing: 0.22em;
+    text-transform: uppercase; color: var(--ink-dim);
+    display: inline-flex; align-items: center; gap: 10px;
+  }
+  .rounds-label .pips { display: flex; gap: 4px; }
+  .rounds-label .pip {
+    width: 6px; height: 6px; border-radius: 50%;
+    background: rgba(184,166,129,0.25); border: 1px solid rgba(184,166,129,0.4);
+  }
+  .rounds-label .pip.used {
+    background: var(--arcane); box-shadow: 0 0 6px var(--arcane-glow); border-color: var(--arcane-deep);
+  }
+  .rounds-label.sealed {
+    color: var(--ink-faint);
+  }
+
+  .row {
+    display: flex; flex-direction: column; gap: 18px;
+    padding: 22px 26px; background: rgba(0,0,0,0.3);
+    border: 1px dashed rgba(184,166,129,0.2); border-radius: 2px;
+  }
+  .row-item { display: flex; align-items: center; gap: 18px; }
+  .row-item .caption {
+    font-family: 'Cinzel', serif; font-size: 9px; letter-spacing: 0.22em;
+    text-transform: uppercase; color: var(--ink-faint); min-width: 80px;
+  }
+
+  .palette-label {
+    font-family: 'Cinzel Decorative', serif; font-size: 10px;
+    letter-spacing: 0.24em; text-transform: uppercase;
+    color: var(--arcane);
+    margin-bottom: 10px;
+    display: flex; align-items: center; gap: 8px;
+  }
+  .palette-label::before {
+    content: ''; width: 10px; height: 10px; border-radius: 50%;
+    background: var(--arcane); box-shadow: 0 0 6px var(--arcane-glow);
+  }
+</style>
+</head>
+<body>
+<div class="sheet">
+
+  <div class="sheet-head">
+    <div class="breadcrumb"><a href="index.html">Components</a> · Round Counter</div>
+    <h1 class="sheet-title">Round Counter</h1>
+    <p class="sheet-sub">
+      A small pip tally anchored top-right. Tracks how many of the five allowed rounds have
+      been consumed in the current consultation. Used pips inherit the active whimsy's glow.
+    </p>
+  </div>
+
+  <section class="state">
+    <div class="state-head">
+      <div class="state-name">Fill progression — Round 0 through Round 5</div>
+      <div class="state-chip">All six states</div>
+    </div>
+    <p class="state-note">
+      The counter advances one pip per resolved round. The label text updates to reflect the
+      current position; at 5/5 the label flips to "Sealed" and the pip row becomes fully lit.
+    </p>
+    <div class="row">
+
+      <div class="row-item">
+        <span class="caption">Fresh start</span>
+        <div class="rounds-label">
+          <span>Round 1 of 5</span>
+          <span class="pips">
+            <span class="pip"></span><span class="pip"></span><span class="pip"></span><span class="pip"></span><span class="pip"></span>
+          </span>
+        </div>
+      </div>
+
+      <div class="row-item">
+        <span class="caption">After 1</span>
+        <div class="rounds-label">
+          <span>Round 2 of 5</span>
+          <span class="pips">
+            <span class="pip used"></span><span class="pip"></span><span class="pip"></span><span class="pip"></span><span class="pip"></span>
+          </span>
+        </div>
+      </div>
+
+      <div class="row-item">
+        <span class="caption">After 2</span>
+        <div class="rounds-label">
+          <span>Round 3 of 5</span>
+          <span class="pips">
+            <span class="pip used"></span><span class="pip used"></span><span class="pip"></span><span class="pip"></span><span class="pip"></span>
+          </span>
+        </div>
+      </div>
+
+      <div class="row-item">
+        <span class="caption">After 3</span>
+        <div class="rounds-label">
+          <span>Round 4 of 5</span>
+          <span class="pips">
+            <span class="pip used"></span><span class="pip used"></span><span class="pip used"></span><span class="pip"></span><span class="pip"></span>
+          </span>
+        </div>
+      </div>
+
+      <div class="row-item">
+        <span class="caption">After 4</span>
+        <div class="rounds-label">
+          <span>Round 5 of 5</span>
+          <span class="pips">
+            <span class="pip used"></span><span class="pip used"></span><span class="pip used"></span><span class="pip used"></span><span class="pip"></span>
+          </span>
+        </div>
+      </div>
+
+      <div class="row-item">
+        <span class="caption">Sealed</span>
+        <div class="rounds-label sealed">
+          <span>5 of 5 · Sealed</span>
+          <span class="pips">
+            <span class="pip used"></span><span class="pip used"></span><span class="pip used"></span><span class="pip used"></span><span class="pip used"></span>
+          </span>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <section class="state">
+    <div class="state-head">
+      <div class="state-name">Themed accents — all five whimsy palettes</div>
+      <div class="state-chip">Palette sweep</div>
+    </div>
+    <p class="state-note">
+      Lit pips pick up the active whimsy's arcane colour and glow. Shown here at mid-fill
+      (3/5) so both lit and unlit states are visible in each palette.
+    </p>
+    <div class="row">
+
+      <div data-whimsy="tactical">
+        <div class="palette-label">Tactical</div>
+        <div class="rounds-label">
+          <span>Round 4 of 5</span>
+          <span class="pips">
+            <span class="pip used"></span><span class="pip used"></span><span class="pip used"></span><span class="pip"></span><span class="pip"></span>
+          </span>
+        </div>
+      </div>
+
+      <div data-whimsy="balanced">
+        <div class="palette-label">Balanced</div>
+        <div class="rounds-label">
+          <span>Round 4 of 5</span>
+          <span class="pips">
+            <span class="pip used"></span><span class="pip used"></span><span class="pip used"></span><span class="pip"></span><span class="pip"></span>
+          </span>
+        </div>
+      </div>
+
+      <div data-whimsy="creative">
+        <div class="palette-label">Creative</div>
+        <div class="rounds-label">
+          <span>Round 4 of 5</span>
+          <span class="pips">
+            <span class="pip used"></span><span class="pip used"></span><span class="pip used"></span><span class="pip"></span><span class="pip"></span>
+          </span>
+        </div>
+      </div>
+
+      <div data-whimsy="theatrical">
+        <div class="palette-label">Theatrical</div>
+        <div class="rounds-label">
+          <span>Round 4 of 5</span>
+          <span class="pips">
+            <span class="pip used"></span><span class="pip used"></span><span class="pip used"></span><span class="pip"></span><span class="pip"></span>
+          </span>
+        </div>
+      </div>
+
+      <div data-whimsy="chaotic">
+        <div class="palette-label">Chaotic</div>
+        <div class="rounds-label">
+          <span>Round 4 of 5</span>
+          <span class="pips">
+            <span class="pip used"></span><span class="pip used"></span><span class="pip used"></span><span class="pip"></span><span class="pip"></span>
+          </span>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+</div>
+</body>
+</html>

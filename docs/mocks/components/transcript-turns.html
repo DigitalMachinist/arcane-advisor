@@ -1,0 +1,302 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Component Sheet — Transcript Turns</title>
+<link href="https://fonts.googleapis.com/css2?family=Cinzel+Decorative:wght@400;700;900&family=Cinzel:wght@400;600;700&family=EB+Garamond:ital,wght@0,400;0,500;0,600;1,400;1,500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --desk: #241811; --ink: #f3e7cf; --ink-dim: #b8a681; --ink-faint: #7a6944;
+    --scrap: #e9d5a6;
+    --gold: #c79a47;
+    --arcane: #ffd57a; --arcane-deep: #e89a2a;
+    --arcane-glow: rgba(255, 200, 90, 0.75);
+  }
+  [data-whimsy="tactical"]   { --arcane:#9fc5e8; --arcane-deep:#3f78a8; --arcane-glow:rgba(120,180,230,0.75); }
+  [data-whimsy="balanced"]   { --arcane:#9fe3b8; --arcane-deep:#3fa870; --arcane-glow:rgba(110,220,160,0.75); }
+  [data-whimsy="creative"]   { --arcane:#ffd57a; --arcane-deep:#e89a2a; --arcane-glow:rgba(255,200,90,0.75);  }
+  [data-whimsy="theatrical"] { --arcane:#d8a8ee; --arcane-deep:#8a42b8; --arcane-glow:rgba(200,130,230,0.75); }
+  [data-whimsy="chaotic"]    { --arcane:#ff9aa0; --arcane-deep:#c03848; --arcane-glow:rgba(255,120,130,0.75); }
+
+  [data-turn-whimsy="tactical"]   { --turn-arc:#9fc5e8; --turn-deep:#3f78a8; }
+  [data-turn-whimsy="balanced"]   { --turn-arc:#9fe3b8; --turn-deep:#3fa870; }
+  [data-turn-whimsy="creative"]   { --turn-arc:#ffd57a; --turn-deep:#e89a2a; }
+  [data-turn-whimsy="theatrical"] { --turn-arc:#d8a8ee; --turn-deep:#8a42b8; }
+  [data-turn-whimsy="chaotic"]    { --turn-arc:#ff9aa0; --turn-deep:#c03848; }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html, body { height: 100%; }
+  body {
+    min-height: 100vh;
+    background: radial-gradient(ellipse at 50% 20%, #3a2818 0%, #120905 82%), var(--desk);
+    background-attachment: fixed;
+    font-family: 'EB Garamond', serif; color: var(--ink);
+    padding: 60px 40px 120px;
+  }
+  body::before {
+    content: ''; position: fixed; inset: 0;
+    background: repeating-linear-gradient(91deg, transparent 0 90px, rgba(0,0,0,0.1) 90px 91px);
+    pointer-events: none; z-index: 0;
+  }
+
+  .sheet { max-width: 880px; margin: 0 auto; position: relative; z-index: 2; }
+  .sheet-head { border-bottom: 1px solid rgba(184,166,129,0.25); padding-bottom: 28px; margin-bottom: 40px; }
+  .breadcrumb {
+    font-family: 'Cinzel Decorative', serif; font-size: 10px;
+    letter-spacing: 0.28em; text-transform: uppercase; color: var(--ink-faint);
+  }
+  .breadcrumb a { color: var(--ink-dim); text-decoration: none; }
+  .breadcrumb a:hover { color: var(--gold); }
+  .sheet-title {
+    font-family: 'Cinzel Decorative', serif; font-weight: 900;
+    font-size: 32px; color: var(--gold);
+    letter-spacing: 0.1em; text-transform: uppercase; margin: 8px 0 10px;
+  }
+  .sheet-sub {
+    font-family: 'EB Garamond', serif; font-style: italic;
+    color: var(--ink-dim); font-size: 15px; line-height: 22px; max-width: 640px;
+  }
+  .state { margin-bottom: 56px; }
+  .state-head { display: flex; align-items: baseline; gap: 16px; margin-bottom: 6px; }
+  .state-name {
+    font-family: 'Cinzel Decorative', serif; font-weight: 700;
+    font-size: 13px; letter-spacing: 0.28em; text-transform: uppercase; color: var(--gold);
+  }
+  .state-chip {
+    font-family: 'Cinzel', serif; font-size: 9px;
+    letter-spacing: 0.22em; text-transform: uppercase; color: var(--ink-faint);
+    padding: 2px 10px; border: 1px solid rgba(184,166,129,0.35); border-radius: 10px;
+  }
+  .state-note {
+    font-family: 'EB Garamond', serif; font-style: italic;
+    color: var(--ink-dim); font-size: 14px; line-height: 21px;
+    margin-bottom: 18px; max-width: 640px;
+  }
+  .palette-label {
+    font-family: 'Cinzel Decorative', serif; font-size: 10px;
+    letter-spacing: 0.24em; text-transform: uppercase;
+    color: var(--arcane);
+    margin-bottom: 10px;
+    display: flex; align-items: center; gap: 8px;
+  }
+  .palette-label::before {
+    content: ''; width: 10px; height: 10px; border-radius: 50%;
+    background: var(--arcane); box-shadow: 0 0 6px var(--arcane-glow);
+  }
+
+  /* TURN COMPONENTS (under study) */
+  .turn-user {
+    margin: 0 auto 12px; width: 560px; max-width: 100%;
+    position: relative;
+  }
+  .turn-user .mini-scrap {
+    background: var(--scrap); color: #3a2614;
+    padding: 18px 22px; font-family: 'EB Garamond', serif; font-style: italic;
+    font-size: 17px; line-height: 26px;
+    clip-path: polygon(2% 4%,10% 1%,22% 3%,34% 0%,46% 2%,60% 1%,74% 3%,88% 0%,99% 6%,97% 20%,100% 36%,98% 52%,100% 68%,97% 82%,99% 94%,88% 98%,74% 96%,58% 99%,42% 97%,26% 100%,10% 97%,1% 92%,3% 76%,0% 60%,2% 44%,0% 28%,3% 14%);
+    box-shadow: 0 8px 20px rgba(0,0,0,0.4);
+    background-image:
+      radial-gradient(ellipse at 20% 30%, rgba(130,90,50,0.08) 0%, transparent 45%),
+      radial-gradient(ellipse at 80% 70%, rgba(90,60,30,0.10) 0%, transparent 40%);
+    opacity: 0.92;
+  }
+  .turn-user .meta {
+    display: flex; align-items: center; gap: 10px; justify-content: flex-end;
+    margin-top: 8px; padding-right: 10px;
+    font-family: 'Cinzel Decorative', serif; font-size: 9px; letter-spacing: 0.22em;
+    text-transform: uppercase; color: var(--ink-faint);
+  }
+  .turn-user .turn-num { color: var(--ink-faint); }
+  .turn-user .whimsy-badge {
+    display: inline-flex; align-items: center; gap: 6px; color: var(--turn-deep);
+  }
+  .turn-user .whimsy-badge::before {
+    content: ''; width: 8px; height: 8px; border-radius: 50%;
+    background: var(--turn-arc); box-shadow: 0 0 6px var(--turn-arc);
+  }
+
+  .set-header {
+    font-family: 'EB Garamond', serif; font-style: italic;
+    font-size: 14px; color: var(--ink-dim);
+    padding: 0 12px;
+    letter-spacing: 0.02em;
+  }
+
+  .round-header {
+    width: 100%; margin: 0 auto;
+    display: flex; align-items: center; gap: 14px;
+    font-family: 'Cinzel Decorative', serif; font-size: 9px; letter-spacing: 0.3em;
+    text-transform: uppercase; color: var(--ink-faint);
+  }
+  .round-header::before, .round-header::after {
+    content: ''; flex: 1; height: 1px;
+    background: linear-gradient(90deg, transparent, rgba(184,166,129,0.35), transparent);
+  }
+
+  .turn-divider {
+    width: 160px; height: 1px; margin: 0 auto;
+    background: linear-gradient(90deg, transparent, rgba(184,166,129,0.4), transparent);
+  }
+
+  .row {
+    padding: 28px 26px; background: rgba(0,0,0,0.3);
+    border: 1px dashed rgba(184,166,129,0.2); border-radius: 2px;
+    display: flex; flex-direction: column; gap: 20px;
+  }
+  .row.tall { gap: 36px; }
+  .row .caption {
+    font-family: 'Cinzel', serif; font-size: 9px; letter-spacing: 0.22em;
+    text-transform: uppercase; color: var(--ink-faint);
+    text-align: center;
+  }
+  .mini-wrap { display: flex; flex-direction: column; gap: 8px; align-items: center; }
+</style>
+</head>
+<body>
+<div class="sheet">
+
+  <div class="sheet-head">
+    <div class="breadcrumb"><a href="index.html">Components</a> · Transcript Turns</div>
+    <h1 class="sheet-title">Transcript Turns</h1>
+    <p class="sheet-sub">
+      The two halves of every round: the user's prompt (rendered as a torn scrap anchored to
+      the right half of the column) and the optional set-header that introduces the assistant's
+      response. Also includes the round-header rule that separates rounds, and the minor
+      divider used within a round.
+    </p>
+  </div>
+
+  <!-- USER PROMPT LENGTHS -->
+  <section class="state">
+    <div class="state-head">
+      <div class="state-name">User prompt scrap — three content lengths</div>
+      <div class="state-chip">Mini scrap</div>
+    </div>
+    <p class="state-note">
+      The scrap expands vertically to fit its content. The meta row (round number + whimsy
+      badge) hangs under the right edge. Rotation is fixed — the scrap never tilts.
+    </p>
+    <div class="row tall">
+
+      <div class="mini-wrap">
+        <div class="caption">Short</div>
+        <div class="turn-user" data-turn-whimsy="balanced">
+          <div class="mini-scrap">Does prone break concentration?</div>
+          <div class="meta"><span class="turn-num">Round 2</span><span class="whimsy-badge">Balanced</span></div>
+        </div>
+      </div>
+
+      <div class="mini-wrap">
+        <div class="caption">Medium (two lines)</div>
+        <div class="turn-user" data-turn-whimsy="tactical">
+          <div class="mini-scrap">A rust monster is blocking a narrow corridor. My party has a fighter in plate, a wizard, a rogue, a cleric. What are my options?</div>
+          <div class="meta"><span class="turn-num">Round 1</span><span class="whimsy-badge">Tactical</span></div>
+        </div>
+      </div>
+
+      <div class="mini-wrap">
+        <div class="caption">Long (four lines)</div>
+        <div class="turn-user" data-turn-whimsy="theatrical">
+          <div class="mini-scrap">The villain is delivering a monologue about inevitability while my party is tied to pillars in her throne room. Her guards are distracted. I have two unused spell slots and the gag in my mouth is loose. Something subtle, slightly unhinged, and tactically useful to buy the rogue thirty seconds.</div>
+          <div class="meta"><span class="turn-num">Round 4</span><span class="whimsy-badge">Theatrical</span></div>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- WHIMSY BADGE PALETTE SWEEP -->
+  <section class="state">
+    <div class="state-head">
+      <div class="state-name">Whimsy badge — all five palettes</div>
+      <div class="state-chip">Palette sweep</div>
+    </div>
+    <p class="state-note">
+      The badge dot inherits the round's whimsy colour and carries a matching glow. The label
+      text colour is the palette's deep tone so it reads cleanly at 9px uppercase.
+    </p>
+    <div class="row">
+
+      <div data-whimsy="tactical">
+        <div class="palette-label">Tactical</div>
+        <div class="turn-user" data-turn-whimsy="tactical">
+          <div class="mini-scrap">Map the corridors before the patrol loops back.</div>
+          <div class="meta"><span class="turn-num">Round 1</span><span class="whimsy-badge">Tactical</span></div>
+        </div>
+      </div>
+
+      <div data-whimsy="balanced">
+        <div class="palette-label">Balanced</div>
+        <div class="turn-user" data-turn-whimsy="balanced">
+          <div class="mini-scrap">Something protective but not boring.</div>
+          <div class="meta"><span class="turn-num">Round 2</span><span class="whimsy-badge">Balanced</span></div>
+        </div>
+      </div>
+
+      <div data-whimsy="creative">
+        <div class="palette-label">Creative</div>
+        <div class="turn-user" data-turn-whimsy="creative">
+          <div class="mini-scrap">All the candles, silent, at once.</div>
+          <div class="meta"><span class="turn-num">Round 3</span><span class="whimsy-badge">Creative</span></div>
+        </div>
+      </div>
+
+      <div data-whimsy="theatrical">
+        <div class="palette-label">Theatrical</div>
+        <div class="turn-user" data-turn-whimsy="theatrical">
+          <div class="mini-scrap">Make an entrance she will never forget.</div>
+          <div class="meta"><span class="turn-num">Round 4</span><span class="whimsy-badge">Theatrical</span></div>
+        </div>
+      </div>
+
+      <div data-whimsy="chaotic">
+        <div class="palette-label">Chaotic</div>
+        <div class="turn-user" data-turn-whimsy="chaotic">
+          <div class="mini-scrap">Weaponise the chandelier.</div>
+          <div class="meta"><span class="turn-num">Round 5</span><span class="whimsy-badge">Chaotic</span></div>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- ASSISTANT SET-HEADER -->
+  <section class="state">
+    <div class="state-head">
+      <div class="state-name">Set header — assistant response preamble</div>
+      <div class="state-chip">Optional eyebrow</div>
+    </div>
+    <p class="state-note">
+      A one-line italic line the assistant prepends to a set of spell cards, framing the
+      approach. Shown on its own here; in the real flow it sits above the first card in the
+      response with no separator.
+    </p>
+    <div class="row">
+      <div class="set-header">Three approaches — control the ground, don't engage directly.</div>
+      <div class="set-header">Mitigate damage to metal gear.</div>
+      <div class="set-header">Two spells — one that does the work, one that sells it.</div>
+    </div>
+  </section>
+
+  <!-- ROUND HEADER + TURN DIVIDER -->
+  <section class="state">
+    <div class="state-head">
+      <div class="state-name">Round header &amp; in-round divider</div>
+      <div class="state-chip">Separators</div>
+    </div>
+    <p class="state-note">
+      The round-header rule marks the boundary between two rounds and names the whimsy. The
+      slim turn-divider is reserved for when a round is further broken into sub-sections (e.g.
+      error card followed by retry skeleton).
+    </p>
+    <div class="row">
+      <div class="round-header"><span>Round 1 · Tactical</span></div>
+      <div class="round-header"><span>Round 3 · Creative · No Exact Match</span></div>
+      <div class="round-header"><span>Round 5 · Chaotic · Final Round</span></div>
+      <div class="turn-divider"></div>
+    </div>
+  </section>
+
+</div>
+</body>
+</html>

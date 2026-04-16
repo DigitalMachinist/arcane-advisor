@@ -1,0 +1,478 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Mockup M — Altar Stack</title>
+<link href="https://fonts.googleapis.com/css2?family=Cinzel+Decorative:wght@400;700;900&family=EB+Garamond:ital,wght@0,400;0,500;1,400&family=IM+Fell+English+SC&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --desk: #2a1d12;
+    --ink: #f3e7cf;
+    --ink-dim: #b8a681;
+    --parchment: #efe0bc;
+    --scrap: #e9d5a6;
+    --leather: #3a2414;
+    --gold: #c79a47;
+    --arcane: #ffd57a;
+    --arcane-deep: #e89a2a;
+    --arcane-glow: rgba(255, 200, 90, 0.7);
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    min-height: 100vh;
+    background:
+      radial-gradient(ellipse at 50% 55%, #3d2a18 0%, #170d07 80%),
+      var(--desk);
+    font-family: 'EB Garamond', serif;
+    color: var(--ink);
+    overflow-x: hidden;
+  }
+  body::before {
+    content: '';
+    position: fixed; inset: 0;
+    background:
+      repeating-linear-gradient(91deg,
+        transparent 0 90px,
+        rgba(0,0,0,0.1) 90px 91px);
+    pointer-events: none;
+    z-index: 1;
+  }
+
+  .header {
+    position: relative; z-index: 5;
+    padding: 22px 40px;
+    display: flex; justify-content: space-between; align-items: center;
+    font-family: 'Cinzel Decorative', serif;
+    letter-spacing: 0.18em;
+    color: var(--ink-dim);
+  }
+  .header .brand { font-size: 18px; color: var(--gold); text-transform: uppercase; }
+  .header .nav { font-family: 'IM Fell English SC', serif; font-size: 13px; letter-spacing: 0.25em; }
+  .header .nav span { margin-left: 28px; opacity: 0.7; }
+
+  .stage {
+    position: relative;
+    width: 100%;
+    min-height: calc(100vh - 70px);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 2;
+    padding: 40px 20px 80px;
+  }
+
+  .altar {
+    position: relative;
+    width: 820px;
+    height: 640px;
+  }
+
+  /* Open tome laying flat (foreshortened perspective, acts as altar base) */
+  .tome-base {
+    position: absolute;
+    bottom: 0;
+    left: 50%;
+    transform: translateX(-50%) perspective(1400px) rotateX(52deg);
+    transform-origin: bottom center;
+    width: 780px;
+    height: 480px;
+    z-index: 2;
+    filter: drop-shadow(0 30px 50px rgba(0,0,0,0.75));
+  }
+  .tome-base .pages {
+    position: absolute; inset: 0;
+    background:
+      radial-gradient(ellipse at 50% 60%, #f3e4bf 0%, #dcc38d 55%, #9b7b45 100%);
+    border-radius: 8px 8px 4px 4px;
+    box-shadow:
+      inset 0 0 80px rgba(90,60,20,0.35),
+      inset 0 10px 30px rgba(60,40,10,0.4);
+  }
+  .tome-base .spine {
+    position: absolute;
+    left: 50%; top: 0; bottom: 0;
+    width: 30px; transform: translateX(-50%);
+    background:
+      linear-gradient(90deg, rgba(0,0,0,0.5), rgba(80,50,20,0.1) 40%, rgba(80,50,20,0.1) 60%, rgba(0,0,0,0.5));
+  }
+  .tome-base .gutter-shadow {
+    position: absolute; top: 0; bottom: 0; left: 50%;
+    width: 80px; transform: translateX(-50%);
+    background: radial-gradient(ellipse at center, rgba(40,25,10,0.35) 0%, transparent 70%);
+    pointer-events: none;
+  }
+  .page-text {
+    position: absolute;
+    top: 44px;
+    width: 330px;
+    font-family: 'IM Fell English SC', serif;
+    color: #4a3420;
+    font-size: 13px;
+    line-height: 1.7;
+    letter-spacing: 0.05em;
+    padding: 12px 24px;
+    text-align: justify;
+  }
+  .page-text.left { left: 40px; }
+  .page-text.right { right: 40px; }
+  .page-text .heading {
+    font-family: 'Cinzel Decorative', serif;
+    font-size: 15px;
+    color: #5c3b1c;
+    text-align: center;
+    margin-bottom: 10px;
+    letter-spacing: 0.15em;
+  }
+  .page-text .dropcap {
+    float: left;
+    font-family: 'Cinzel Decorative', serif;
+    font-size: 42px;
+    line-height: 0.9;
+    color: var(--arcane-deep);
+    padding: 4px 6px 0 0;
+  }
+  .page-text .step {
+    font-family: 'Cinzel Decorative', serif;
+    color: var(--arcane-deep);
+    font-size: 11px;
+    letter-spacing: 0.18em;
+    display: block;
+    margin: 10px 0 4px;
+  }
+
+  /* Glowing casting circle hovering above the tome */
+  .circle-wrap {
+    position: absolute;
+    bottom: 140px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 560px;
+    height: 560px;
+    z-index: 6;
+  }
+  /* underglow reflected on the pages */
+  .underglow {
+    position: absolute;
+    bottom: -80px;
+    left: 50%; transform: translateX(-50%);
+    width: 620px; height: 140px;
+    background: radial-gradient(ellipse at center, var(--arcane-glow) 0%, rgba(255,160,60,0.15) 40%, transparent 75%);
+    filter: blur(8px);
+    animation: pulse 4s ease-in-out infinite;
+    pointer-events: none;
+    z-index: 4;
+  }
+  @keyframes pulse {
+    0%, 100% { opacity: 0.75; transform: translateX(-50%) scale(1); }
+    50% { opacity: 1; transform: translateX(-50%) scale(1.08); }
+  }
+  .ritual-halo {
+    position: absolute; inset: -50px;
+    background: radial-gradient(circle at center,
+      rgba(255, 200, 90, 0.25) 0%,
+      rgba(255, 180, 60, 0.08) 40%,
+      transparent 75%);
+    animation: halo 5s ease-in-out infinite;
+    pointer-events: none;
+  }
+  @keyframes halo {
+    0%, 100% { opacity: 0.85; transform: scale(1); }
+    50% { opacity: 1; transform: scale(1.05); }
+  }
+  .circle-svg {
+    position: absolute; inset: 0;
+    width: 100%; height: 100%;
+    filter: drop-shadow(0 0 18px var(--arcane-glow)) drop-shadow(0 0 36px rgba(255,180,80,0.3));
+  }
+  .ring-outer { animation: spin 140s linear infinite; transform-origin: 280px 280px; }
+  .ring-mid { animation: spin 100s linear infinite reverse; transform-origin: 280px 280px; }
+  .ring-inner { animation: spin 70s linear infinite; transform-origin: 280px 280px; }
+  @keyframes spin { to { transform: rotate(360deg); } }
+
+  .scrap {
+    position: absolute;
+    top: 50%; left: 50%;
+    transform: translate(-50%, -50%) rotate(-1.5deg);
+    width: 280px;
+    min-height: 170px;
+    background: var(--scrap);
+    background-image:
+      repeating-linear-gradient(0deg, transparent 0 26px, rgba(74,52,32,0.18) 26px 27px),
+      radial-gradient(ellipse at 30% 10%, rgba(120,80,30,0.15), transparent 60%);
+    padding: 20px 22px;
+    clip-path: polygon(
+      2% 4%, 8% 1%, 20% 3%, 32% 0%, 46% 2%, 60% 1%, 74% 3%, 88% 0%, 99% 6%,
+      97% 20%, 100% 36%, 98% 52%, 100% 68%, 97% 82%, 99% 94%,
+      88% 98%, 74% 96%, 58% 99%, 42% 97%, 26% 100%, 10% 97%, 1% 92%,
+      3% 76%, 0% 60%, 2% 44%, 0% 28%, 3% 14%
+    );
+    box-shadow: 0 12px 36px rgba(0,0,0,0.6);
+    z-index: 11;
+  }
+  .scrap textarea {
+    width: 100%;
+    min-height: 110px;
+    background: transparent;
+    border: none;
+    outline: none;
+    resize: none;
+    font-family: 'EB Garamond', serif;
+    font-style: italic;
+    font-size: 17px;
+    line-height: 26px;
+    color: #3a2614;
+  }
+  .scrap textarea::placeholder { color: rgba(58,38,20,0.45); }
+  .scrap .submit-row {
+    display: flex; justify-content: flex-end; margin-top: 10px;
+  }
+  .scrap button {
+    font-family: 'Cinzel Decorative', serif;
+    background: transparent;
+    border: 1px solid rgba(74,52,32,0.5);
+    color: #3a2614;
+    padding: 6px 16px;
+    font-size: 10px;
+    letter-spacing: 0.2em;
+    cursor: pointer;
+    text-transform: uppercase;
+  }
+  .scrap button:hover {
+    background: rgba(255, 200, 90, 0.3);
+    border-color: var(--arcane-deep);
+    color: var(--arcane-deep);
+  }
+
+  .needle-svg {
+    position: absolute; inset: 0;
+    width: 100%; height: 100%;
+    pointer-events: none;
+    z-index: 9;
+  }
+  .needle {
+    transform-origin: 280px 280px;
+    transition: transform 0.8s cubic-bezier(.3,1.4,.5,1);
+  }
+
+  .symbols {
+    position: absolute; inset: 0;
+    pointer-events: none;
+    z-index: 10;
+  }
+  .symbol {
+    position: absolute;
+    width: 52px; height: 52px;
+    transform: translate(-50%, -50%);
+    display: flex; align-items: center; justify-content: center;
+    cursor: pointer;
+    pointer-events: auto;
+    transition: all 0.4s ease;
+  }
+  .symbol svg {
+    width: 32px; height: 32px;
+    stroke: var(--ink-dim);
+    stroke-width: 1.5;
+    fill: none;
+    transition: all 0.4s ease;
+  }
+  .symbol:hover svg {
+    stroke: var(--arcane);
+    filter: drop-shadow(0 0 6px var(--arcane-glow));
+  }
+  .symbol.active svg {
+    stroke: var(--arcane);
+    stroke-width: 2;
+    filter: drop-shadow(0 0 10px var(--arcane)) drop-shadow(0 0 20px var(--arcane-glow));
+  }
+  .symbol .label {
+    position: absolute;
+    top: 54px;
+    left: 50%; transform: translateX(-50%);
+    font-family: 'Cinzel Decorative', serif;
+    font-size: 9px;
+    letter-spacing: 0.22em;
+    color: var(--ink-dim);
+    text-transform: uppercase;
+    white-space: nowrap;
+    transition: color 0.4s ease;
+  }
+  .symbol.active .label {
+    color: var(--arcane);
+    text-shadow: 0 0 8px var(--arcane-glow);
+  }
+
+  .hint {
+    position: absolute;
+    bottom: 20px; left: 50%;
+    transform: translateX(-50%);
+    font-family: 'IM Fell English SC', serif;
+    font-size: 11px;
+    letter-spacing: 0.3em;
+    color: var(--ink-dim);
+    opacity: 0.5;
+    text-transform: uppercase;
+    z-index: 5;
+  }
+</style>
+</head>
+<body>
+
+<div class="header">
+  <div class="brand">Arcane Advisor</div>
+  <div class="nav"><span>The Grimoire</span><span>The Archive</span><span>Enter</span></div>
+</div>
+
+<div class="stage">
+  <div class="altar">
+
+    <!-- Tome laying flat on desk, acting as altar base -->
+    <div class="tome-base">
+      <div class="pages"></div>
+      <div class="spine"></div>
+      <div class="gutter-shadow"></div>
+      <div class="page-text left">
+        <div class="heading">Of the Rite</div>
+        <p><span class="dropcap">U</span>pon this page rests the manner of consultation. The circle above thee is the locus — a throat through which the grimoire may speak.</p>
+        <span class="step">I. Set the Needle</span>
+        <p>The south-pointing tip names thy temper: from <em>Tactical</em> to <em>Chaotic</em>.</p>
+      </div>
+      <div class="page-text right">
+        <div class="heading">The Utterance</div>
+        <span class="step">II. Inscribe</span>
+        <p>Upon the scrap held within the circle, write thy question plainly.</p>
+        <span class="step">III. Commit</span>
+        <p>Speak the word <em>"Consult"</em> and the grimoire shall answer with five workings drawn from the art. Re-turn the needle to re-shape the counsel.</p>
+      </div>
+    </div>
+
+    <!-- Casting circle hovering above the tome -->
+    <div class="circle-wrap">
+      <div class="underglow"></div>
+      <div class="ritual-halo"></div>
+
+      <svg class="circle-svg" viewBox="0 0 560 560">
+        <defs>
+          <radialGradient id="innerGlow2" cx="0.5" cy="0.5" r="0.5">
+            <stop offset="0%" stop-color="rgba(255,220,140,0.25)"/>
+            <stop offset="70%" stop-color="rgba(255,180,80,0.08)"/>
+            <stop offset="100%" stop-color="transparent"/>
+          </radialGradient>
+        </defs>
+
+        <circle cx="280" cy="280" r="265" fill="url(#innerGlow2)"/>
+
+        <g class="ring-outer">
+          <circle cx="280" cy="280" r="265" fill="none" stroke="var(--arcane)" stroke-width="1.2" opacity="0.7"/>
+          <circle cx="280" cy="280" r="254" fill="none" stroke="var(--arcane-deep)" stroke-width="0.8" opacity="0.5"/>
+          <g stroke="var(--arcane)" stroke-width="1" opacity="0.6">
+            <line x1="280" y1="8" x2="280" y2="28"/>
+            <line x1="280" y1="532" x2="280" y2="552"/>
+            <line x1="8" y1="280" x2="28" y2="280"/>
+            <line x1="532" y1="280" x2="552" y2="280"/>
+          </g>
+          <g font-family="serif" font-size="20" fill="var(--arcane)" text-anchor="middle" opacity="0.85">
+            <text x="280" y="6">✦</text>
+            <text x="475" y="100">◈</text>
+            <text x="554" y="286">✧</text>
+            <text x="475" y="475">❈</text>
+            <text x="280" y="556">✦</text>
+            <text x="100" y="475">◈</text>
+            <text x="6" y="286">✧</text>
+            <text x="100" y="100">❈</text>
+          </g>
+        </g>
+
+        <g class="ring-mid">
+          <circle cx="280" cy="280" r="210" fill="none" stroke="var(--arcane)" stroke-width="1" opacity="0.6"/>
+          <circle cx="280" cy="280" r="200" fill="none" stroke="var(--arcane-deep)" stroke-width="0.6" opacity="0.4" stroke-dasharray="2 6"/>
+          <g transform="rotate(45 280 280)">
+            <rect x="130" y="130" width="300" height="300" fill="none" stroke="var(--arcane)" stroke-width="0.8" opacity="0.55"/>
+          </g>
+          <polygon points="280,90 470,220 400,440 160,440 90,220"
+                   fill="none" stroke="var(--arcane)" stroke-width="0.8" opacity="0.5"/>
+        </g>
+
+        <g class="ring-inner">
+          <circle cx="280" cy="280" r="156" fill="none" stroke="var(--arcane)" stroke-width="0.9" opacity="0.55"/>
+          <circle cx="280" cy="280" r="148" fill="none" stroke="var(--arcane-deep)" stroke-width="0.5" opacity="0.4" stroke-dasharray="1 4"/>
+          <polygon points="280,140 410,350 150,350" fill="none" stroke="var(--arcane)" stroke-width="0.7" opacity="0.55"/>
+          <polygon points="280,420 150,210 410,210" fill="none" stroke="var(--arcane)" stroke-width="0.7" opacity="0.55"/>
+        </g>
+
+        <g font-family="'Cinzel Decorative', serif" font-size="11" fill="var(--arcane)" text-anchor="middle" opacity="0.9" letter-spacing="2">
+          <text x="280" y="46">N</text>
+          <text x="514" y="284">E</text>
+          <text x="46" y="284">W</text>
+        </g>
+        <circle cx="280" cy="280" r="5" fill="var(--arcane)" opacity="0.9"/>
+        <circle cx="280" cy="280" r="12" fill="none" stroke="var(--arcane)" stroke-width="0.5" opacity="0.6"/>
+      </svg>
+
+      <svg class="needle-svg" viewBox="0 0 560 560">
+        <g class="needle" id="needle">
+          <polygon points="280,280 272,175 280,158 288,175" fill="#2a1810" stroke="var(--arcane-deep)" stroke-width="0.5"/>
+          <polygon points="280,280 268,370 280,438 292,370" fill="var(--arcane)" stroke="var(--arcane-deep)" stroke-width="0.6"
+                   style="filter: drop-shadow(0 0 6px var(--arcane)) drop-shadow(0 0 14px var(--arcane-glow));"/>
+          <circle cx="280" cy="280" r="9" fill="var(--arcane-deep)" stroke="var(--arcane)" stroke-width="1"/>
+          <circle cx="280" cy="280" r="3.5" fill="#2a1810"/>
+        </g>
+      </svg>
+
+      <!-- Whimsy symbols along southern arc (radius ~238 from center 280) -->
+      <div class="symbols">
+        <div class="symbol" data-angle="205" style="left: calc(50% - 101px); top: calc(50% + 216px);">
+          <svg viewBox="0 0 40 40"><path d="M8 8 L32 32 M32 8 L8 32 M8 8 L4 4 M32 8 L36 4 M8 32 L4 36 M32 32 L36 36"/></svg>
+          <span class="label">Tactical</span>
+        </div>
+        <div class="symbol" data-angle="190" style="left: calc(50% - 41px); top: calc(50% + 234px);">
+          <svg viewBox="0 0 40 40"><path d="M20 6 L20 34 M10 14 L30 14 M6 22 Q10 28 14 22 M26 22 Q30 28 34 22"/></svg>
+          <span class="label">Balanced</span>
+        </div>
+        <div class="symbol active" data-angle="180" style="left: 50%; top: calc(50% + 238px);">
+          <svg viewBox="0 0 40 40">
+            <path d="M20 8 Q28 14 20 20 Q12 26 20 32" />
+            <path d="M20 8 Q12 14 20 20 Q28 26 20 32" />
+            <circle cx="20" cy="20" r="3"/>
+          </svg>
+          <span class="label">Creative</span>
+        </div>
+        <div class="symbol" data-angle="170" style="left: calc(50% + 41px); top: calc(50% + 234px);">
+          <svg viewBox="0 0 40 40">
+            <circle cx="20" cy="20" r="5"/>
+            <path d="M20 4 L20 10 M20 30 L20 36 M4 20 L10 20 M30 20 L36 20 M8 8 L12 12 M28 28 L32 32 M8 32 L12 28 M28 12 L32 8"/>
+          </svg>
+          <span class="label">Theatrical</span>
+        </div>
+        <div class="symbol" data-angle="155" style="left: calc(50% + 101px); top: calc(50% + 216px);">
+          <svg viewBox="0 0 40 40"><path d="M20 4 L24 16 L36 18 L27 26 L30 38 L20 31 L10 38 L13 26 L4 18 L16 16 Z"/></svg>
+          <span class="label">Chaotic</span>
+        </div>
+      </div>
+
+      <div class="scrap">
+        <textarea placeholder="Inscribe thy question..."></textarea>
+        <div class="submit-row">
+          <button>Consult</button>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<div class="hint">Turn the needle · inscribe thy question · commit the rite</div>
+
+<script>
+  const needle = document.getElementById('needle');
+  const symbols = document.querySelectorAll('.symbol');
+  symbols.forEach(sym => {
+    sym.addEventListener('click', () => {
+      symbols.forEach(s => s.classList.remove('active'));
+      sym.classList.add('active');
+      const angle = parseFloat(sym.dataset.angle);
+      needle.style.transform = `rotate(${angle - 180}deg)`;
+    });
+  });
+</script>
+</body>
+</html>

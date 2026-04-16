@@ -1,0 +1,204 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Component Sheet — Error Card</title>
+<link href="https://fonts.googleapis.com/css2?family=Cinzel+Decorative:wght@400;700;900&family=Cinzel:wght@400;600;700&family=EB+Garamond:ital,wght@0,400;0,500;0,600;1,400;1,500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --desk: #241811; --ink: #f3e7cf; --ink-dim: #b8a681; --ink-faint: #7a6944;
+    --gold: #c79a47;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html, body { height: 100%; }
+  body {
+    min-height: 100vh;
+    background: radial-gradient(ellipse at 50% 20%, #3a2818 0%, #120905 82%), var(--desk);
+    background-attachment: fixed;
+    font-family: 'EB Garamond', serif; color: var(--ink);
+    padding: 60px 40px 120px;
+  }
+  body::before {
+    content: ''; position: fixed; inset: 0;
+    background: repeating-linear-gradient(91deg, transparent 0 90px, rgba(0,0,0,0.1) 90px 91px);
+    pointer-events: none; z-index: 0;
+  }
+
+  .sheet { max-width: 880px; margin: 0 auto; position: relative; z-index: 2; }
+  .sheet-head { border-bottom: 1px solid rgba(184,166,129,0.25); padding-bottom: 28px; margin-bottom: 40px; }
+  .breadcrumb {
+    font-family: 'Cinzel Decorative', serif; font-size: 10px;
+    letter-spacing: 0.28em; text-transform: uppercase; color: var(--ink-faint);
+  }
+  .breadcrumb a { color: var(--ink-dim); text-decoration: none; }
+  .breadcrumb a:hover { color: var(--gold); }
+  .sheet-title {
+    font-family: 'Cinzel Decorative', serif; font-weight: 900;
+    font-size: 32px; color: var(--gold);
+    letter-spacing: 0.1em; text-transform: uppercase; margin: 8px 0 10px;
+  }
+  .sheet-sub {
+    font-family: 'EB Garamond', serif; font-style: italic;
+    color: var(--ink-dim); font-size: 15px; line-height: 22px; max-width: 640px;
+  }
+  .state { margin-bottom: 56px; }
+  .state-head { display: flex; align-items: baseline; gap: 16px; margin-bottom: 6px; }
+  .state-name {
+    font-family: 'Cinzel Decorative', serif; font-weight: 700;
+    font-size: 13px; letter-spacing: 0.28em; text-transform: uppercase; color: var(--gold);
+  }
+  .state-chip {
+    font-family: 'Cinzel', serif; font-size: 9px;
+    letter-spacing: 0.22em; text-transform: uppercase; color: var(--ink-faint);
+    padding: 2px 10px; border: 1px solid rgba(184,166,129,0.35); border-radius: 10px;
+  }
+  .state-note {
+    font-family: 'EB Garamond', serif; font-style: italic;
+    color: var(--ink-dim); font-size: 14px; line-height: 21px;
+    margin-bottom: 18px; max-width: 640px;
+  }
+
+  /* ERROR CARD (component under study) */
+  .error-card {
+    background: linear-gradient(180deg, #3a1d10 0%, #2a130a 100%);
+    border: 1px solid #b84628;
+    padding: 22px 26px;
+    color: #ffddc6;
+    position: relative;
+    box-shadow: 0 8px 20px rgba(0,0,0,0.6), inset 0 0 40px rgba(184,70,40,0.2);
+    overflow: hidden;
+  }
+  .error-card::before {
+    content: ''; position: absolute; top: -20px; left: -20px; right: -20px; height: 40px;
+    background: radial-gradient(ellipse at center, rgba(200,80,40,0.5) 0%, transparent 70%);
+    pointer-events: none;
+  }
+  .error-card::after {
+    content: ''; position: absolute; bottom: 0; left: 0; right: 0; height: 24px;
+    background: linear-gradient(to top, #1a0a04 20%, transparent 100%);
+    clip-path: polygon(0 100%, 4% 70%, 10% 85%, 18% 60%, 26% 80%, 34% 55%, 42% 78%, 50% 60%, 58% 82%, 66% 58%, 74% 80%, 82% 62%, 90% 84%, 96% 68%, 100% 86%, 100% 100%);
+    pointer-events: none;
+  }
+  .error-card .kicker {
+    font-family: 'Cinzel Decorative', serif; font-size: 10px; letter-spacing: 0.28em;
+    text-transform: uppercase; color: #ff9aa0; margin-bottom: 8px;
+    text-shadow: 0 0 8px rgba(255,120,130,0.6);
+  }
+  .error-card .title {
+    font-family: 'Cinzel Decorative', serif; font-size: 19px; color: #ffd6bd;
+    margin-bottom: 8px; letter-spacing: 0.04em;
+  }
+  .error-card .prompt-quote {
+    font-style: italic; color: #ffddc6; padding: 8px 12px; background: rgba(0,0,0,0.3);
+    border-left: 2px solid #ff9aa0; margin-bottom: 14px; font-size: 13px;
+  }
+  .error-card .body {
+    font-family: 'EB Garamond', serif; font-style: italic; font-size: 14px; line-height: 22px;
+    color: #e5c5b0; margin-bottom: 14px;
+  }
+  .error-card .detail {
+    font-family: 'EB Garamond', serif; font-style: italic;
+    color: rgba(255,200,170,0.5); font-size: 12px;
+  }
+  .error-card .actions { display: flex; gap: 10px; align-items: center; flex-wrap: wrap; }
+  .error-btn {
+    font-family: 'Cinzel Decorative', serif; background: transparent;
+    border: 1px solid #b84628; color: #ff9aa0;
+    padding: 6px 16px; font-size: 9px; letter-spacing: 0.22em; text-transform: uppercase;
+    cursor: pointer; transition: all 0.3s ease;
+  }
+  .error-btn:hover { background: rgba(184,70,40,0.15); color: #ffd6bd; }
+</style>
+</head>
+<body>
+<div class="sheet">
+
+  <div class="sheet-head">
+    <div class="breadcrumb"><a href="index.html">Components</a> · Error Card</div>
+    <h1 class="sheet-title">Error Card</h1>
+    <p class="sheet-sub">
+      Shown when a user submission fails to resolve — timeout, upstream outage, transient
+      network failure. Echoes the user's prompt back so the retry is frictionless, and
+      surfaces the reassurance that the round hasn't been counted.
+    </p>
+  </div>
+
+  <section class="state">
+    <div class="state-head">
+      <div class="state-name">Timeout — retryable</div>
+      <div class="state-chip">Transient failure</div>
+    </div>
+    <p class="state-note">
+      The most common case. Body copy frames the failure as almost always transient,
+      confirms no round was consumed, and offers both a direct retry and an edit path in
+      case the user wants to rephrase.
+    </p>
+    <div class="error-card">
+      <div class="kicker">Consultation interrupted</div>
+      <div class="title">The spell failed to resolve.</div>
+      <div class="prompt-quote">"Give me spells for fighting a dragon at sea."</div>
+      <div class="body">
+        The oracle didn't respond in time. This is almost always a transient network
+        hiccup — try again. The round hasn't been counted against your five.
+      </div>
+      <div class="actions">
+        <button class="error-btn">Try again</button>
+        <button class="error-btn">Edit the query</button>
+        <span class="detail">error: request_timeout · 20s</span>
+      </div>
+    </div>
+  </section>
+
+  <section class="state">
+    <div class="state-head">
+      <div class="state-name">Upstream unavailable</div>
+      <div class="state-chip">Service down</div>
+    </div>
+    <p class="state-note">
+      When we know the backend is degraded, body copy shifts to set expectations — the retry
+      is still available but may not help immediately.
+    </p>
+    <div class="error-card">
+      <div class="kicker">Consultation interrupted</div>
+      <div class="title">The oracle is unreachable.</div>
+      <div class="prompt-quote">"Concentration-free 3rd-level damage spells for a sorcerer."</div>
+      <div class="body">
+        The recommendation service is currently unavailable. This isn't your submission —
+        it's on our side. Try again in a minute. The round hasn't been counted against your
+        five.
+      </div>
+      <div class="actions">
+        <button class="error-btn">Try again</button>
+        <button class="error-btn">Edit the query</button>
+        <span class="detail">error: upstream_503</span>
+      </div>
+    </div>
+  </section>
+
+  <section class="state">
+    <div class="state-head">
+      <div class="state-name">Validation — submission rejected</div>
+      <div class="state-chip">Client-side reject</div>
+    </div>
+    <p class="state-note">
+      Rare: the query was rejected before reaching the oracle (e.g. empty, too long, or
+      otherwise malformed). Only the edit path is offered; retry as-submitted wouldn't help.
+    </p>
+    <div class="error-card">
+      <div class="kicker">Consultation not sent</div>
+      <div class="title">The query couldn't be submitted.</div>
+      <div class="prompt-quote">""</div>
+      <div class="body">
+        The prompt was empty. Add a description of the situation you need a spell for, and
+        the oracle will take it from there. No round counted.
+      </div>
+      <div class="actions">
+        <button class="error-btn">Edit the query</button>
+        <span class="detail">error: empty_prompt</span>
+      </div>
+    </div>
+  </section>
+
+</div>
+</body>
+</html>

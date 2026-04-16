@@ -1,0 +1,364 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Spec 6 Canonical — Whimsy Dial</title>
+<link href="https://fonts.googleapis.com/css2?family=Cinzel+Decorative:wght@400;700;900&family=Cinzel:wght@400;600;700&family=EB+Garamond:ital,wght@0,400;0,500;0,600;1,400;1,500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --desk: #241811; --ink: #f3e7cf; --ink-dim: #b8a681; --ink-faint: #7a6944;
+    --gold: #c79a47;
+    --brass: #c4a156; --brass-dark: #806330;
+    --arcane: #ffd57a; --arcane-deep: #e89a2a;
+    --arcane-glow: rgba(255, 200, 90, 0.75);
+    --needle-bright: #ffd57a; --needle-inner: #fff3d0;
+  }
+  body[data-whimsy="tactical"]   { --arcane:#9fc5e8; --arcane-deep:#3f78a8; --arcane-glow:rgba(120,180,230,0.75); --needle-bright:#9fc5e8; --needle-inner:#e6f2fb; }
+  body[data-whimsy="balanced"]   { --arcane:#9fe3b8; --arcane-deep:#3fa870; --arcane-glow:rgba(110,220,160,0.75); --needle-bright:#9fe3b8; --needle-inner:#e2f7ec; }
+  body[data-whimsy="creative"]   { --arcane:#ffd57a; --arcane-deep:#e89a2a; --arcane-glow:rgba(255,200,90,0.75);  --needle-bright:#ffd57a; --needle-inner:#fff3d0; }
+  body[data-whimsy="theatrical"] { --arcane:#d8a8ee; --arcane-deep:#8a42b8; --arcane-glow:rgba(200,130,230,0.75); --needle-bright:#d8a8ee; --needle-inner:#f0e1f8; }
+  body[data-whimsy="chaotic"]    { --arcane:#ff9aa0; --arcane-deep:#c03848; --arcane-glow:rgba(255,120,130,0.75); --needle-bright:#ff9aa0; --needle-inner:#fde4e6; }
+
+  /* Per-symbol palettes — each rune keeps its own Spec 6 colour regardless of which is active */
+  .whimsy-symbol[data-theme="tactical"]   { --sym-arc:#9fc5e8; --sym-deep:#3f78a8; --sym-glow:rgba(120,180,230,0.75); }
+  .whimsy-symbol[data-theme="balanced"]   { --sym-arc:#9fe3b8; --sym-deep:#3fa870; --sym-glow:rgba(110,220,160,0.75); }
+  .whimsy-symbol[data-theme="creative"]   { --sym-arc:#ffd57a; --sym-deep:#e89a2a; --sym-glow:rgba(255,200,90,0.75); }
+  .whimsy-symbol[data-theme="theatrical"] { --sym-arc:#d8a8ee; --sym-deep:#8a42b8; --sym-glow:rgba(200,130,230,0.75); }
+  .whimsy-symbol[data-theme="chaotic"]    { --sym-arc:#ff9aa0; --sym-deep:#c03848; --sym-glow:rgba(255,120,130,0.75); }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html, body { height: 100%; overflow: hidden; }
+  body {
+    min-height: 100vh;
+    background: radial-gradient(ellipse at 50% 20%, #3a2818 0%, #120905 82%), var(--desk);
+    background-attachment: fixed;
+    font-family: 'EB Garamond', serif; color: var(--ink);
+  }
+  body::before {
+    content: ''; position: fixed; inset: 0;
+    background: repeating-linear-gradient(91deg, transparent 0 90px, rgba(0,0,0,0.1) 90px 91px);
+    pointer-events: none; z-index: 0;
+  }
+
+  header {
+    position: fixed; top: 0; left: 0; right: 0; z-index: 20;
+    padding: 24px 48px; display: flex; justify-content: space-between; align-items: center;
+    background: linear-gradient(180deg, rgba(18,9,5,0.6) 0%, transparent 100%);
+  }
+  .brand {
+    font-family: 'Cinzel Decorative', serif; font-weight: 900;
+    font-size: 13px; letter-spacing: 0.32em; color: var(--gold);
+    text-transform: uppercase;
+  }
+  .breadcrumb {
+    font-family: 'Cinzel', serif; font-size: 10px;
+    letter-spacing: 0.26em; color: var(--ink-faint); text-transform: uppercase;
+  }
+
+  /* CASTING CIRCLE — ghosted, centred */
+  .circle-stage {
+    position: fixed; inset: 0;
+    display: flex; align-items: center; justify-content: center;
+    z-index: 1; pointer-events: none;
+  }
+  .circle-wrap { position: relative; width: 760px; height: 760px; opacity: 0.55; }
+  .circle-wrap svg { position: absolute; inset: 0; width: 100%; height: 100%; }
+  .circle-wrap .bg-circle-svg { filter: drop-shadow(0 0 22px var(--arcane-glow)); transition: filter 0.6s ease; }
+  .circle-wrap .needle-svg .needle-rot {
+    transform-origin: 475px 475px;
+    transition: transform 0.85s cubic-bezier(.3, 1.4, .5, 1);
+  }
+
+  /* CENTRE CAPTION — sits inside the circle */
+  .caption {
+    position: fixed; left: 50%; top: 50%; transform: translate(-50%, -50%);
+    z-index: 3; text-align: center; pointer-events: none;
+    max-width: 380px;
+  }
+  .caption .eyebrow {
+    font-family: 'Cinzel Decorative', serif; font-size: 10px;
+    letter-spacing: 0.3em; text-transform: uppercase; color: var(--ink-faint);
+    margin-bottom: 10px;
+  }
+  .caption .position-name {
+    font-family: 'Cinzel Decorative', serif; font-weight: 900;
+    font-size: 44px; letter-spacing: 0.12em; text-transform: uppercase;
+    color: var(--arcane); text-shadow: 0 0 14px var(--arcane-glow);
+    transition: color 0.5s ease, text-shadow 0.5s ease;
+  }
+  .caption .tagline {
+    font-family: 'EB Garamond', serif; font-style: italic;
+    font-size: 17px; line-height: 25px; color: var(--ink-dim);
+    margin-top: 14px;
+  }
+  .caption .rotation-note {
+    font-family: 'Cinzel', serif; font-size: 9px;
+    letter-spacing: 0.22em; text-transform: uppercase; color: var(--ink-faint);
+    margin-top: 18px;
+  }
+
+  /* DOCK — matches Spec 7 geometry */
+  .dock-backdrop {
+    position: fixed; left: 0; right: 0; bottom: 0;
+    height: 300px; z-index: 4; pointer-events: none;
+    background: linear-gradient(to top,
+      rgba(18,9,5,0.98) 0%,
+      rgba(18,9,5,0.96) 40%,
+      rgba(18,9,5,0.78) 70%,
+      rgba(18,9,5,0.30) 90%,
+      transparent 100%);
+  }
+  .dock {
+    position: fixed; bottom: 72px; left: 0; right: 0; z-index: 5;
+    padding: 20px 40px 4px;
+    display: flex; justify-content: center;
+    pointer-events: none;
+  }
+  .dock-inner { position: relative; width: 760px; max-width: calc(100% - 80px); pointer-events: auto; }
+  .dock-scrap {
+    position: relative;
+    background: #f1e0b8;
+    background-image:
+      radial-gradient(ellipse at 20% 30%, rgba(130,90,50,0.10) 0%, transparent 45%),
+      radial-gradient(ellipse at 80% 70%, rgba(90,60,30,0.12) 0%, transparent 40%);
+    padding: 12px 24px 14px;
+    clip-path: polygon(2% 4%,10% 1%,22% 3%,34% 0%,46% 2%,60% 1%,74% 3%,88% 0%,99% 6%,97% 20%,100% 36%,98% 52%,100% 68%,97% 82%,99% 94%,88% 98%,74% 96%,58% 99%,42% 97%,26% 100%,10% 97%,1% 92%,3% 76%,0% 60%,2% 44%,0% 28%,3% 14%);
+    box-shadow: 0 12px 36px rgba(0,0,0,0.6);
+    transform: rotate(-0.8deg);
+    transition: box-shadow 0.5s ease;
+  }
+  .dock-scrap textarea {
+    width: 100%; height: 48px; min-height: 48px; max-height: 48px;
+    background: transparent; border: none; outline: none; resize: none;
+    font-family: 'EB Garamond', serif; font-style: italic;
+    font-size: 16px; line-height: 24px; color: #3a2614;
+    overflow: hidden;
+    caret-color: var(--arcane-deep);
+  }
+  .dock-scrap textarea::placeholder { color: rgba(58,38,20,0.4); }
+
+  /* WHIMSY DIAL — linear row at the bottom of the viewport */
+  .whimsy-rail {
+    position: fixed; left: 0; right: 0; bottom: 28px;
+    display: flex; align-items: center; justify-content: center;
+    gap: 72px; z-index: 6;
+  }
+  .whimsy-symbol {
+    position: relative;
+    width: 52px; height: 52px;
+    display: flex; align-items: center; justify-content: center;
+    cursor: pointer;
+  }
+  .whimsy-symbol svg {
+    width: 34px; height: 34px;
+    stroke: var(--sym-arc); stroke-width: 1.6; fill: none;
+    stroke-linecap: round; stroke-linejoin: round;
+    opacity: 0.72;
+    transition: stroke-width 0.4s ease, opacity 0.4s ease, filter 0.4s ease;
+  }
+  .whimsy-symbol:hover svg {
+    stroke-width: 2; opacity: 1;
+    filter: drop-shadow(0 0 6px var(--sym-glow));
+  }
+  .whimsy-symbol.active svg {
+    stroke-width: 2.4; opacity: 1;
+    filter: drop-shadow(0 0 10px var(--sym-arc)) drop-shadow(0 0 20px var(--sym-glow));
+  }
+  .whimsy-symbol .label {
+    position: absolute; top: 54px; left: 50%; transform: translateX(-50%);
+    font-family: 'Cinzel Decorative', serif;
+    font-size: 10px; letter-spacing: 0.28em;
+    color: var(--ink-faint); text-transform: uppercase; white-space: nowrap;
+    opacity: 0.85; transition: color 0.4s ease, opacity 0.4s ease, text-shadow 0.4s ease;
+  }
+  .whimsy-symbol:hover .label { color: var(--sym-arc); opacity: 1; }
+  .whimsy-symbol.active .label {
+    color: var(--sym-arc); opacity: 1; text-shadow: 0 0 8px var(--sym-glow);
+  }
+
+  .dial-hint {
+    position: fixed; bottom: 4px; left: 0; right: 0;
+    text-align: center; z-index: 6;
+    font-family: 'Cinzel', serif; font-size: 8px;
+    letter-spacing: 0.3em; text-transform: uppercase; color: rgba(184,166,129,0.3);
+  }
+</style>
+</head>
+<body data-whimsy="creative">
+
+<header>
+  <div class="brand">Arcane Advisor</div>
+  <div class="breadcrumb">Spec 6 · Whimsy Dial — canonical</div>
+</header>
+
+<!-- CASTING CIRCLE BACKGROUND -->
+<div class="circle-stage">
+  <div class="circle-wrap" id="circleWrap"></div>
+</div>
+
+<!-- CENTRE CAPTION -->
+<div class="caption">
+  <div class="position-name" id="positionName">Creative</div>
+  <div class="tagline" id="positionTagline">Lateral, clever, non-obvious applications.</div>
+</div>
+
+<!-- BOTTOM DOCK (for layout context) -->
+<div class="dock-backdrop"></div>
+<div class="dock">
+  <div class="dock-inner">
+    <div class="dock-scrap">
+      <textarea placeholder="Describe the scene, the stakes, the vibe…" readonly></textarea>
+    </div>
+  </div>
+</div>
+
+<!-- LINEAR WHIMSY DIAL -->
+<div class="whimsy-rail" id="dial">
+  <div class="whimsy-symbol" data-theme="tactical" data-angle="30">
+    <svg viewBox="0 0 40 40"><line x1="20" y1="6" x2="20" y2="34"/><line x1="20" y1="8" x2="10" y2="16"/><line x1="20" y1="8" x2="30" y2="16"/></svg>
+    <span class="label">Tactical</span>
+  </div>
+  <div class="whimsy-symbol" data-theme="balanced" data-angle="15">
+    <svg viewBox="0 0 40 40"><line x1="8" y1="8" x2="32" y2="32"/><line x1="32" y1="8" x2="8" y2="32"/><circle cx="20" cy="20" r="3"/></svg>
+    <span class="label">Balanced</span>
+  </div>
+  <div class="whimsy-symbol active" data-theme="creative" data-angle="0">
+    <svg viewBox="0 0 40 40"><line x1="8" y1="8" x2="8" y2="32"/><line x1="32" y1="8" x2="32" y2="32"/><line x1="8" y1="8" x2="32" y2="32"/><line x1="32" y1="8" x2="8" y2="32"/></svg>
+    <span class="label">Creative</span>
+  </div>
+  <div class="whimsy-symbol" data-theme="theatrical" data-angle="-15">
+    <svg viewBox="0 0 40 40"><path d="M20 6 L20 34"/><path d="M20 12 Q12 16 10 22"/><path d="M20 22 Q28 26 30 32"/><circle cx="20" cy="6" r="2"/><circle cx="20" cy="34" r="2"/></svg>
+    <span class="label">Theatrical</span>
+  </div>
+  <div class="whimsy-symbol" data-theme="chaotic" data-angle="-30">
+    <svg viewBox="0 0 40 40"><path d="M10 6 L10 34"/><path d="M10 8 L24 14 L10 20"/><path d="M24 14 L30 24 L20 30 L30 34"/></svg>
+    <span class="label">Chaotic</span>
+  </div>
+</div>
+
+<script>
+  const svgNS = "http://www.w3.org/2000/svg";
+  const cx = 475, cy = 475;
+
+  function buildCircle(container) {
+    const bg = document.createElementNS(svgNS, 'svg');
+    bg.setAttribute('class', 'bg-circle-svg');
+    bg.setAttribute('viewBox', '0 0 950 950');
+
+    const defs = document.createElementNS(svgNS, 'defs');
+    const id = 'glow-' + Math.random().toString(36).slice(2, 8);
+    const grad = document.createElementNS(svgNS, 'radialGradient');
+    grad.setAttribute('id', id); grad.setAttribute('cx', '0.5'); grad.setAttribute('cy', '0.5'); grad.setAttribute('r', '0.5');
+    grad.innerHTML =
+      '<stop offset="0%" stop-color="var(--arcane-glow)" stop-opacity="0.35"/>' +
+      '<stop offset="70%" stop-color="var(--arcane-glow)" stop-opacity="0.1"/>' +
+      '<stop offset="100%" stop-color="transparent"/>';
+    defs.appendChild(grad);
+    bg.appendChild(defs);
+
+    bg.insertAdjacentHTML('beforeend',
+      `<circle cx="${cx}" cy="${cy}" r="420" fill="url(#${id})"/>`+
+      `<circle cx="${cx}" cy="${cy}" r="420" fill="none" stroke="var(--arcane)" stroke-width="1.4" opacity="0.75"/>`+
+      `<circle cx="${cx}" cy="${cy}" r="405" fill="none" stroke="var(--arcane-deep)" stroke-width="0.6" opacity="0.5"/>`+
+      `<circle cx="${cx}" cy="${cy}" r="370" fill="none" stroke="var(--arcane)" stroke-width="1" opacity="0.65"/>`+
+      `<circle cx="${cx}" cy="${cy}" r="320" fill="none" stroke="var(--arcane)" stroke-width="1" opacity="0.65"/>`+
+      `<circle cx="${cx}" cy="${cy}" r="260" fill="none" stroke="var(--arcane)" stroke-width="0.9" opacity="0.6"/>`+
+      `<circle cx="${cx}" cy="${cy}" r="50"  fill="none" stroke="var(--arcane)" stroke-width="0.5" opacity="0.45"/>`+
+      `<circle cx="${cx}" cy="${cy}" r="18"  fill="none" stroke="var(--arcane)" stroke-width="0.8" opacity="0.7"/>`+
+      `<circle cx="${cx}" cy="${cy}" r="10"  fill="var(--arcane-deep)" opacity="0.6"/>`
+    );
+
+    const major = document.createElementNS(svgNS, 'g');
+    major.setAttribute('stroke', 'var(--arcane)'); major.setAttribute('stroke-width', '1.1'); major.setAttribute('opacity', '0.7');
+    const minor = document.createElementNS(svgNS, 'g');
+    minor.setAttribute('stroke', 'var(--arcane)'); minor.setAttribute('stroke-width', '0.5'); minor.setAttribute('opacity', '0.4');
+    for (let deg = 0; deg < 360; deg += 5) {
+      const isMajor = deg % 15 === 0;
+      const len = isMajor ? 16 : 7;
+      const r1 = 420, r2 = 420 - len;
+      const rad = (deg - 90) * Math.PI / 180;
+      const line = document.createElementNS(svgNS, 'line');
+      line.setAttribute('x1', cx + r1*Math.cos(rad));
+      line.setAttribute('y1', cy + r1*Math.sin(rad));
+      line.setAttribute('x2', cx + r2*Math.cos(rad));
+      line.setAttribute('y2', cy + r2*Math.sin(rad));
+      (isMajor ? major : minor).appendChild(line);
+    }
+    bg.appendChild(major); bg.appendChild(minor);
+
+    const dividers = document.createElementNS(svgNS, 'g');
+    dividers.setAttribute('stroke', 'var(--arcane)'); dividers.setAttribute('stroke-width', '0.8'); dividers.setAttribute('opacity', '0.55');
+    const glyphs = document.createElementNS(svgNS, 'g');
+    glyphs.setAttribute('font-family', 'serif'); glyphs.setAttribute('font-size', '18');
+    glyphs.setAttribute('fill', 'var(--arcane)'); glyphs.setAttribute('text-anchor', 'middle'); glyphs.setAttribute('opacity', '0.75');
+    const runes = ['ᚠ','ᚢ','ᚦ','ᚨ','ᚱ','ᚲ','ᚷ','ᚹ','ᚺ','ᚾ','ᛁ','ᛃ'];
+    for (let i = 0; i < 12; i++) {
+      const deg = i * 30;
+      const rad = (deg - 90) * Math.PI / 180;
+      const line = document.createElementNS(svgNS, 'line');
+      line.setAttribute('x1', cx + 320*Math.cos(rad));
+      line.setAttribute('y1', cy + 320*Math.sin(rad));
+      line.setAttribute('x2', cx + 370*Math.cos(rad));
+      line.setAttribute('y2', cy + 370*Math.sin(rad));
+      dividers.appendChild(line);
+      const gDeg = deg + 15;
+      const gRad = (gDeg - 90) * Math.PI / 180;
+      const t = document.createElementNS(svgNS, 'text');
+      t.setAttribute('x', cx + 345*Math.cos(gRad));
+      t.setAttribute('y', cy + 345*Math.sin(gRad) + 6);
+      t.textContent = runes[i];
+      glyphs.appendChild(t);
+    }
+    bg.appendChild(dividers); bg.appendChild(glyphs);
+    container.appendChild(bg);
+
+    const needle = document.createElementNS(svgNS, 'svg');
+    needle.setAttribute('class', 'needle-svg');
+    needle.setAttribute('viewBox', '0 0 950 950');
+    needle.innerHTML =
+      `<g class="needle-rot" id="needleRot" style="transform: rotate(0deg);">`+
+        `<polygon points="${cx},${cy} 439,295 ${cx},75 511,295" fill="#1b0f07" stroke="var(--arcane-deep)" stroke-width="0.8"/>`+
+        `<polygon points="${cx},${cy} 457,345 ${cx},75 493,345" fill="#3a2414" opacity="0.75"/>`+
+        `<polygon points="${cx},${cy} 435,655 ${cx},875 515,655" fill="var(--needle-bright)" stroke="var(--arcane-deep)" stroke-width="0.8" style="filter: drop-shadow(0 0 10px var(--needle-bright)) drop-shadow(0 0 22px var(--arcane-glow));"/>`+
+        `<polygon points="${cx},${cy} 457,605 ${cx},875 493,605" fill="var(--needle-inner)" opacity="0.6"/>`+
+        `<circle cx="${cx}" cy="${cy}" r="18" fill="var(--brass)" stroke="var(--arcane-deep)" stroke-width="1.2"/>`+
+        `<circle cx="${cx}" cy="${cy}" r="11" fill="var(--brass-dark)"/>`+
+        `<circle cx="${cx}" cy="${cy}" r="4"  fill="#120906"/>`+
+      `</g>`;
+    container.appendChild(needle);
+  }
+
+  buildCircle(document.getElementById('circleWrap'));
+
+  const TAGLINES = {
+    tactical:   { name: 'Tactical',   line: 'Practical, mechanical-first recommendations.' },
+    balanced:   { name: 'Balanced',   line: 'The default — a mix of practical and thematic.' },
+    creative:   { name: 'Creative',   line: 'Lateral, clever, non-obvious applications.' },
+    theatrical: { name: 'Theatrical', line: 'Maximum drama and spectacle.' },
+    chaotic:    { name: 'Chaotic',    line: 'Off-script, absurd-but-valid, majority-whimsy.' }
+  };
+
+  const dial = document.getElementById('dial');
+  const needleRot = document.getElementById('needleRot');
+  const positionName = document.getElementById('positionName');
+  const positionTagline = document.getElementById('positionTagline');
+
+  dial.querySelectorAll('.whimsy-symbol').forEach(sym => {
+    sym.addEventListener('click', () => {
+      const theme = sym.dataset.theme;
+      const angle = sym.dataset.angle;
+
+      dial.querySelectorAll('.whimsy-symbol').forEach(s => s.classList.remove('active'));
+      sym.classList.add('active');
+
+      document.body.setAttribute('data-whimsy', theme);
+      needleRot.style.transform = `rotate(${angle}deg)`;
+
+      const t = TAGLINES[theme];
+      positionName.textContent = t.name;
+      positionTagline.textContent = t.line;
+    });
+  });
+</script>
+</body>
+</html>

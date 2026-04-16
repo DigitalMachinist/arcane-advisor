@@ -1,0 +1,605 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Mockup E — Open Tome on Desk</title>
+<link href="https://fonts.googleapis.com/css2?family=Cinzel+Decorative:wght@400;700&family=EB+Garamond:ital,wght@0,400;0,500;1,400&family=IM+Fell+English+SC&display=swap" rel="stylesheet">
+<style>
+:root {
+  --ink: #2a1a0a;
+  --ink-soft: #4a3420;
+  --page: #ead5a4;
+  --page-shadow: #c9b07e;
+  --page-deep: #8a6f3c;
+  --leather: #3a1d0a;
+  --leather-dark: #1f0d04;
+  --leather-edge: #0f0502;
+  --desk: #2b1a0e;
+  --desk-dark: #1a0c04;
+  --desk-light: #3e281a;
+  --desk-grain: rgba(80,40,12,0.35);
+  --gold: #c8963a;
+  --gold-bright: #ebb947;
+  --gold-deep: #8a651f;
+  --vermilion: #a8221c;
+  --lapis: #253a5e;
+  --ribbon-red: #8a1f2a;
+  --ribbon-blue: #253e68;
+  --ribbon-green: #385f38;
+  --bottle-green: #3e7042;
+  --bottle-blue: #284d78;
+  --bottle-purple: #522968;
+  --bg-top: #0b0503;
+  --bg-bottom: var(--desk);
+  --header-bg: linear-gradient(to bottom, #0a0402, #1a0d04);
+}
+[data-theme="light"] {
+  --ink: #3a2410;
+  --ink-soft: #5a4226;
+  --page: #f8eccb;
+  --page-shadow: #e3d2a4;
+  --page-deep: #b49868;
+  --leather: #8a5c2a;
+  --leather-dark: #6a4420;
+  --leather-edge: #4a2e16;
+  --desk: #a87a48;
+  --desk-dark: #846030;
+  --desk-light: #c79765;
+  --desk-grain: rgba(100,62,22,0.3);
+  --gold: #a07520;
+  --gold-bright: #c4933a;
+  --gold-deep: #6a4e14;
+  --bg-top: #c79765;
+  --bg-bottom: #a87a48;
+  --header-bg: linear-gradient(to bottom, #6a4420, #846030);
+}
+
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body { min-height: 100vh; background: var(--bg-bottom); font-family: 'EB Garamond', serif; color: var(--ink); overflow-x: hidden; }
+
+/* Wood desk texture */
+.desk-bg {
+  position: fixed; inset: 60px 0 0 0; z-index: 0;
+  background: var(--desk);
+  background-image:
+    repeating-linear-gradient(93deg, transparent 0 70px, var(--desk-grain) 70px 71px, transparent 71px 150px, rgba(0,0,0,0.1) 150px 152px, transparent 152px 270px, var(--desk-grain) 270px 272px),
+    repeating-linear-gradient(3deg, transparent 0 220px, rgba(0,0,0,0.07) 220px 222px);
+}
+.desk-bg::after {
+  content: ''; position: absolute; inset: 0;
+  background: radial-gradient(ellipse at 50% 45%, transparent 35%, rgba(0,0,0,0.55) 100%);
+}
+
+/* HEADER */
+.header {
+  position: relative; z-index: 30;
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 0.9rem 2rem;
+  background: var(--header-bg);
+  border-bottom: 2px solid rgba(0,0,0,0.6);
+  box-shadow: 0 6px 16px rgba(0,0,0,0.55), inset 0 -1px 0 rgba(200,150,58,0.22);
+}
+.header-nav { display: flex; gap: 1.8rem; }
+.header-link { color: var(--gold-bright); font-family: 'IM Fell English SC', serif; font-size: 0.95rem; letter-spacing: 0.06em; text-decoration: none; }
+.header-link:hover { color: #fff4d0; }
+.header-actions { display: flex; gap: 0.8rem; }
+.header-btn { background: transparent; color: var(--gold-bright); border: 1px solid var(--gold); padding: 0.3rem 0.9rem; font-family: 'IM Fell English SC', serif; font-size: 0.85rem; cursor: pointer; }
+.header-btn:hover { background: var(--gold); color: #1a0a00; }
+
+/* STAGE */
+.stage {
+  position: relative; z-index: 5;
+  min-height: calc(100vh - 60px);
+  display: flex; align-items: center; justify-content: center;
+  padding: 3rem 1rem;
+}
+
+/* DESK ITEMS peeking in around the tome */
+.desk-item { position: absolute; filter: drop-shadow(4px 8px 10px rgba(0,0,0,0.7)); z-index: 4; }
+
+/* Candle with real flame glow - bottom left */
+.candle { bottom: 40px; left: 70px; filter: drop-shadow(0 0 40px rgba(240,192,96,0.5)) drop-shadow(3px 6px 10px rgba(0,0,0,0.6)); }
+.candle svg { width: 80px; height: 170px; }
+
+/* Potions cluster - bottom right */
+.potions { bottom: 30px; right: 40px; display: flex; gap: 10px; align-items: flex-end; filter: drop-shadow(4px 8px 12px rgba(0,0,0,0.7)); }
+.potion svg { display: block; }
+
+/* Quill in inkpot - top left */
+.quill-and-pot { top: 50px; left: 40px; filter: drop-shadow(3px 6px 10px rgba(0,0,0,0.6)); }
+
+/* Map corner - top right */
+.map-corner { top: 40px; right: -40px; transform: rotate(10deg); filter: drop-shadow(3px 6px 10px rgba(0,0,0,0.6)); }
+
+/* Loose scroll - lower area overlapping book */
+.loose-scroll { bottom: 80px; left: 45%; transform: translateX(-50%) rotate(-4deg); filter: drop-shadow(3px 5px 10px rgba(0,0,0,0.6)); z-index: 3; opacity: 0.85; }
+
+/* THE TOME */
+.tome {
+  position: relative; z-index: 6;
+  display: flex;
+  width: min(1050px, 92vw);
+  aspect-ratio: 1.6 / 1;
+  max-height: 72vh;
+  background: var(--leather);
+  background-image:
+    radial-gradient(ellipse at 30% 30%, rgba(255,255,255,0.04), transparent 60%),
+    repeating-linear-gradient(92deg, transparent 0 28px, rgba(0,0,0,0.05) 28px 29px),
+    repeating-linear-gradient(0deg, transparent 0 35px, rgba(0,0,0,0.04) 35px 36px);
+  padding: 22px;
+  border-radius: 6px 8px 6px 6px;
+  box-shadow:
+    0 34px 60px rgba(0,0,0,0.75),
+    0 14px 28px rgba(0,0,0,0.5),
+    inset 0 0 0 1px rgba(200,150,58,0.22),
+    inset 0 0 0 4px var(--leather-dark),
+    inset 0 0 0 5px rgba(200,150,58,0.17);
+  transform: rotate(-0.4deg);
+}
+.tome::before {
+  content: ''; position: absolute; inset: 14px;
+  border: 1px solid rgba(200,150,58,0.28);
+  border-radius: 3px; pointer-events: none;
+}
+/* Leather corner ornament */
+.tome-corner {
+  position: absolute; width: 34px; height: 34px;
+  background: radial-gradient(circle at 30% 30%, var(--gold-bright), var(--gold) 40%, var(--gold-deep) 100%);
+  box-shadow: inset 0 0 4px rgba(0,0,0,0.4), 0 1px 2px rgba(0,0,0,0.5);
+  clip-path: polygon(0 0, 100% 0, 100% 20%, 80% 20%, 80% 80%, 20% 80%, 20% 100%, 0 100%);
+  z-index: 2;
+}
+.tome-corner.tl { top: 10px; left: 10px; }
+.tome-corner.tr { top: 10px; right: 10px; transform: scaleX(-1); }
+.tome-corner.bl { bottom: 10px; left: 10px; transform: scaleY(-1); }
+.tome-corner.br { bottom: 10px; right: 10px; transform: scale(-1); }
+
+/* Ribbon bookmarks */
+.ribbons { position: absolute; top: -6px; right: 18%; display: flex; gap: 5px; z-index: 7; }
+.ribbon-bm {
+  width: 16px;
+  background-image: linear-gradient(to right, rgba(0,0,0,0.3), transparent 20%, rgba(255,255,255,0.2) 50%, transparent 80%, rgba(0,0,0,0.3));
+  box-shadow: 0 3px 8px rgba(0,0,0,0.5);
+  position: relative;
+}
+.ribbon-bm::after {
+  content: ''; position: absolute; bottom: -5px; left: 0; right: 0; height: 10px;
+  background: inherit;
+  clip-path: polygon(0 0, 100% 0, 85% 100%, 50% 60%, 15% 100%);
+}
+.ribbon-bm.red { height: 95px; background-color: var(--ribbon-red); }
+.ribbon-bm.blue { height: 75px; background-color: var(--ribbon-blue); }
+.ribbon-bm.green { height: 110px; background-color: var(--ribbon-green); }
+
+/* PAGES */
+.pages { display: flex; flex: 1; border-radius: 2px; overflow: hidden; position: relative; }
+.page {
+  flex: 1; padding: 2.4rem 2.6rem; position: relative; overflow: hidden; color: var(--ink);
+}
+.page.left {
+  background: linear-gradient(to right, var(--page-shadow), var(--page) 35%);
+  background-image:
+    linear-gradient(to right, var(--page-shadow), var(--page) 35%),
+    url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='220' height='220'><filter id='n'><feTurbulence baseFrequency='0.75' numOctaves='2'/></filter><rect width='100%25' height='100%25' filter='url(%23n)' opacity='0.22'/></svg>");
+  background-blend-mode: multiply;
+  box-shadow: inset -10px 0 24px rgba(0,0,0,0.22);
+}
+.page.right {
+  background: linear-gradient(to left, var(--page-shadow), var(--page) 35%);
+  background-image:
+    linear-gradient(to left, var(--page-shadow), var(--page) 35%),
+    url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='220' height='220'><filter id='n'><feTurbulence baseFrequency='0.75' numOctaves='2'/></filter><rect width='100%25' height='100%25' filter='url(%23n)' opacity='0.22'/></svg>");
+  background-blend-mode: multiply;
+  box-shadow: inset 10px 0 24px rgba(0,0,0,0.22);
+  display: flex; flex-direction: column; justify-content: center; align-items: center;
+}
+.spine { width: 8px; background: linear-gradient(to right, rgba(0,0,0,0.55), rgba(0,0,0,0.1), rgba(0,0,0,0.55)); position: relative; z-index: 2; }
+
+/* LEFT PAGE CONTENT */
+.page-heading { font-family: 'Cinzel Decorative', serif; text-align: center; color: var(--vermilion); font-size: 0.9rem; letter-spacing: 0.2em; margin-bottom: 1.1rem; text-transform: uppercase; }
+.drop-cap {
+  float: left; position: relative;
+  width: 74px; height: 74px;
+  background: linear-gradient(135deg, var(--lapis), #15243e);
+  border: 2px solid var(--gold);
+  box-shadow: inset 0 0 14px rgba(0,0,0,0.45), 0 0 0 1px var(--gold-deep);
+  margin: 2px 10px 2px 0;
+  display: flex; align-items: center; justify-content: center;
+  font-family: 'Cinzel Decorative', serif; font-weight: 700;
+  font-size: 3.4rem; line-height: 1; color: var(--gold-bright);
+  text-shadow: 1px 1px 0 rgba(0,0,0,0.4);
+}
+.drop-cap::before {
+  content: ''; position: absolute; inset: -6px;
+  border: 1px solid var(--gold-deep); pointer-events: none;
+}
+.page.left p { font-size: 1rem; line-height: 1.6; text-align: justify; font-style: italic; color: var(--ink); }
+.page.left p + p { margin-top: 0.8rem; }
+
+/* Chicken-scratch SVG marginalia - illegible handwriting */
+.scratch { position: absolute; color: var(--ink-soft); opacity: 0.65; pointer-events: none; }
+
+/* Small illumination doodle */
+.page-illum {
+  position: absolute; bottom: 20px; right: 22px;
+  width: 70px; height: 70px; color: var(--gold-deep); opacity: 0.55;
+}
+
+/* RIGHT PAGE - PROMPT */
+.prompt-heading { font-family: 'Cinzel Decorative', serif; font-size: 1.3rem; color: var(--vermilion); letter-spacing: 0.1em; text-align: center; margin-bottom: 0.3rem; }
+.prompt-sub { font-family: 'EB Garamond', serif; font-style: italic; color: var(--ink-soft); font-size: 1rem; margin-bottom: 2rem; text-align: center; }
+.prompt-container { width: 92%; display: flex; flex-direction: column; align-items: center; }
+.prompt-lines {
+  width: 100%; padding: 0.9rem 0;
+  border-top: 1px solid rgba(60,40,20,0.35);
+  border-bottom: 1px solid rgba(60,40,20,0.35);
+  background-image: repeating-linear-gradient(to bottom, transparent 0 31px, rgba(60,40,20,0.14) 31px 32px);
+  transition: box-shadow 0.35s;
+}
+.prompt-container.focused .prompt-lines { box-shadow: 0 0 30px rgba(235,185,71,0.45); }
+.prompt-input {
+  width: 100%; background: transparent; border: none; outline: none;
+  font-family: 'EB Garamond', serif; font-style: italic;
+  font-size: 1.3rem; line-height: 32px; color: var(--ink); padding: 0;
+}
+.prompt-input::placeholder { color: var(--ink-soft); opacity: 0.55; }
+.quill-submit {
+  margin-top: 1.3rem;
+  background: transparent; border: 1px solid var(--ink-soft);
+  padding: 0.5rem 1.6rem;
+  font-family: 'Cinzel Decorative', serif; font-size: 0.82rem;
+  letter-spacing: 0.18em; color: var(--ink); cursor: pointer;
+  display: inline-flex; align-items: center; gap: 0.55rem;
+  transition: all 0.2s;
+}
+.quill-submit:hover { background: var(--ink); color: var(--page); }
+
+/* corner flourishes on right page */
+.page-flourish { position: absolute; width: 50px; height: 50px; color: var(--gold-deep); opacity: 0.5; }
+.page-flourish.tl { top: 16px; left: 16px; }
+.page-flourish.tr { top: 16px; right: 16px; transform: scaleX(-1); }
+.page-flourish.bl { bottom: 16px; left: 16px; transform: scaleY(-1); }
+.page-flourish.br { bottom: 16px; right: 16px; transform: scale(-1); }
+
+@media (max-width: 820px) {
+  .candle, .potions, .quill-and-pot, .map-corner, .loose-scroll { display: none; }
+  .tome { aspect-ratio: auto; max-height: none; flex-direction: column; padding: 14px; }
+  .pages { flex-direction: column; }
+  .spine { width: 100%; height: 8px; }
+  .page { padding: 1.4rem; }
+  .drop-cap { font-size: 2.6rem; width: 60px; height: 60px; }
+  .header-nav { gap: 0.8rem; }
+  .header-link { font-size: 0.8rem; }
+}
+</style>
+</head>
+<body data-theme="dark">
+
+<div class="desk-bg"></div>
+
+<header class="header">
+  <nav class="header-nav">
+    <a href="#" class="header-link">The Grimoire</a>
+    <a href="#" class="header-link">Sourcebooks</a>
+    <a href="#" class="header-link">About</a>
+  </nav>
+  <div class="header-actions">
+    <button class="header-btn" id="themeToggle">☾ Night</button>
+    <button class="header-btn">Sign In</button>
+  </div>
+</header>
+
+<div class="stage">
+
+  <!-- DESK ITEMS PEEKING IN -->
+
+  <!-- Candle with flame -->
+  <div class="desk-item candle">
+    <svg viewBox="0 0 80 170">
+      <!-- flame glow -->
+      <defs>
+        <radialGradient id="flameGlow" cx="0.5" cy="0.5" r="0.5">
+          <stop offset="0" stop-color="#fff5d0" stop-opacity="0.9"/>
+          <stop offset="0.4" stop-color="#f4b040" stop-opacity="0.5"/>
+          <stop offset="1" stop-color="#f4b040" stop-opacity="0"/>
+        </radialGradient>
+        <linearGradient id="waxG" x1="0" x2="0" y1="0" y2="1">
+          <stop offset="0" stop-color="#f6e5b4"/>
+          <stop offset="0.5" stop-color="#d4b66e"/>
+          <stop offset="1" stop-color="#8a6a38"/>
+        </linearGradient>
+        <radialGradient id="flameCore" cx="0.5" cy="0.6" r="0.5">
+          <stop offset="0" stop-color="#fff8d0"/>
+          <stop offset="0.3" stop-color="#f4d060"/>
+          <stop offset="0.7" stop-color="#e86b10"/>
+          <stop offset="1" stop-color="#8a1c08" stop-opacity="0"/>
+        </radialGradient>
+        <linearGradient id="holderG" x1="0" x2="0" y1="0" y2="1">
+          <stop offset="0" stop-color="#c89340"/>
+          <stop offset="0.5" stop-color="#8a6518"/>
+          <stop offset="1" stop-color="#4a3810"/>
+        </linearGradient>
+      </defs>
+      <!-- ambient glow -->
+      <circle cx="40" cy="22" r="42" fill="url(#flameGlow)"/>
+      <!-- wax with drips -->
+      <path d="M28 30 Q26 32 26 40 L24 140 Q24 148 28 150 L52 150 Q56 148 56 140 L54 40 Q54 32 52 30 Z" fill="url(#waxG)"/>
+      <!-- wax drip -->
+      <path d="M28 60 Q26 70 30 75 Q28 80 30 85 L30 60 Z" fill="#b79040" opacity="0.7"/>
+      <path d="M50 45 Q54 55 51 62 L50 45 Z" fill="#b79040" opacity="0.7"/>
+      <!-- wick -->
+      <line x1="40" y1="30" x2="40" y2="18" stroke="#2a1a0a" stroke-width="1.5"/>
+      <!-- flame -->
+      <ellipse cx="40" cy="18" rx="5" ry="11" fill="url(#flameCore)">
+        <animate attributeName="ry" values="11;10;12;11" dur="1.4s" repeatCount="indefinite"/>
+        <animate attributeName="rx" values="5;5.3;4.8;5" dur="1.4s" repeatCount="indefinite"/>
+      </ellipse>
+      <!-- brass holder -->
+      <path d="M16 150 L64 150 L70 158 L66 166 L14 166 L10 158 Z" fill="url(#holderG)" stroke="#3a2810" stroke-width="0.5"/>
+      <ellipse cx="40" cy="150" rx="26" ry="4" fill="#6a4a14"/>
+    </svg>
+  </div>
+
+  <!-- Potions -->
+  <div class="desk-item potions">
+    <!-- green potion -->
+    <svg width="44" height="100" viewBox="0 0 44 100">
+      <defs>
+        <linearGradient id="glassG" x1="0" x2="1"><stop offset="0" stop-color="rgba(255,255,255,0.3)"/><stop offset="0.5" stop-color="rgba(255,255,255,0.05)"/><stop offset="1" stop-color="rgba(255,255,255,0.25)"/></linearGradient>
+        <linearGradient id="liqG" x1="0" x2="0" y1="0" y2="1"><stop offset="0" stop-color="#7ed28a"/><stop offset="1" stop-color="#2a5e30"/></linearGradient>
+      </defs>
+      <path d="M15 8 L15 20 Q5 30 5 60 Q5 92 22 92 Q39 92 39 60 Q39 30 29 20 L29 8 Z" fill="url(#liqG)" opacity="0.85"/>
+      <path d="M15 8 L15 20 Q5 30 5 60 Q5 92 22 92 Q39 92 39 60 Q39 30 29 20 L29 8 Z" fill="url(#glassG)"/>
+      <path d="M15 8 L15 20 Q5 30 5 60 Q5 92 22 92 Q39 92 39 60 Q39 30 29 20 L29 8 Z" fill="none" stroke="#1a0a04" stroke-width="0.8"/>
+      <!-- cork -->
+      <rect x="13" y="2" width="18" height="8" fill="#6a4a20" stroke="#2a1804" stroke-width="0.6"/>
+      <!-- highlight -->
+      <ellipse cx="13" cy="45" rx="2" ry="18" fill="#fff" opacity="0.4"/>
+      <!-- glow -->
+      <ellipse cx="22" cy="60" rx="20" ry="18" fill="#3e7042" opacity="0.3"/>
+    </svg>
+    <!-- blue potion -->
+    <svg width="38" height="115" viewBox="0 0 38 115">
+      <defs>
+        <linearGradient id="liqG2" x1="0" x2="0" y1="0" y2="1"><stop offset="0" stop-color="#5fa4d4"/><stop offset="1" stop-color="#1a3460"/></linearGradient>
+      </defs>
+      <path d="M13 6 L13 35 Q4 45 4 75 Q4 108 19 108 Q34 108 34 75 Q34 45 25 35 L25 6 Z" fill="url(#liqG2)" opacity="0.88"/>
+      <path d="M13 6 L13 35 Q4 45 4 75 Q4 108 19 108 Q34 108 34 75 Q34 45 25 35 L25 6 Z" fill="url(#glassG)"/>
+      <path d="M13 6 L13 35 Q4 45 4 75 Q4 108 19 108 Q34 108 34 75 Q34 45 25 35 L25 6 Z" fill="none" stroke="#0a0418" stroke-width="0.8"/>
+      <rect x="11" y="1" width="16" height="6" fill="#5a3a18"/>
+      <ellipse cx="11" cy="60" rx="1.8" ry="22" fill="#fff" opacity="0.4"/>
+      <!-- bubbles -->
+      <circle cx="22" cy="90" r="2" fill="#cfe5f5" opacity="0.6"/>
+      <circle cx="16" cy="75" r="1.4" fill="#cfe5f5" opacity="0.6"/>
+      <circle cx="24" cy="65" r="1.8" fill="#cfe5f5" opacity="0.5"/>
+    </svg>
+    <!-- red potion -->
+    <svg width="42" height="105" viewBox="0 0 42 105">
+      <defs>
+        <linearGradient id="liqG3" x1="0" x2="0" y1="0" y2="1"><stop offset="0" stop-color="#d65a5a"/><stop offset="1" stop-color="#5a1a1a"/></linearGradient>
+      </defs>
+      <path d="M14 5 L14 28 Q4 38 4 70 Q4 100 21 100 Q38 100 38 70 Q38 38 28 28 L28 5 Z" fill="url(#liqG3)" opacity="0.88"/>
+      <path d="M14 5 L14 28 Q4 38 4 70 Q4 100 21 100 Q38 100 38 70 Q38 38 28 28 L28 5 Z" fill="url(#glassG)"/>
+      <path d="M14 5 L14 28 Q4 38 4 70 Q4 100 21 100 Q38 100 38 70 Q38 38 28 28 L28 5 Z" fill="none" stroke="#1a0604" stroke-width="0.8"/>
+      <rect x="12" y="0" width="18" height="7" fill="#5a3018"/>
+      <ellipse cx="12" cy="55" rx="2" ry="20" fill="#fff" opacity="0.4"/>
+      <ellipse cx="21" cy="65" rx="18" ry="16" fill="#d65a5a" opacity="0.25"/>
+    </svg>
+  </div>
+
+  <!-- Quill in inkpot -->
+  <div class="desk-item quill-and-pot">
+    <svg width="200" height="170" viewBox="0 0 200 170">
+      <defs>
+        <linearGradient id="featherG" x1="0" y1="0" x2="1" y2="0">
+          <stop offset="0" stop-color="#8a1c2e"/>
+          <stop offset="0.3" stop-color="#c89550"/>
+          <stop offset="0.7" stop-color="#f4e4b8"/>
+          <stop offset="1" stop-color="#fff8e0"/>
+        </linearGradient>
+        <radialGradient id="potG" cx="0.3" cy="0.3"><stop offset="0" stop-color="#3a2614"/><stop offset="1" stop-color="#0a0402"/></radialGradient>
+      </defs>
+      <!-- feather (tilted) -->
+      <g transform="rotate(-55 100 90)">
+        <!-- feather barbs -->
+        <path d="M20 80 Q30 60 55 70 Q80 55 105 70 Q130 58 150 72 Q145 85 125 88 Q100 92 75 90 Q50 86 30 90 Q22 87 20 80 Z" fill="url(#featherG)" stroke="#5a3020" stroke-width="0.6"/>
+        <path d="M20 92 Q30 108 55 100 Q80 112 105 100 Q130 112 150 98 Q145 85 125 84 Q100 80 75 82 Q50 86 30 82 Q22 85 20 92 Z" fill="url(#featherG)" stroke="#5a3020" stroke-width="0.6"/>
+        <!-- spine -->
+        <path d="M18 86 Q80 85 160 85" stroke="#4a2810" stroke-width="1.5" fill="none"/>
+        <!-- nib -->
+        <path d="M160 83 L172 85 L160 87 Z" fill="#0a0500"/>
+        <!-- feather edge barbs -->
+        <g stroke="#6a4420" stroke-width="0.35" opacity="0.6">
+          <line x1="35" y1="73" x2="40" y2="65"/>
+          <line x1="55" y1="68" x2="58" y2="60"/>
+          <line x1="75" y1="67" x2="78" y2="58"/>
+          <line x1="95" y1="66" x2="97" y2="57"/>
+          <line x1="115" y1="68" x2="118" y2="60"/>
+          <line x1="135" y1="72" x2="138" y2="64"/>
+          <line x1="35" y1="99" x2="38" y2="107"/>
+          <line x1="55" y1="104" x2="58" y2="112"/>
+          <line x1="75" y1="106" x2="78" y2="114"/>
+          <line x1="95" y1="107" x2="98" y2="115"/>
+          <line x1="115" y1="106" x2="118" y2="114"/>
+          <line x1="135" y1="104" x2="138" y2="112"/>
+        </g>
+      </g>
+      <!-- inkpot body -->
+      <ellipse cx="140" cy="152" rx="42" ry="8" fill="#000" opacity="0.5"/>
+      <path d="M108 120 L108 150 Q108 158 140 158 Q172 158 172 150 L172 120 Z" fill="url(#potG)" stroke="#050200" stroke-width="0.6"/>
+      <ellipse cx="140" cy="120" rx="32" ry="8" fill="#1a0e06" stroke="#0a0402" stroke-width="0.6"/>
+      <!-- ink surface -->
+      <ellipse cx="140" cy="120" rx="26" ry="5" fill="#0a051a" stroke="#000" stroke-width="0.4"/>
+      <!-- highlight on pot -->
+      <ellipse cx="118" cy="135" rx="2" ry="10" fill="#fff" opacity="0.08"/>
+    </svg>
+  </div>
+
+  <!-- Map corner -->
+  <div class="desk-item map-corner">
+    <svg width="280" height="200" viewBox="0 0 280 200">
+      <defs>
+        <linearGradient id="parchG" x1="0" y1="0" x2="1" y2="1">
+          <stop offset="0" stop-color="#d6c38a"/>
+          <stop offset="0.5" stop-color="#eadcb0"/>
+          <stop offset="1" stop-color="#b49868"/>
+        </linearGradient>
+      </defs>
+      <path d="M5 10 L250 6 L274 40 L270 180 L15 192 L3 160 Z" fill="url(#parchG)" stroke="#6a5230" stroke-width="0.8"/>
+      <!-- crease lines -->
+      <path d="M90 8 L85 190" stroke="#6a5230" stroke-width="0.5" opacity="0.4"/>
+      <path d="M180 8 L186 188" stroke="#6a5230" stroke-width="0.5" opacity="0.4"/>
+      <!-- coastline / route -->
+      <path d="M30 150 Q70 110 110 130 Q150 160 200 110 Q240 70 265 90" stroke="#4a3820" fill="none" stroke-width="1.3" stroke-dasharray="4 3"/>
+      <!-- landmasses -->
+      <path d="M50 60 Q80 50 100 68 Q110 80 90 92 Q60 98 50 60 Z" fill="#7a5a30" opacity="0.55"/>
+      <path d="M170 140 Q200 130 220 148 Q225 160 205 170 Q180 175 170 140 Z" fill="#7a5a30" opacity="0.5"/>
+      <!-- markers -->
+      <circle cx="30" cy="150" r="4" fill="#a8221c"/>
+      <path d="M30 150 L30 145" stroke="#a8221c" stroke-width="1"/>
+      <circle cx="265" cy="90" r="4" fill="#a8221c"/>
+      <!-- compass -->
+      <circle cx="230" cy="40" r="14" fill="none" stroke="#4a3820" stroke-width="0.7"/>
+      <path d="M230 28 L232 40 L230 52 L228 40 Z" fill="#4a3820"/>
+      <text x="230" y="25" font-size="6" text-anchor="middle" fill="#4a3820" font-family="serif">N</text>
+      <!-- labels -->
+      <text x="60" y="115" font-size="8" fill="#3b2514" font-family="IM Fell English SC" opacity="0.8">Hollow Peaks</text>
+      <text x="185" y="158" font-size="7" fill="#3b2514" font-family="IM Fell English SC" opacity="0.8">Mirewood</text>
+    </svg>
+  </div>
+
+  <!-- Loose scroll -->
+  <div class="desk-item loose-scroll">
+    <svg width="240" height="60" viewBox="0 0 240 60">
+      <defs>
+        <linearGradient id="sParch" x1="0" x2="0" y1="0" y2="1"><stop offset="0" stop-color="#d6c38a"/><stop offset="0.5" stop-color="#f0dfaa"/><stop offset="1" stop-color="#b49868"/></linearGradient>
+        <linearGradient id="sRoll" x1="0" x2="0" y1="0" y2="1"><stop offset="0" stop-color="#8a6a38"/><stop offset="0.5" stop-color="#c9a668"/><stop offset="1" stop-color="#8a6a38"/></linearGradient>
+      </defs>
+      <rect x="20" y="18" width="200" height="24" fill="url(#sParch)" stroke="#6a5230" stroke-width="0.5"/>
+      <ellipse cx="20" cy="30" rx="14" ry="14" fill="url(#sRoll)" stroke="#3a2814" stroke-width="0.6"/>
+      <ellipse cx="220" cy="30" rx="14" ry="14" fill="url(#sRoll)" stroke="#3a2814" stroke-width="0.6"/>
+      <!-- text lines -->
+      <line x1="35" y1="25" x2="205" y2="25" stroke="#4a3218" stroke-width="0.6" opacity="0.5"/>
+      <line x1="35" y1="30" x2="180" y2="30" stroke="#4a3218" stroke-width="0.6" opacity="0.5"/>
+      <line x1="35" y1="35" x2="195" y2="35" stroke="#4a3218" stroke-width="0.6" opacity="0.5"/>
+    </svg>
+  </div>
+
+  <!-- THE TOME -->
+  <div class="tome">
+    <div class="tome-corner tl"></div>
+    <div class="tome-corner tr"></div>
+    <div class="tome-corner bl"></div>
+    <div class="tome-corner br"></div>
+
+    <div class="ribbons">
+      <div class="ribbon-bm red"></div>
+      <div class="ribbon-bm green"></div>
+      <div class="ribbon-bm blue"></div>
+    </div>
+
+    <div class="pages">
+      <!-- LEFT PAGE -->
+      <div class="page left">
+        <div class="page-heading">❦ Of the Art of Asking ❦</div>
+        <p>
+          <span class="drop-cap">A</span> wise mage does not merely memorise incantations, but studies their nature — the weight of each word, the flavour of each gesture, the hour at which they sing most true. Upon the right-hand page you shall inscribe your need, and from the archive shall be drawn such spells as fit the moment.
+        </p>
+        <p>
+          Speak plainly of the matter before you, or speak in riddles — the book attends to both. Tell of collapsing mines, of libraries, of dragons upon volcanoes, of banquets in kings' halls, or simply of a mood you cannot yet name.
+        </p>
+
+        <!-- Illegible chicken-scratch in margin -->
+        <svg class="scratch" style="top: 10px; left: 10px; width: 90px; height: 40px;" viewBox="0 0 90 40">
+          <path d="M2 15 q3 -8 6 -2 t5 0 q2 5 5 -1 t4 1 q3 3 6 -2 l2 4 q3 -6 5 0 t3 -2 q2 4 5 0" stroke="currentColor" stroke-width="0.8" fill="none" stroke-linecap="round" transform="rotate(-5 45 20)"/>
+          <path d="M5 28 q4 -6 8 -1 t6 1 q3 -4 7 0 t5 -1 q4 3 7 -2" stroke="currentColor" stroke-width="0.7" fill="none" stroke-linecap="round" transform="rotate(-4 45 20)"/>
+          <circle cx="42" cy="32" r="0.8" fill="currentColor" opacity="0.6"/>
+        </svg>
+
+        <svg class="scratch" style="bottom: 22px; left: 6px; width: 105px; height: 55px; transform: rotate(-6deg);" viewBox="0 0 105 55">
+          <path d="M2 10 q3 -6 6 -1 t5 1 q3 -4 6 0 t5 -2 q3 4 6 -1 t4 1 q3 3 6 -2 q3 4 5 -1 t4 1" stroke="currentColor" stroke-width="0.8" fill="none" stroke-linecap="round"/>
+          <path d="M4 22 q4 -5 7 0 t5 -1 q4 4 7 -2 t5 1 q4 -4 7 1 t4 -2 q3 3 6 0 t4 -1" stroke="currentColor" stroke-width="0.75" fill="none" stroke-linecap="round"/>
+          <path d="M6 34 q5 -3 8 1 t6 0 q4 -4 8 0 t5 -1 q3 3 7 -1" stroke="currentColor" stroke-width="0.7" fill="none" stroke-linecap="round"/>
+          <!-- tiny arrow doodle -->
+          <path d="M60 46 L80 40 M76 37 L80 40 L77 43" stroke="currentColor" stroke-width="0.6" fill="none"/>
+          <path d="M86 38 q2 -4 5 -1 q-1 3 -3 3 q-2 -1 -2 -2" stroke="currentColor" stroke-width="0.6" fill="none"/>
+        </svg>
+
+        <!-- marginal illumination -->
+        <svg class="page-illum" viewBox="0 0 70 70">
+          <path d="M10 35 Q10 10 35 10 Q60 10 60 35 Q60 60 35 60 Q10 60 10 35 Z" stroke="currentColor" fill="none" stroke-width="1"/>
+          <path d="M20 35 Q20 20 35 20 Q50 20 50 35 Q50 50 35 50 Q20 50 20 35" stroke="currentColor" fill="none" stroke-width="0.8"/>
+          <path d="M30 35 L35 25 L40 35 L35 45 Z" fill="currentColor" opacity="0.7"/>
+          <circle cx="35" cy="35" r="2" fill="currentColor"/>
+        </svg>
+      </div>
+
+      <div class="spine"></div>
+
+      <!-- RIGHT PAGE - PROMPT -->
+      <div class="page right">
+        <svg class="page-flourish tl" viewBox="0 0 50 50"><path d="M5 5 Q5 25 25 25 M5 5 Q25 5 25 25 M12 12 Q18 18 22 22" stroke="currentColor" fill="none" stroke-width="1.2"/><circle cx="25" cy="25" r="2" fill="currentColor"/></svg>
+        <svg class="page-flourish tr" viewBox="0 0 50 50"><path d="M5 5 Q5 25 25 25 M5 5 Q25 5 25 25 M12 12 Q18 18 22 22" stroke="currentColor" fill="none" stroke-width="1.2"/><circle cx="25" cy="25" r="2" fill="currentColor"/></svg>
+        <svg class="page-flourish bl" viewBox="0 0 50 50"><path d="M5 5 Q5 25 25 25 M5 5 Q25 5 25 25 M12 12 Q18 18 22 22" stroke="currentColor" fill="none" stroke-width="1.2"/><circle cx="25" cy="25" r="2" fill="currentColor"/></svg>
+        <svg class="page-flourish br" viewBox="0 0 50 50"><path d="M5 5 Q5 25 25 25 M5 5 Q25 5 25 25 M12 12 Q18 18 22 22" stroke="currentColor" fill="none" stroke-width="1.2"/><circle cx="25" cy="25" r="2" fill="currentColor"/></svg>
+
+        <div class="prompt-heading">Inscribe Thy Question</div>
+        <div class="prompt-sub">— the archive is listening —</div>
+
+        <div class="prompt-container" id="promptContainer">
+          <div class="prompt-lines">
+            <input
+              type="text"
+              class="prompt-input"
+              id="promptInput"
+              placeholder="I need to escape a collapsing mine shaft..."
+              autocomplete="off"
+            >
+          </div>
+          <button class="quill-submit">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M20 4 L12 12 L4 20 L8 20 L12 16 L20 8 Z"/></svg>
+            Ask
+          </button>
+        </div>
+
+        <!-- marginalia on right page -->
+        <svg class="scratch" style="bottom: 50px; left: 14px; width: 80px; height: 30px; transform: rotate(-3deg);" viewBox="0 0 80 30">
+          <path d="M2 10 q3 -6 6 -1 t5 0 q3 -3 6 0 t5 -1 q3 3 6 -2 t4 1" stroke="currentColor" stroke-width="0.7" fill="none"/>
+          <path d="M50 16 L68 14 M64 11 L68 14 L65 17" stroke="currentColor" stroke-width="0.6" fill="none"/>
+        </svg>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<script>
+  const toggle = document.getElementById('themeToggle');
+  const input = document.getElementById('promptInput');
+  const container = document.getElementById('promptContainer');
+
+  // Respect prefers-color-scheme on first load
+  if (window.matchMedia && window.matchMedia('(prefers-color-scheme: light)').matches) {
+    document.body.dataset.theme = 'light';
+    toggle.textContent = '☀ Day';
+  }
+
+  toggle.addEventListener('click', () => {
+    const current = document.body.dataset.theme;
+    document.body.dataset.theme = current === 'dark' ? 'light' : 'dark';
+    toggle.textContent = current === 'dark' ? '☀ Day' : '☾ Night';
+  });
+
+  input.addEventListener('focus', () => container.classList.add('focused'));
+  input.addEventListener('blur', () => container.classList.remove('focused'));
+
+  document.addEventListener('keydown', (e) => {
+    if (e.key === '/' && document.activeElement !== input) {
+      e.preventDefault();
+      input.focus();
+    }
+  });
+</script>
+
+</body>
+</html>

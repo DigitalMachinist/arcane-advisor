@@ -1,0 +1,380 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Mockup H — Brass Compass Dial</title>
+<link href="https://fonts.googleapis.com/css2?family=Cinzel+Decorative:wght@400;700&family=EB+Garamond:ital,wght@0,400;0,500;1,400&family=IM+Fell+English+SC&display=swap" rel="stylesheet">
+<style>
+:root {
+  --ink: #2a1a0a;
+  --ink-soft: #4a3420;
+  --page: #ead5a4;
+  --page-shadow: #c9b07e;
+  --page-deep: #8a6f3c;
+  --leather: #3a1d0a;
+  --leather-dark: #1f0d04;
+  --desk: #2b1a0e;
+  --desk-dark: #1a0c04;
+  --desk-grain: rgba(80,40,12,0.35);
+  --gold: #c8963a;
+  --gold-bright: #ebb947;
+  --gold-deep: #8a651f;
+  --brass: #a97a2a;
+  --brass-bright: #d9a94a;
+  --brass-deep: #5a3a10;
+  --vermilion: #a8221c;
+  --lapis: #253a5e;
+}
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body { min-height: 100vh; background: var(--desk); font-family: 'EB Garamond', serif; color: var(--ink); overflow-x: hidden; }
+
+.desk-bg {
+  position: fixed; inset: 60px 0 0 0; z-index: 0;
+  background: var(--desk);
+  background-image:
+    repeating-linear-gradient(93deg, transparent 0 70px, var(--desk-grain) 70px 71px, transparent 71px 150px, rgba(0,0,0,0.1) 150px 152px, transparent 152px 270px, var(--desk-grain) 270px 272px),
+    repeating-linear-gradient(3deg, transparent 0 220px, rgba(0,0,0,0.07) 220px 222px);
+}
+.desk-bg::after {
+  content: ''; position: absolute; inset: 0;
+  background: radial-gradient(ellipse at 50% 45%, transparent 35%, rgba(0,0,0,0.55) 100%);
+}
+
+.header {
+  position: relative; z-index: 30;
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 0.9rem 2rem;
+  background: linear-gradient(to bottom, #0a0402, #1a0d04);
+  border-bottom: 2px solid rgba(0,0,0,0.6);
+  box-shadow: 0 6px 16px rgba(0,0,0,0.55);
+  color: var(--page);
+  font-family: 'IM Fell English SC', serif;
+}
+.header a { color: var(--page); text-decoration: none; margin-right: 1.5rem; opacity: 0.85; }
+.header-right { display: flex; align-items: center; gap: 1rem; }
+.theme-toggle { background: none; border: 1px solid var(--gold-deep); color: var(--gold-bright); padding: 0.3rem 0.7rem; border-radius: 2px; cursor: pointer; font-family: inherit; }
+
+.stage {
+  position: relative; z-index: 10;
+  min-height: calc(100vh - 60px);
+  display: flex; align-items: center; justify-content: center;
+  padding: 3rem 2rem;
+}
+
+.tome {
+  position: relative;
+  width: min(1100px, 95vw);
+  aspect-ratio: 16 / 10;
+  display: grid; grid-template-columns: 1fr 1fr;
+  background: var(--leather-dark);
+  border: 10px solid var(--leather);
+  border-radius: 6px;
+  box-shadow:
+    0 30px 80px rgba(0,0,0,0.7),
+    0 0 0 2px var(--leather-dark),
+    inset 0 0 40px rgba(0,0,0,0.5);
+}
+.tome::before {
+  content: ''; position: absolute; top: 0; bottom: 0; left: 50%; width: 18px;
+  background: linear-gradient(90deg, rgba(0,0,0,0.5), rgba(0,0,0,0.85), rgba(0,0,0,0.5));
+  transform: translateX(-50%); z-index: 3;
+}
+.page {
+  background: var(--page);
+  background-image:
+    repeating-linear-gradient(0deg, transparent 0 2px, rgba(0,0,0,0.012) 2px 3px),
+    radial-gradient(ellipse at 50% 40%, transparent 40%, rgba(0,0,0,0.18) 100%);
+  padding: 2.5rem 3rem;
+  position: relative;
+}
+.page-left { border-right: 1px solid rgba(0,0,0,0.1); }
+
+/* Illuminated drop cap on left page */
+.dropcap {
+  float: left;
+  font-family: 'Cinzel Decorative', serif;
+  font-size: 5.5rem;
+  line-height: 0.9;
+  color: var(--vermilion);
+  padding: 0.5rem 0.7rem 0.2rem 0;
+  background: radial-gradient(circle at 30% 30%, rgba(235,185,71,0.25), transparent 70%);
+  text-shadow: 1px 1px 0 var(--gold-deep);
+}
+.left-body { font-size: 1.02rem; line-height: 1.7; color: var(--ink-soft); }
+.left-body p { margin-bottom: 1rem; text-align: justify; }
+
+/* Right page: prompt + compass dial */
+.page-right { display: flex; flex-direction: column; gap: 1.5rem; }
+.page-right-header {
+  font-family: 'Cinzel Decorative', serif;
+  color: var(--ink-soft);
+  font-size: 0.95rem;
+  text-align: center;
+  letter-spacing: 0.15em;
+  border-bottom: 1px solid rgba(0,0,0,0.15);
+  padding-bottom: 0.6rem;
+}
+.prompt-wrap { flex: 0 0 auto; }
+.prompt-lines {
+  position: relative;
+  background:
+    repeating-linear-gradient(0deg, transparent 0 30px, rgba(0,0,0,0.09) 30px 31px);
+  padding: 0.5rem 0.3rem;
+  min-height: 100px;
+}
+.prompt-input {
+  width: 100%; height: 90px;
+  background: transparent; border: none; outline: none; resize: none;
+  font-family: 'EB Garamond', serif; font-size: 1.15rem;
+  color: var(--ink);
+  line-height: 30px;
+  font-style: italic;
+}
+
+/* Compass dial */
+.dial-area {
+  flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 0.8rem;
+  position: relative;
+}
+.dial-label {
+  font-family: 'IM Fell English SC', serif;
+  color: var(--ink-soft); font-size: 0.82rem; letter-spacing: 0.2em;
+}
+.compass {
+  position: relative;
+  width: 240px; height: 240px;
+}
+.compass svg { width: 100%; height: 100%; display: block; }
+.compass-positions {
+  position: absolute; inset: 0; pointer-events: none;
+}
+.pos-label {
+  position: absolute;
+  font-family: 'IM Fell English SC', serif;
+  font-size: 0.78rem;
+  color: var(--ink);
+  text-transform: uppercase; letter-spacing: 0.08em;
+  white-space: nowrap;
+  cursor: pointer;
+  padding: 2px 6px;
+  pointer-events: auto;
+  transition: color 0.2s, text-shadow 0.2s;
+}
+.pos-label:hover { color: var(--vermilion); }
+.pos-label.active {
+  color: var(--vermilion);
+  text-shadow: 0 0 6px rgba(235,185,71,0.6);
+  font-weight: 600;
+}
+/* 5 positions arranged around top arc: 150°, 115°, 90°, 65°, 30° from bottom */
+.pos-tactical   { left: 8%;  top: 58%; transform: rotate(-62deg); transform-origin: left center; }
+.pos-balanced   { left: 20%; top: 12%; }
+.pos-creative   { left: 50%; top: 3%; transform: translateX(-50%); }
+.pos-theatrical { right: 20%; top: 12%; }
+.pos-chaotic    { right: 8%; top: 58%; transform: rotate(62deg); transform-origin: right center; }
+
+.dial-hint {
+  font-family: 'EB Garamond', serif; font-style: italic;
+  color: var(--ink-soft); font-size: 0.88rem;
+  text-align: center; max-width: 300px;
+}
+
+/* Scattered desk items peeking in around edges */
+.desk-item { position: absolute; z-index: 5; filter: drop-shadow(0 8px 18px rgba(0,0,0,0.6)); }
+.item-candle { top: 8%; right: -60px; width: 80px; }
+.item-potion { bottom: 12%; left: -50px; width: 70px; }
+.item-quill  { top: -30px; left: 15%; width: 180px; transform: rotate(-12deg); }
+.item-map    { bottom: -40px; right: 10%; width: 220px; transform: rotate(6deg); }
+
+/* Footer helper */
+.footer-note {
+  position: fixed; bottom: 1rem; left: 0; right: 0;
+  text-align: center; color: rgba(235,213,164,0.5);
+  font-family: 'IM Fell English SC', serif; font-size: 0.8rem;
+  letter-spacing: 0.15em;
+  z-index: 20;
+}
+</style>
+</head>
+<body>
+<div class="desk-bg"></div>
+
+<header class="header">
+  <nav>
+    <a href="#">About</a>
+    <a href="#">How it works</a>
+    <a href="#">Sourcebooks</a>
+  </nav>
+  <div class="header-right">
+    <button class="theme-toggle">Candlelight</button>
+    <span style="color:var(--gold); opacity:0.6;">Login</span>
+  </div>
+</header>
+
+<main class="stage">
+  <div class="tome">
+    <!-- Desk items peeking in -->
+    <svg class="desk-item item-candle" viewBox="0 0 80 120">
+      <defs>
+        <radialGradient id="flame" cx="50%" cy="40%"><stop offset="0%" stop-color="#fff4b0"/><stop offset="50%" stop-color="#f0a020"/><stop offset="100%" stop-color="#8a2010" stop-opacity="0"/></radialGradient>
+      </defs>
+      <ellipse cx="40" cy="30" rx="9" ry="22" fill="url(#flame)"/>
+      <rect x="30" y="45" width="20" height="70" fill="#e4d1a0" stroke="#8a6f3c" stroke-width="1"/>
+      <ellipse cx="40" cy="45" rx="10" ry="3" fill="#c2a876"/>
+      <ellipse cx="40" cy="114" rx="14" ry="4" fill="#2a1a0a"/>
+    </svg>
+
+    <svg class="desk-item item-potion" viewBox="0 0 70 100">
+      <defs>
+        <linearGradient id="potionH" x1="0" x2="0" y1="0" y2="1">
+          <stop offset="0%" stop-color="#7aa6e8"/>
+          <stop offset="60%" stop-color="#284d78"/>
+          <stop offset="100%" stop-color="#172a4a"/>
+        </linearGradient>
+      </defs>
+      <rect x="28" y="5" width="14" height="18" fill="#3a1d0a"/>
+      <path d="M22 25 Q22 35 18 45 Q8 65 10 80 Q12 95 35 95 Q58 95 60 80 Q62 65 52 45 Q48 35 48 25 Z" fill="url(#potionH)" stroke="#0f0502" stroke-width="1.5"/>
+      <ellipse cx="25" cy="55" rx="3" ry="8" fill="rgba(255,255,255,0.35)"/>
+      <circle cx="40" cy="70" r="2" fill="rgba(255,255,255,0.5)"/>
+      <circle cx="48" cy="60" r="1.5" fill="rgba(255,255,255,0.4)"/>
+    </svg>
+
+    <svg class="desk-item item-quill" viewBox="0 0 180 60">
+      <path d="M10 30 Q90 10 170 15 L165 22 Q90 20 15 35 Z" fill="#f0d89a" stroke="#8a6f3c" stroke-width="0.8"/>
+      <path d="M20 30 Q80 20 160 20 M25 32 Q85 24 158 23 M30 34 Q90 27 156 26" stroke="#a8864a" stroke-width="0.4" fill="none"/>
+      <path d="M10 30 L2 40 L8 42 L14 36 Z" fill="#2a1a0a"/>
+    </svg>
+
+    <svg class="desk-item item-map" viewBox="0 0 220 160">
+      <rect x="0" y="0" width="220" height="160" fill="#d4b880" stroke="#8a6f3c" stroke-width="2"/>
+      <path d="M20 30 Q60 20 100 40 T200 35" stroke="#4a3420" stroke-width="1.5" fill="none"/>
+      <path d="M30 80 Q80 90 140 70 T210 90" stroke="#4a3420" stroke-width="1.5" fill="none"/>
+      <circle cx="60" cy="50" r="3" fill="#a8221c"/>
+      <circle cx="160" cy="90" r="3" fill="#a8221c"/>
+      <g transform="translate(180,130)">
+        <circle r="15" fill="none" stroke="#4a3420" stroke-width="1"/>
+        <path d="M0 -12 L3 0 L0 12 L-3 0 Z" fill="#a8221c"/>
+        <text y="-18" text-anchor="middle" font-family="serif" font-size="8" fill="#4a3420">N</text>
+      </g>
+    </svg>
+
+    <!-- Left page -->
+    <div class="page page-left">
+      <p class="left-body">
+        <span class="dropcap">A</span>rcane Advisor listens. Describe your circumstance — the collapsing mine, the banquet hall, the dragon you mean to annoy — and the tome answers with spells worth casting.
+      </p>
+      <p class="left-body">Turn the compass on the right page to change the <em>character</em> of the advice you receive. A steady needle gives sober tactical counsel. A needle that favours the theatrical will find you spells fit for song.</p>
+      <p class="left-body" style="color: var(--ink); font-style: italic;">Choose your position. Ink your question. Turn the page.</p>
+    </div>
+
+    <!-- Right page: prompt + compass -->
+    <div class="page page-right">
+      <div class="page-right-header">— Your Query —</div>
+
+      <div class="prompt-wrap">
+        <div class="prompt-lines">
+          <textarea class="prompt-input" placeholder="I need to escape a collapsing mine shaft with three unconscious party members..."></textarea>
+        </div>
+      </div>
+
+      <div class="dial-area">
+        <div class="dial-label">— The Whimsy Compass —</div>
+        <div class="compass">
+          <svg viewBox="0 0 240 240">
+            <defs>
+              <radialGradient id="brassBody" cx="50%" cy="40%">
+                <stop offset="0%" stop-color="#e6c070"/>
+                <stop offset="55%" stop-color="#a97a2a"/>
+                <stop offset="100%" stop-color="#5a3a10"/>
+              </radialGradient>
+              <radialGradient id="brassInner" cx="50%" cy="45%">
+                <stop offset="0%" stop-color="#f5dc9c"/>
+                <stop offset="70%" stop-color="#c89a4a"/>
+                <stop offset="100%" stop-color="#8a651f"/>
+              </radialGradient>
+              <filter id="emboss" x="-20%" y="-20%" width="140%" height="140%">
+                <feGaussianBlur stdDeviation="1.5" result="blur"/>
+                <feSpecularLighting in="blur" surfaceScale="2" specularConstant="0.8" specularExponent="20" lighting-color="#fff4c0" result="spec">
+                  <feDistantLight azimuth="225" elevation="55"/>
+                </feSpecularLighting>
+                <feComposite in="spec" in2="SourceGraphic" operator="in" result="specIn"/>
+                <feComposite in="SourceGraphic" in2="specIn" operator="arithmetic" k1="0" k2="1" k3="1" k4="0"/>
+              </filter>
+            </defs>
+            <!-- Outer brass ring -->
+            <circle cx="120" cy="120" r="118" fill="url(#brassBody)" stroke="#3a2408" stroke-width="2"/>
+            <circle cx="120" cy="120" r="110" fill="none" stroke="#3a2408" stroke-width="1" opacity="0.6"/>
+            <!-- Decorative notches every 18° around the rim -->
+            <g stroke="#3a2408" stroke-width="1">
+              <line x1="120" y1="6" x2="120" y2="14"/>
+              <line x1="120" y1="226" x2="120" y2="234"/>
+              <line x1="6" y1="120" x2="14" y2="120"/>
+              <line x1="226" y1="120" x2="234" y2="120"/>
+            </g>
+            <!-- Inner brass face -->
+            <circle cx="120" cy="120" r="96" fill="url(#brassInner)" stroke="#5a3a10" stroke-width="1.5"/>
+            <!-- Position pips around the upper arc -->
+            <g fill="#3a2408">
+              <!-- 5 pips at angles from -110° to -70° in 10° increments -->
+              <circle cx="34" cy="160" r="3"/>
+              <circle cx="53" cy="77" r="3"/>
+              <circle cx="120" cy="30" r="4"/>
+              <circle cx="187" cy="77" r="3"/>
+              <circle cx="206" cy="160" r="3"/>
+            </g>
+            <!-- Center rosette -->
+            <circle cx="120" cy="120" r="18" fill="#5a3a10" stroke="#3a2408" stroke-width="1.5"/>
+            <circle cx="120" cy="120" r="6" fill="#ebb947" stroke="#3a2408" stroke-width="1"/>
+            <!-- Needle pointing to CREATIVE (top) position -->
+            <g id="needle">
+              <polygon points="120,120 115,120 120,35 125,120" fill="#a8221c" stroke="#3a2408" stroke-width="1"/>
+              <polygon points="120,120 115,120 120,205 125,120" fill="#e6c070" stroke="#3a2408" stroke-width="1"/>
+              <circle cx="120" cy="120" r="5" fill="#3a2408"/>
+            </g>
+            <!-- Tick marks / fleur ornaments in the upper quadrant -->
+            <g stroke="#3a2408" stroke-width="0.6" fill="none">
+              <path d="M120 50 Q115 60 110 55 M120 50 Q125 60 130 55"/>
+            </g>
+          </svg>
+          <div class="compass-positions">
+            <span class="pos-label pos-tactical">Tactical</span>
+            <span class="pos-label pos-balanced">Balanced</span>
+            <span class="pos-label pos-creative active">Creative</span>
+            <span class="pos-label pos-theatrical">Theatrical</span>
+            <span class="pos-label pos-chaotic">Chaotic</span>
+          </div>
+        </div>
+        <div class="dial-hint">The needle rests on <em>Creative</em>. Lateral thinking and unexpected applications.</div>
+      </div>
+    </div>
+  </div>
+</main>
+
+<div class="footer-note">Variation H — Brass Compass Dial</div>
+
+<script>
+  document.querySelectorAll('.pos-label').forEach(label => {
+    label.addEventListener('click', () => {
+      document.querySelectorAll('.pos-label').forEach(l => l.classList.remove('active'));
+      label.classList.add('active');
+      const hint = document.querySelector('.dial-hint');
+      const name = label.textContent;
+      const meanings = {
+        'Tactical': 'The needle rests on <em>Tactical</em>. Practical, mechanical-first counsel.',
+        'Balanced': 'The needle rests on <em>Balanced</em>. A measured mix of practicality and flavour.',
+        'Creative': 'The needle rests on <em>Creative</em>. Lateral thinking and unexpected applications.',
+        'Theatrical': 'The needle rests on <em>Theatrical</em>. Maximum drama, maximum spectacle.',
+        'Chaotic': 'The needle rests on <em>Chaotic</em>. Off-script, absurd, and sometimes wonderful.'
+      };
+      hint.innerHTML = meanings[name];
+      // Rotate needle toward the position
+      const angles = { Tactical: -110, Balanced: -55, Creative: 0, Theatrical: 55, Chaotic: 110 };
+      const needle = document.getElementById('needle');
+      needle.style.transition = 'transform 0.4s cubic-bezier(.7,-.3,.3,1.4)';
+      needle.style.transformOrigin = '120px 120px';
+      needle.style.transform = `rotate(${angles[name]}deg)`;
+    });
+  });
+</script>
+</body>
+</html>

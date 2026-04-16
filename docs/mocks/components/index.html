@@ -1,0 +1,299 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Spec 7 — Component Sheets</title>
+<link href="https://fonts.googleapis.com/css2?family=Cinzel+Decorative:wght@400;700;900&family=Cinzel:wght@400;600;700&family=EB+Garamond:ital,wght@0,400;0,500;0,600;1,400;1,500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --desk: #241811; --ink: #f3e7cf; --ink-dim: #b8a681; --ink-faint: #7a6944;
+    --gold: #c79a47;
+    --arcane: #ffd57a; --arcane-deep: #e89a2a;
+    --arcane-glow: rgba(255, 200, 90, 0.75);
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html, body { height: 100%; }
+  body {
+    min-height: 100vh;
+    background: radial-gradient(ellipse at 50% 20%, #3a2818 0%, #120905 82%), var(--desk);
+    background-attachment: fixed;
+    font-family: 'EB Garamond', serif; color: var(--ink);
+    padding: 80px 40px 120px;
+  }
+  body::before {
+    content: ''; position: fixed; inset: 0;
+    background: repeating-linear-gradient(91deg, transparent 0 90px, rgba(0,0,0,0.1) 90px 91px);
+    pointer-events: none; z-index: 0;
+  }
+
+  .sheet { max-width: 960px; margin: 0 auto; position: relative; z-index: 2; }
+
+  .sheet-head { border-bottom: 1px solid rgba(184,166,129,0.25); padding-bottom: 32px; margin-bottom: 48px; }
+  .eyebrow {
+    font-family: 'Cinzel Decorative', serif; font-size: 10px;
+    letter-spacing: 0.32em; text-transform: uppercase; color: var(--ink-faint);
+    margin-bottom: 6px;
+  }
+  .sheet-title {
+    font-family: 'Cinzel Decorative', serif; font-weight: 900;
+    font-size: 42px; color: var(--gold);
+    letter-spacing: 0.08em; text-transform: uppercase; margin-bottom: 14px;
+  }
+  .sheet-sub {
+    font-family: 'EB Garamond', serif; font-style: italic;
+    color: var(--ink-dim); font-size: 16px; line-height: 25px; max-width: 720px;
+  }
+
+  .canonical-link {
+    display: block;
+    margin-bottom: 48px;
+    padding: 20px 24px;
+    background: linear-gradient(90deg, rgba(255,200,90,0.12), rgba(255,200,90,0.02));
+    border-left: 2px solid var(--arcane-deep);
+    text-decoration: none;
+    color: inherit;
+    transition: all 0.3s ease;
+  }
+  .canonical-link:hover {
+    background: linear-gradient(90deg, rgba(255,200,90,0.20), rgba(255,200,90,0.04));
+  }
+  .canonical-link .tag {
+    font-family: 'Cinzel Decorative', serif; font-size: 9px;
+    letter-spacing: 0.26em; text-transform: uppercase; color: var(--arcane);
+    margin-bottom: 6px; display: block;
+  }
+  .canonical-link .name {
+    font-family: 'Cinzel Decorative', serif; font-weight: 700;
+    font-size: 20px; color: var(--gold);
+    letter-spacing: 0.05em; text-transform: uppercase;
+    margin-bottom: 6px;
+  }
+  .canonical-link .desc {
+    font-family: 'EB Garamond', serif; font-style: italic;
+    font-size: 14px; color: var(--ink-dim); line-height: 21px;
+  }
+
+  .section-label {
+    font-family: 'Cinzel Decorative', serif; font-size: 10px;
+    letter-spacing: 0.3em; text-transform: uppercase;
+    color: var(--ink-faint);
+    margin-bottom: 22px;
+    display: flex; align-items: center; gap: 14px;
+  }
+  .section-label::after {
+    content: ''; flex: 1; height: 1px;
+    background: linear-gradient(90deg, rgba(184,166,129,0.3), transparent);
+  }
+
+  .grid {
+    display: grid; grid-template-columns: repeat(2, 1fr);
+    gap: 18px;
+    margin-bottom: 48px;
+  }
+
+  .card {
+    display: block; text-decoration: none; color: inherit;
+    padding: 22px 24px;
+    background: rgba(0,0,0,0.28);
+    border: 1px solid rgba(184,166,129,0.2);
+    border-radius: 2px;
+    transition: all 0.3s ease;
+    position: relative;
+  }
+  .card:hover {
+    background: rgba(0,0,0,0.4);
+    border-color: var(--arcane-deep);
+    box-shadow: 0 0 20px rgba(255,200,90,0.15);
+  }
+  .card .label {
+    font-family: 'Cinzel', serif; font-size: 9px; letter-spacing: 0.22em;
+    text-transform: uppercase; color: var(--ink-faint);
+    margin-bottom: 6px;
+  }
+  .card .name {
+    font-family: 'Cinzel Decorative', serif; font-weight: 700;
+    font-size: 18px; color: var(--gold);
+    letter-spacing: 0.04em; text-transform: uppercase;
+    margin-bottom: 10px;
+  }
+  .card .desc {
+    font-family: 'EB Garamond', serif; font-style: italic;
+    font-size: 13.5px; color: var(--ink-dim); line-height: 20px;
+    margin-bottom: 12px;
+  }
+  .card .states {
+    font-family: 'Cinzel', serif; font-size: 9px;
+    letter-spacing: 0.16em; text-transform: uppercase;
+    color: var(--ink-faint);
+  }
+  .card .arrow {
+    position: absolute; top: 22px; right: 24px;
+    font-family: 'Cinzel Decorative', serif; color: var(--ink-faint);
+    font-size: 16px; transition: all 0.3s ease;
+  }
+  .card:hover .arrow { color: var(--arcane); transform: translateX(4px); }
+
+  footer {
+    margin-top: 80px; padding-top: 28px;
+    border-top: 1px solid rgba(184,166,129,0.2);
+    font-family: 'EB Garamond', serif; font-style: italic;
+    font-size: 13px; color: var(--ink-faint); line-height: 20px; text-align: center;
+  }
+</style>
+</head>
+<body>
+<div class="sheet">
+
+  <div class="sheet-head">
+    <div class="eyebrow">Arcane Advisor · Spec 7</div>
+    <h1 class="sheet-title">Component Sheets</h1>
+    <p class="sheet-sub">
+      Each sheet isolates a single component from Spec 7's conversation mode and shows every
+      state it can be in — default, edge cases, palette sweep, cap-reached variants. These are
+      design mocks, not implementations; use them as visual references for component-izing.
+    </p>
+  </div>
+
+  <a class="canonical-link" href="../spec-07-canonical.html">
+    <span class="tag">Full flow · Reference</span>
+    <div class="name">Spec 7 Canonical</div>
+    <p class="desc">
+      The unified five-round consultation demonstrating every component in context — standard
+      spell cards, rules answer, no-match fallback, error → retry skeleton, pinned-from match,
+      expanded description, and the cap-reached terminal state. Use the Dock Preview harness
+      (top-left) to flip between Normal, Final Round, and Cap Reached dock states.
+    </p>
+  </a>
+
+  <a class="canonical-link" href="../spec-08-canonical.html">
+    <span class="tag">Full flow · Reference</span>
+    <div class="name">Spec 8 Canonical</div>
+    <p class="desc">
+      The Spec 7 canonical flow with the Sourcebook Selector added to the top-right header
+      stack. Shown with the panel open; the icon + count affordance, the expanded dropdown,
+      and the refuse-last-toggle minimum guard are all live. Use this to see the selector in
+      its actual context — against the transcript and alongside the rounds pips.
+    </p>
+  </a>
+
+  <div class="section-label">Response surfaces</div>
+  <div class="grid">
+
+    <a class="card" href="spell-card.html">
+      <span class="arrow">→</span>
+      <div class="label">Primary response</div>
+      <div class="name">Spell Card</div>
+      <p class="desc">
+        The full-format spell card used for every recommendation. Parchment stock with a
+        reasoning blockquote, badge row, tag set, and expandable full-text description.
+      </p>
+      <div class="states">6 states · concentration · pinned-from · inexact · expanded · palette sweep</div>
+    </a>
+
+    <a class="card" href="set-message.html">
+      <span class="arrow">→</span>
+      <div class="label">Narrative response</div>
+      <div class="name">Set Message</div>
+      <p class="desc">
+        The left-bar italic banner used for rules Q&amp;A, "no exact match" prefaces,
+        "no results at all" dead-ends, and other narrative framings that precede or replace
+        spell cards.
+      </p>
+      <div class="states">4 states · rules · no-exact · no-results · palette sweep</div>
+    </a>
+
+    <a class="card" href="error-card.html">
+      <span class="arrow">→</span>
+      <div class="label">Failure response</div>
+      <div class="name">Error Card</div>
+      <p class="desc">
+        The red-palette failure surface with torn bottom edge, echoing the prompt that failed.
+        Used for retryable timeouts, upstream outages, and rejected submissions.
+      </p>
+      <div class="states">3 states · timeout · upstream · rejected</div>
+    </a>
+
+  </div>
+
+  <div class="section-label">Chrome &amp; chrome-adjacent</div>
+  <div class="grid">
+
+    <a class="card" href="prompt-dock.html">
+      <span class="arrow">→</span>
+      <div class="label">Primary input</div>
+      <div class="name">Prompt Dock</div>
+      <p class="desc">
+        The torn scrap textarea anchored to the bottom of the viewport. Shown empty, drafting,
+        sealed (cap reached), and at narrow viewport width.
+      </p>
+      <div class="states">4 states · empty · drafting · sealed · narrow</div>
+    </a>
+
+    <a class="card" href="whimsy-dial.html">
+      <span class="arrow">→</span>
+      <div class="label">Primary control</div>
+      <div class="name">Whimsy Dial</div>
+      <p class="desc">
+        The linear row of five rune symbols at the bottom of the viewport. Shown with each
+        rune active in turn, plus the cap-reached substitution where the dial is replaced
+        by the "Begin new consultation" beckon button.
+      </p>
+      <div class="states">6 states · 5 actives · cap-reached</div>
+    </a>
+
+    <a class="card" href="casting-circle.html">
+      <span class="arrow">→</span>
+      <div class="label">Ambient background</div>
+      <div class="name">Casting Circle</div>
+      <p class="desc">
+        The ghosted ornamental circle and compass needle behind the transcript. Six tiles
+        show the circle theming and needle rotation for each whimsy plus the neutral default.
+      </p>
+      <div class="states">6 states · 5 palettes · default</div>
+    </a>
+
+    <a class="card" href="sourcebook-selector.html">
+      <span class="arrow">→</span>
+      <div class="label">Header control</div>
+      <div class="name">Sourcebook Selector</div>
+      <p class="desc">
+        The book-icon + count affordance in the top-right stack with its parchment dropdown.
+        Shown collapsed at every count (5 · 3 of 5 · 1), hover and open states, expanded
+        panel at full and partial selection, and the refuse-last-toggle minimum guard.
+      </p>
+      <div class="states">7 states · collapsed · hover · open · expanded · partial · refuse</div>
+    </a>
+
+    <a class="card" href="round-counter.html">
+      <span class="arrow">→</span>
+      <div class="label">Session state</div>
+      <div class="name">Round Counter</div>
+      <p class="desc">
+        The top-right pip tally. Shown at every fill state from fresh (0/5) through sealed
+        (5/5), plus a palette sweep at 3/5 showing how lit pips pick up the active whimsy's
+        glow.
+      </p>
+      <div class="states">11 states · 6 fill states · 5 palettes</div>
+    </a>
+
+    <a class="card" href="transcript-turns.html">
+      <span class="arrow">→</span>
+      <div class="label">Conversation scaffolding</div>
+      <div class="name">Transcript Turns</div>
+      <p class="desc">
+        The two halves of every round: user prompt scrap (short, medium, long), whimsy badge
+        across all five palettes, the assistant set-header eyebrow, and the round-header and
+        turn-divider rules.
+      </p>
+      <div class="states">Many states · scrap lengths · palette sweep · separators</div>
+    </a>
+
+  </div>
+
+  <footer>
+    Spec 7 · Conversation Mode · Arcane Advisor
+  </footer>
+
+</div>
+</body>
+</html>
