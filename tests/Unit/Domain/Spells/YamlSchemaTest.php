@@ -109,29 +109,31 @@ function validAlarmData(): array
 
 // ─── Fixture YAML file loading ────────────────────────────────────────────────
 
+function spellFixturePath(string $filename): string
+{
+    return dirname(__DIR__, 4).'/database/spells/'.$filename;
+}
+
 test('fireball.yaml validates successfully', function (): void {
-    $path = database_path('spells/fireball.yaml');
     $schema = new SpellYamlSchema;
 
-    $result = $schema->validateFile($path);
+    $result = $schema->validateFile(spellFixturePath('fireball.yaml'));
 
     expect($result->isValid())->toBeTrue();
 });
 
 test('mage-hand.yaml validates successfully', function (): void {
-    $path = database_path('spells/mage-hand.yaml');
     $schema = new SpellYamlSchema;
 
-    $result = $schema->validateFile($path);
+    $result = $schema->validateFile(spellFixturePath('mage-hand.yaml'));
 
     expect($result->isValid())->toBeTrue();
 });
 
 test('alarm.yaml validates successfully', function (): void {
-    $path = database_path('spells/alarm.yaml');
     $schema = new SpellYamlSchema;
 
-    $result = $schema->validateFile($path);
+    $result = $schema->validateFile(spellFixturePath('alarm.yaml'));
 
     expect($result->isValid())->toBeTrue();
 });
