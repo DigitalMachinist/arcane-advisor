@@ -6,10 +6,10 @@ namespace App\Domain\Spells\Enums;
 
 enum SourceCode: string
 {
-    case Phb = 'phb';
-    case Xge = 'xge';
-    case Tce = 'tce';
-    case Scag = 'scag';
-    case Ftd = 'ftd';
-    case Aag = 'aag';
+    case PlayersHandbook = 'phb';
+    case XanatharsGuideToEverything = 'xge';
+    case TashasCauldronOfEverything = 'tce';
+    case SwordCoastAdventurersGuide = 'scag';
+    case FizbansTreasuryOfDragons = 'ftd';
+    case AstralAdventurersGuide = 'aag';
 }
