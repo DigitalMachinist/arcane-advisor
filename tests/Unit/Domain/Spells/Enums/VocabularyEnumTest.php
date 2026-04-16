@@ -42,9 +42,9 @@ test('SourceCode has 6 cases', function (): void {
 });
 
 test('SourceCode contains known values', function (): void {
-    expect(SourceCode::from('phb'))->toBe(SourceCode::Phb)
-        ->and(SourceCode::from('xge'))->toBe(SourceCode::Xge)
-        ->and(SourceCode::from('tce'))->toBe(SourceCode::Tce);
+    expect(SourceCode::from('phb'))->toBe(SourceCode::PlayersHandbook)
+        ->and(SourceCode::from('xge'))->toBe(SourceCode::XanatharsGuideToEverything)
+        ->and(SourceCode::from('tce'))->toBe(SourceCode::TashasCauldronOfEverything);
 });
 
 test('SourceCode::from() rejects unknown values', function (): void {
