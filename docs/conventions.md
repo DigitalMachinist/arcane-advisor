@@ -43,3 +43,40 @@ A living-reference directory with its own structure because visual design artifa
 - `spec-NN-canonical.html` — the canonical mockup for a numbered spec. Edited in place; the visual source of truth when prose and mockup disagree.
 - `components/<name>.html` — canonical anatomy for a reusable component (e.g. `spell-card.html`, `whimsy-dial.html`).
 - `archive/<name>.html` — historical design variants, kept for reference. Naming inside `archive/` is intentionally flexible (letter-prefixed iteration series like `A-open-tome.html` … `Z-sigil-orbit.html`, or descriptive variant tags like `spec-07-variation-A.html`).
+
+## Pull request convention
+
+### Title format
+
+```
+[Stage B / PR 2.2] Vocabulary enums
+```
+
+Stage letter + PR number matching `docs/plans/implementation-plan.md`, followed by the plain-English name from the plan. No `feat:` prefix.
+
+### Body structure
+
+```markdown
+## What
+One paragraph. What was built and any non-obvious decisions made.
+
+## Spec / plan reference
+- Stage X, PR Y.Z — per `docs/plans/implementation-plan.md`
+- Relevant schema or spec docs consulted
+
+## Tests added
+- `tests/path/to/FooTest.php` — what it covers
+
+## Gate status
+- [x] `composer run check` green
+- [x] All new tests pass
+- [ ] Rebased on latest epic branch tip
+
+## Decisions / deviations
+Any place the implementation diverged from the plan, and why. Omit section if none.
+
+## Unblocks
+Which PRs can now start or proceed.
+```
+
+**Gate status convention:** checked boxes were verified by the agent before opening the PR; unchecked boxes require human or post-merge verification (e.g. rebase on latest epic branch tip).

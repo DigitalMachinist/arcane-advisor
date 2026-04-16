@@ -27,6 +27,12 @@ Arcane Advisor is a D&D 5e wizard spell recommendation engine. Users describe a 
 
 See `docs/conventions.md` for project work and process conventions, naming rules, and legacy issues to keep in mind when producing work.
 
+**Read `docs/conventions.md` before:** naming any file or directory, writing or opening a PR, making decisions about casing across surfaces (YAML/JSON/DB).
+
+**Read `docs/testing-strategy.md` before:** writing any test, deciding what to mock, choosing between SQLite and MySQL for a test, or setting coverage targets.
+
+**Read `docs/style-guide.md` before:** writing any PHP class, choosing a pattern (Action vs Service vs Controller), or using a PHP 8.4 feature for the first time in a file.
+
 ## Common Commands
 
 When making tool calls to execute commands defined in package.json, prefer using them as written in this section.
@@ -119,6 +125,8 @@ Quick index of where things live. See `docs/conventions.md` for the filename-for
 ## Current Status
 
 Track and update progress in `docs/plans/checklist.md`. Keep it current as PRs are completed.
+
+**Update `docs/plans/checklist.md` immediately when** any PR is merged into its target branch. Check off the corresponding item before doing anything else. Do not batch checklist updates.
 
 ## Testing Strategy
 
