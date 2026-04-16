@@ -19,6 +19,7 @@
         <exclude>
             <group>mysql</group>
             <group>redis</group>
+            <group>build</group>
         </exclude>
     </groups>
     <source>

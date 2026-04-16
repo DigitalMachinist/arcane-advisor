@@ -2,16 +2,12 @@
 
 declare(strict_types=1);
 
-use Illuminate\Support\Facades\Process;
-
 test('Vite build emits a CSS asset listed in the manifest', function (): void {
     $manifestPath = public_path('build/manifest.json');
 
-    if (! file_exists($manifestPath)) {
-        Process::timeout(300)->path(base_path())->run('npm run build')->throw();
-    }
-
-    expect($manifestPath)->toBeFile();
+    expect($manifestPath)->toBeFile(
+        'public/build/manifest.json is missing; composer run check should have produced it via npm run build.',
+    );
 
     /** @var array<string, array{file?: string, css?: array<int, string>}> $manifest */
     $manifest = json_decode((string) file_get_contents($manifestPath), true, flags: JSON_THROW_ON_ERROR);
@@ -29,4 +25,4 @@ test('Vite build emits a CSS asset listed in the manifest', function (): void {
     foreach ($cssAssets as $cssAsset) {
         expect(public_path('build/'.$cssAsset))->toBeFile();
     }
-});
+})->group('build');
