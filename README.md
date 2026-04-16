@@ -43,10 +43,14 @@ The app serves at `http://localhost:8000`. Vite runs at `http://localhost:5173`.
 
 ## Development
 
-`composer run check` is the single validation gate. It runs Pint, Rector, Larastan, Pest, type coverage, Vitest, and `npm run build`. Run it before pushing anything.
+Two validation gates, split for iteration speed:
+
+- `composer run check` — local fast gate. Pint, Larastan, Pest (default suite), Vitest. Runs in ~1–2 min on WSL; use this for pre-commit iteration.
+- `composer run check:ci` — CI gate. Adds Rector, `npm run build`, the Pest `build` group (Vite manifest assertions), and Pest `--type-coverage --min=100`. Runs automatically on every push/PR through `.github/workflows/check.yml`.
 
 ```bash
-composer run check          # Everything — the only command you need
+composer run check          # Local iteration
+composer run check:ci       # Full CI-parity gate
 composer run docker:start   # Start MySQL + Redis containers
 composer run docker:stop    # Stop containers (data persists)
 ```
