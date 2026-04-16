@@ -1,12 +1,14 @@
 # Arcane Advisor
 
-A spell recommendation engine for D&D 5e wizards. Describe your predicament in plain language — a collapsing mine, a hostile dinner party, a dragon that just noticed you — and receive a curated shortlist of wizard spells with written explanations for why each one fits.
+Your wizard knows 300+ spells. You remember maybe twelve. Arcane Advisor bridges the gap — not just by finding the *right* spell, but by helping you discover the surprising, clever, and wildly entertaining ones you'd never think to prepare.
+
+Type what's happening at the table in plain language. A collapsing mine, a diplomatic dinner gone sideways, a dragon that just noticed you, or "I want to do something absurd with Prestidigitation." The system doesn't just solve problems — it invites you to play with the entire spell list in ways that make the table laugh, gasp, or slow-clap.
 
 ## How It Works
 
-The wizard's study has one door: a prompt box. Type what's happening at the table, and the system parses your situation into tactical goals, stylistic cues, and hard constraints, then scores every wizard spell in the corpus on both mechanical fit and personality fit. A **Whimsy Dial** with five positions (Tactical through Chaotic) shifts the blend between practical picks and delightfully unexpected ones. Results arrive as spell cards — parchment-textured, expandable, each carrying a short "why this spell" explanation written in the voice of a knowledgeable friend.
+A **Whimsy Dial** with five positions — Tactical through Chaotic — is the soul of the engine. Crank it low for the mechanically optimal pick. Crank it high and discover that *Wall of Force* makes an excellent toboggan, or that *Programmed Illusion* can rickroll a lich. Every recommendation arrives as a spell card with a short "why this spell" explanation written in the voice of a knowledgeable friend who's also a little bit unhinged.
 
-Follow-up queries refine, amend, or riff on prior results in a short conversation (up to five rounds). A sourcebook selector lets you limit recommendations to the books your table actually uses.
+Under the hood, the system parses your prompt into tactical goals, stylistic cues, and hard constraints, then scores every wizard spell on both mechanical fit and personality fit — weighted by wherever you've set the dial. Follow-up queries refine, riff on, or gleefully derail prior results across a short conversation (up to five rounds). A sourcebook selector keeps recommendations honest to the books your table actually uses.
 
 ## Stack
 
