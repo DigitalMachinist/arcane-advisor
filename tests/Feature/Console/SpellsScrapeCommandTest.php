@@ -8,18 +8,27 @@ use Illuminate\Support\Facades\Http;
 covers(SpellsScrapeCommand::class);
 
 beforeEach(function (): void {
-    $this->indexHtml = file_get_contents(__DIR__.'/../../Fixtures/scrape/index.html');
     $this->fireballHtml = file_get_contents(__DIR__.'/../../Fixtures/scrape/fireball.html');
     $this->mageHandHtml = file_get_contents(__DIR__.'/../../Fixtures/scrape/mage-hand.html');
     $this->alarmHtml = file_get_contents(__DIR__.'/../../Fixtures/scrape/alarm.html');
+
+    // Minimal index with only our 3 fixture spells — keeps fakes simple and counts exact.
+    $this->indexHtml = <<<'HTML'
+        <html><body>
+        <a href="/spell:fireball">Fireball</a>
+        <a href="/spell:mage-hand">Mage Hand</a>
+        <a href="/spell:alarm">Alarm</a>
+        </body></html>
+        HTML;
 });
 
 test('command exits with code 0 on success', function (): void {
     Http::fake([
-        'dnd5e.wikidot.com/spells:wizard' => Http::response($this->indexHtml, 200),
-        'dnd5e.wikidot.com/fireball' => Http::response($this->fireballHtml, 200),
-        'dnd5e.wikidot.com/mage-hand' => Http::response($this->mageHandHtml, 200),
-        'dnd5e.wikidot.com/alarm' => Http::response($this->alarmHtml, 200),
+        'https://dnd5e.wikidot.com/spells:wizard' => Http::response($this->indexHtml, 200),
+        'https://dnd5e.wikidot.com/spell:fireball' => Http::response($this->fireballHtml, 200),
+        'https://dnd5e.wikidot.com/spell:mage-hand' => Http::response($this->mageHandHtml, 200),
+        'https://dnd5e.wikidot.com/spell:alarm' => Http::response($this->alarmHtml, 200),
+        'https://dnd5e.wikidot.com/*' => Http::response('', 404),
     ]);
 
     $outputDir = sys_get_temp_dir().'/arcane-cmd-success-'.uniqid();
@@ -30,13 +39,13 @@ test('command exits with code 0 on success', function (): void {
         '--delay' => 0,
     ])->assertExitCode(0);
 
-    array_map('unlink', glob($outputDir.'/*.json'));
+    array_map('unlink', glob($outputDir.'/*.json') ?: []);
     rmdir($outputDir);
 });
 
 test('command exits with non-zero code on http failure', function (): void {
     Http::fake([
-        'dnd5e.wikidot.com/spells:wizard' => Http::response('Not Found', 404),
+        'https://dnd5e.wikidot.com/spells:wizard' => Http::response('Not Found', 404),
     ]);
 
     $outputDir = sys_get_temp_dir().'/arcane-cmd-fail-'.uniqid();
@@ -52,10 +61,8 @@ test('command exits with non-zero code on http failure', function (): void {
 
 test('command with --dry-run flag writes no files', function (): void {
     Http::fake([
-        'dnd5e.wikidot.com/spells:wizard' => Http::response($this->indexHtml, 200),
-        'dnd5e.wikidot.com/fireball' => Http::response($this->fireballHtml, 200),
-        'dnd5e.wikidot.com/mage-hand' => Http::response($this->mageHandHtml, 200),
-        'dnd5e.wikidot.com/alarm' => Http::response($this->alarmHtml, 200),
+        'https://dnd5e.wikidot.com/spells:wizard' => Http::response($this->indexHtml, 200),
+        'https://dnd5e.wikidot.com/*' => Http::response('', 404),
     ]);
 
     $outputDir = sys_get_temp_dir().'/arcane-cmd-dryrun-'.uniqid();
@@ -75,10 +82,8 @@ test('command with --dry-run flag writes no files', function (): void {
 
 test('command accepts --delay option', function (): void {
     Http::fake([
-        'dnd5e.wikidot.com/spells:wizard' => Http::response($this->indexHtml, 200),
-        'dnd5e.wikidot.com/fireball' => Http::response($this->fireballHtml, 200),
-        'dnd5e.wikidot.com/mage-hand' => Http::response($this->mageHandHtml, 200),
-        'dnd5e.wikidot.com/alarm' => Http::response($this->alarmHtml, 200),
+        'https://dnd5e.wikidot.com/spells:wizard' => Http::response($this->indexHtml, 200),
+        'https://dnd5e.wikidot.com/*' => Http::response('', 404),
     ]);
 
     $outputDir = sys_get_temp_dir().'/arcane-cmd-delay-'.uniqid();
@@ -95,10 +100,11 @@ test('command accepts --delay option', function (): void {
 
 test('command uses no live network calls', function (): void {
     Http::fake([
-        'dnd5e.wikidot.com/spells:wizard' => Http::response($this->indexHtml, 200),
-        'dnd5e.wikidot.com/fireball' => Http::response($this->fireballHtml, 200),
-        'dnd5e.wikidot.com/mage-hand' => Http::response($this->mageHandHtml, 200),
-        'dnd5e.wikidot.com/alarm' => Http::response($this->alarmHtml, 200),
+        'https://dnd5e.wikidot.com/spells:wizard' => Http::response($this->indexHtml, 200),
+        'https://dnd5e.wikidot.com/spell:fireball' => Http::response($this->fireballHtml, 200),
+        'https://dnd5e.wikidot.com/spell:mage-hand' => Http::response($this->mageHandHtml, 200),
+        'https://dnd5e.wikidot.com/spell:alarm' => Http::response($this->alarmHtml, 200),
+        'https://dnd5e.wikidot.com/*' => Http::response('', 404),
     ]);
 
     $outputDir = sys_get_temp_dir().'/arcane-cmd-nolive-'.uniqid();
@@ -112,6 +118,6 @@ test('command uses no live network calls', function (): void {
     // All requests were faked — no live network access occurred.
     Http::assertSentCount(4); // index + 3 spell pages
 
-    array_map('unlink', glob($outputDir.'/*.json'));
+    array_map('unlink', glob($outputDir.'/*.json') ?: []);
     rmdir($outputDir);
 });
