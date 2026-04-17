@@ -12,6 +12,7 @@ return new class extends Migration
     {
         Schema::create('spells', function (Blueprint $table): void {
             $table->id();
+            $table->uuid('uuid')->unique();
             $table->string('slug', 100)->unique();
             $table->string('name');
             $table->string('school', 50);
@@ -30,7 +31,8 @@ return new class extends Migration
             $table->boolean('component_verbal');
             $table->boolean('component_somatic');
             $table->binary('embedding')->nullable();
-            $table->timestamps();
+            $table->unsignedBigInteger('created_at_ms');
+            $table->unsignedBigInteger('updated_at_ms')->nullable();
         });
     }
 
