@@ -1,0 +1,98 @@
+You are a D&D 5e rules expert. Analyze the following spell and return a JSON object with structured classification fields.
+
+SPELL: {{ name }}
+CASTING TIME: {{ castingTime }}
+RANGE: {{ range }}
+DURATION: {{ duration }}
+DESCRIPTION:
+{{ description }}
+
+Return ONLY valid JSON — no prose, no markdown fences.
+
+Return a JSON object with exactly these keys:
+
+- "damage": array of damage entries, each with "dice" (string like "8d6") and "type" (string). Empty array if no damage.
+  Valid damage types: acid, bludgeoning, cold, fire, force, lightning, necrotic, piercing, poison, psychic, radiant, slashing, thunder
+
+- "conditions": array of condition strings the spell can impose. Empty array if none.
+  Valid conditions: blinded, charmed, deafened, exhaustion, frightened, grappled, incapacitated, invisible, paralyzed, petrified, poisoned, prone, restrained, stunned, unconscious
+
+- "targeting": single string describing how the spell targets.
+  Valid values: point, self, creature, creatures, area, touch
+  One or more tags from the Targeting controlled vocabulary below. Orthogonal to combat role: A spell carries a combat role *and* a targeting tag (or tags) independently. Fireball is `damage` + `area-of-effect`. Magic Missile is `damage` + `multi-target`. Ray of Frost is `damage` + `single-target`.
+  Definitions:
+    - `single-target` — affects one creature or object.
+    - `multi-target` — affects multiple specific creatures or objects chosen by the caster, without filling an area (Magic Missile, Scorching Ray, Chromatic Orb's jump on an upcast).
+    - `area-of-effect` — affects everything within a defined shape (cone, cube, cylinder, line, sphere, wall, etc.). AoE shape and size are captured in the separate Area of Effect field.
+    - `self` — affects only the caster.
+    - `touch` — requires physical contact with the target.
+
+- "areaShape": string or null. The geometric shape of the spell's area of effect. Null if not an area spell.
+  Valid values: sphere, cube, cone, line, cylinder, wall
+
+- "areaSize": string or null. Free text describing the size (e.g. "20 feet", "60-foot cone"). Null if not an area spell.
+
+- "savingThrow": object with "ability" key, or null if no saving throw.
+  Valid ability values: strength, dexterity, constitution, intelligence, wisdom, charisma
+
+- "attackRoll": string or null. Whether the spell requires an attack roll. Null if no attack roll.
+  Valid values: melee, ranged
+
+- "combatRoles": array of strings describing the spell's role in combat. Empty array if not combat-relevant.
+  Valid values: areaDamage, singleTargetDamage, sustainedDamage, control, debuff, hinder, buff, expedite, defend, heal, move, escape, summon, counter, transform, obfuscate, deceive, sense, alert, communicate
+  One or more tags from the controlled vocabulary below. Multi-tagging is encouraged (Fireball is both `damage` and `control`).
+  Definitions:
+    - `damage` — the spell deals damage. Targeting shape (single-target, area-of-effect, multi-target) is captured separately in the Targeting vocabulary.
+    - `control-hard` — removes a target's ability to act (paralyzed, stunned, unconscious, incapacitated, etc.).
+    - `control-soft` — shapes the battlefield or hampers without fully removing agency (difficult terrain, obscurement, prone, grappled, restrained-light, movement denial).
+    - `control` — a parent grouping that matches both `control-hard` and `control-soft`. Queries for "control" should return spells tagged with either sub-tag. The parent tag is not applied directly.
+    - `buff` — improves an ally's capabilities.
+    - `debuff` — weakens an enemy without necessarily removing their ability to act.
+    - `healing` — restores hit points or removes conditions. (Retained for forward-compatibility with non-wizard classes even though few wizard spells qualify.)
+    - `movement` — enables or enhances movement (teleport, fly, misty step, dimension door).
+    - `defense` — protects against harm (shields, resistances, saves bonuses).
+    - `summoning` — calls creatures or conjured allies.
+    - `divination` — reveals information, detects, scries, or senses.
+    - `utility` — catchall for effects that don't fit the above (often paired with more specific tags).
+
+- "utilities": array of strings describing out-of-combat uses. Empty array if none.
+  Valid values: explore, influence, deceive, obfuscate, communicate, travel, learn, create, shape, heal, ward
+  One or more tags from the controlled vocabulary below. Multi-tagging is encouraged. A spell may carry both a combat-role `divination` tag and an out-of-combat `information-gathering` tag — they address different query contexts.
+  Definitions:
+    - `exploration` — traversing, uncovering, or interacting with the environment (Find the Path, Passwall, Stone Shape).
+    - `travel` — long-distance movement (Teleport, Tree Stride, Wind Walk). Spells that serve both should carry both `exploration` and `travel`.
+    - `movement` — short-range or tactical movement outside of combat (Spider Climb, Levitate when used for access). Distinct from `travel` and `exploration`.
+    - `social` — influences or aids interaction with creatures (Charm Person, Suggestion, Friends).
+    - `investigation` — examining, analyzing, or questioning (Detect Thoughts, Speak with Dead, Legend Lore).
+    - `information-gathering` — reveals information about the world (Detect Magic, Identify, Comprehend Languages, Scrying).
+    - `stealth` — supports hiding, sneaking, or disguise (Invisibility, Disguise Self, Pass Without Trace).
+    - `crafting` — creates, shapes, or repairs objects (Fabricate, Mending).
+    - `communication` — enables contact across distance or barriers (Sending, Message, Animal Messenger).
+
+- "qualifiers": array of qualifier strings that apply to this spell. Empty array if none.
+  Valid values: concentration, ritual
+  Definitions:
+    - Use "concentration" if the duration includes "Concentration".
+    - Use "ritual" if the spell can be cast as a ritual.
+
+- "actionEconomy": single string classifying the casting time.
+  Valid values: action, bonus-action, reaction, ritual, long-cast
+  A derived tag describing how the spell fits into a turn.
+  Definitions:
+    - `action` — cast with a standard action.
+    - `bonus-action` — cast with a bonus action.
+    - `reaction` — cast as a reaction. The specific trigger is captured in the description text, not as a separate tag.
+    - `ritual` — has the ritual tag (may still be cast as an action in combat; ritual is an additional capability).
+    - `long-cast` — any casting time of 1 minute or longer, which for practical purposes means the spell cannot be cast in combat.
+
+- "durationCategory": single string classifying the duration. Strip any leading "Concentration, " before classifying.
+  Valid values: instantaneous, short, medium, long, permanent
+  A derived tag bucketing duration into coarse classes:
+  Definitions:
+    - `instantaneous` — the spell resolves immediately.
+    - `short` — up to and including 1 minute.
+    - `medium` — longer than 1 minute, up to and including 1 hour. A 10-minute duration lives here.
+    - `long` — longer than 1 hour, up to and including 8 hours. An 8-hour duration lives here.
+    - `permanent` — lasts until dispelled, triggered, or otherwise ended by specific conditions.
+
+Return only the JSON object. No explanation. No markdown. No extra text.

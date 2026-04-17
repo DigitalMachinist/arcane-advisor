@@ -1,0 +1,12 @@
+{
+    "damage": [],
+    "conditions": ["paralyzed"],
+    "targeting": "creature",
+    "areaShape": null,
+    "areaSize": null,
+    "savingThrow": {"ability": "wisdom"},
+    "attackRoll": null,
+    "combatRoles": ["control", "debuff"],
+    "utilities": [],
+    "qualifiers": ["concentration"]
+}

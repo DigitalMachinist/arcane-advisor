@@ -1,0 +1,12 @@
+{
+    "damage": [{"dice": "1d8", "type": "necrotic"}],
+    "conditions": [],
+    "targeting": "creature",
+    "areaShape": null,
+    "areaSize": null,
+    "savingThrow": null,
+    "attackRoll": "ranged",
+    "combatRoles": ["singleTargetDamage", "debuff"],
+    "utilities": [],
+    "qualifiers": []
+}

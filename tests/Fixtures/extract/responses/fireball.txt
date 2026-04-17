@@ -1,0 +1,12 @@
+{
+    "damage": [{"dice": "8d6", "type": "fire"}],
+    "conditions": [],
+    "targeting": "point",
+    "areaShape": "sphere",
+    "areaSize": "20 feet",
+    "savingThrow": {"ability": "dexterity"},
+    "attackRoll": null,
+    "combatRoles": ["areaDamage"],
+    "utilities": [],
+    "qualifiers": []
+}
