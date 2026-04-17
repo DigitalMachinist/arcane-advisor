@@ -2,7 +2,6 @@
 
 declare(strict_types=1);
 
-use App\Casts\UnixMillisecondsCast;
 use App\Domain\Spells\Enums\ActionEconomy;
 use App\Domain\Spells\Enums\DurationCategory;
 use App\Domain\Spells\Enums\School;
@@ -14,7 +13,7 @@ use Illuminate\Foundation\Testing\RefreshDatabase;
 
 uses(RefreshDatabase::class);
 
-covers(Spell::class, UnixMillisecondsCast::class);
+covers(Spell::class);
 
 test('factory creates a valid spell', function (): void {
     $spell = Spell::factory()->create();
@@ -42,29 +41,29 @@ test('uuid column has a unique index', function (): void {
         ->toThrow(QueryException::class);
 })->group('mysql');
 
-test('ms timestamps populate on create and cast to Carbon', function (): void {
-    $before = now()->valueOf();
+test('timestamps populate on create and cast to Carbon', function (): void {
+    $before = now();
     $spell = Spell::factory()->create();
-    $after = now()->valueOf();
+    $after = now();
 
     $fresh = Spell::find($spell->id);
 
-    expect($fresh->created_at_ms)->toBeInstanceOf(Carbon::class)
-        ->and($fresh->updated_at_ms)->toBeInstanceOf(Carbon::class)
-        ->and($fresh->created_at_ms->valueOf())->toBeGreaterThanOrEqual($before)
-        ->and($fresh->created_at_ms->valueOf())->toBeLessThanOrEqual($after);
+    expect($fresh->created_at)->toBeInstanceOf(Carbon::class)
+        ->and($fresh->updated_at)->toBeInstanceOf(Carbon::class)
+        ->and($fresh->created_at->greaterThanOrEqualTo($before))->toBeTrue()
+        ->and($fresh->created_at->lessThanOrEqualTo($after))->toBeTrue();
 })->group('mysql');
 
-test('updated_at_ms advances on update', function (): void {
+test('updated_at advances on update', function (): void {
     $spell = Spell::factory()->create();
-    $createdMs = $spell->created_at_ms->valueOf();
+    $createdAt = $spell->created_at->copy();
 
     usleep(2000);
     $spell->update(['name' => 'Renamed Spell']);
 
     $fresh = Spell::find($spell->id);
 
-    expect($fresh->updated_at_ms->valueOf())->toBeGreaterThan($createdMs);
+    expect($fresh->updated_at->greaterThan($createdAt))->toBeTrue();
 })->group('mysql');
 
 test('school enum cast round-trips correctly', function (): void {

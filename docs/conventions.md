@@ -26,26 +26,19 @@ $table->uuid('uuid')->unique();
 
 ### Timestamps
 
-Store timestamps as `BIGINT` unix milliseconds, not MySQL `TIMESTAMP`/`DATETIME` columns. Cast them to `Carbon` via a custom cast so application code works with `Carbon` throughout.
+Use `DATETIME(3)` columns — not `TIMESTAMP` — for millisecond precision without timezone conversion or the 2038 range limit. Column names stay `created_at` / `updated_at` so Laravel's automatic timestamp management works unmodified.
 
 ```php
 // Migration
-$table->unsignedBigInteger('created_at_ms');
-$table->unsignedBigInteger('updated_at_ms')->nullable();
+$table->timestamps(3);   // DATETIME(3) NULL for both created_at and updated_at
 
-// Model
-public $timestamps = false;
-
-protected function casts(): array
-{
-    return [
-        'created_at_ms' => UnixMillisecondsCast::class,
-        'updated_at_ms' => UnixMillisecondsCast::class,
-    ];
-}
+// Model — set dateFormat so fractional seconds survive write/read round-trips
+protected $dateFormat = 'Y-m-d H:i:s.v';
 ```
 
-Do **not** use `$table->timestamps()` — that produces MySQL `TIMESTAMP` columns that have timezone and range limitations. The `UnixMillisecondsCast` lives at `app/Casts/UnixMillisecondsCast.php` and converts between `int` (ms since epoch) and `Carbon`.
+Laravel's `timestamps` cast returns `Carbon` objects automatically; no custom cast is needed. The `v` specifier in the date format is PHP's milliseconds placeholder (000–999).
+
+Do **not** use plain `$table->timestamps()` — that defaults to `DATETIME` without fractional precision. Always pass `3` for millisecond accuracy.
 
 ### Column ordering in migrations
 
@@ -54,7 +47,7 @@ Apply these three conventions within the standard column ordering from `style-gu
 1. `$table->id()` — internal PK, always first
 2. `$table->uuid('uuid')->unique()` — public identifier, immediately after PK
 3. _(other columns per style-guide ordering)_
-4. `$table->unsignedBigInteger('created_at_ms')` and `$table->unsignedBigInteger('updated_at_ms')->nullable()` — in place of `$table->timestamps()`
+4. `$table->timestamps(3)` — always last, in place of `$table->timestamps()`
 
 ---
 
