@@ -40,7 +40,7 @@ combatRoles: CombatRole[]       # in-combat editorial tags; empty allowed
 utilities: OutOfCombatUtility[] # out-of-combat editorial tags; empty allowed
 sources:                        # at least one entry
   - code: SourceCode
-    page: int
+    page: int | null            # null when page number is unavailable (e.g. scraped from wikidot)
 personalityBlurb: string        # short flavor text generated in Stage C
 ```
 

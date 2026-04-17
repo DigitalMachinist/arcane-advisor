@@ -9,11 +9,15 @@ use Illuminate\Support\Facades\Http;
 covers(SpellsScrapeAction::class);
 
 test('http client sends descriptive user-agent header on index request', function (): void {
-    $indexHtml = file_get_contents(__DIR__.'/../../../../Fixtures/scrape/index.html');
+    $indexHtml = <<<'HTML'
+        <html><body>
+        <a href="/spell:fireball">Fireball</a>
+        </body></html>
+        HTML;
 
     Http::fake([
-        'dnd5e.wikidot.com/spells:wizard' => Http::response($indexHtml, 200),
-        'dnd5e.wikidot.com/*' => Http::response('<html><body><div id="page-content"><h1>Spell</h1><p><em>1st-level abjuration</em></p><table class="wiki-content-table"><tr><td><strong>Casting Time:</strong> 1 action</td></tr><tr><td><strong>Range:</strong> 30 feet</td></tr><tr><td><strong>Components:</strong> V, S</td></tr><tr><td><strong>Duration:</strong> 8 hours</td></tr><tr><td><strong>Classes:</strong> Wizard</td></tr></table><p>Description.</p></div></body></html>', 200),
+        'https://dnd5e.wikidot.com/spells:wizard' => Http::response($indexHtml, 200),
+        'https://dnd5e.wikidot.com/*' => Http::response('', 404),
     ]);
 
     $outputDir = sys_get_temp_dir().'/arcane-scrape-ua-'.uniqid();
@@ -23,10 +27,11 @@ test('http client sends descriptive user-agent header on index request', functio
     $action->execute(outputDir: $outputDir, dryRun: false, delayMs: 0);
 
     Http::assertSent(function (Request $request): bool {
-        return str_contains($request->header('User-Agent')[0] ?? '', 'ArcaneAdvisor');
+        return str_contains($request->url(), 'spells:wizard')
+            && str_contains($request->header('User-Agent')[0] ?? '', 'ArcaneAdvisor');
     });
 
-    array_map('unlink', glob($outputDir.'/*.json'));
+    array_map('unlink', glob($outputDir.'/*.json') ?: []);
     rmdir($outputDir);
 });
 
@@ -50,16 +55,24 @@ test('configured delay is passed through to execute and honored', function (): v
 });
 
 test('http client sends user-agent on spell detail page requests', function (): void {
-    $indexHtml = file_get_contents(__DIR__.'/../../../../Fixtures/scrape/index.html');
+    $indexHtml = <<<'HTML'
+        <html><body>
+        <a href="/spell:fireball">Fireball</a>
+        <a href="/spell:mage-hand">Mage Hand</a>
+        <a href="/spell:alarm">Alarm</a>
+        </body></html>
+        HTML;
+
     $fireballHtml = file_get_contents(__DIR__.'/../../../../Fixtures/scrape/fireball.html');
     $mageHandHtml = file_get_contents(__DIR__.'/../../../../Fixtures/scrape/mage-hand.html');
     $alarmHtml = file_get_contents(__DIR__.'/../../../../Fixtures/scrape/alarm.html');
 
     Http::fake([
-        'dnd5e.wikidot.com/spells:wizard' => Http::response($indexHtml, 200),
-        'dnd5e.wikidot.com/fireball' => Http::response($fireballHtml, 200),
-        'dnd5e.wikidot.com/mage-hand' => Http::response($mageHandHtml, 200),
-        'dnd5e.wikidot.com/alarm' => Http::response($alarmHtml, 200),
+        'https://dnd5e.wikidot.com/spells:wizard' => Http::response($indexHtml, 200),
+        'https://dnd5e.wikidot.com/spell:fireball' => Http::response($fireballHtml, 200),
+        'https://dnd5e.wikidot.com/spell:mage-hand' => Http::response($mageHandHtml, 200),
+        'https://dnd5e.wikidot.com/spell:alarm' => Http::response($alarmHtml, 200),
+        'https://dnd5e.wikidot.com/*' => Http::response('', 404),
     ]);
 
     $outputDir = sys_get_temp_dir().'/arcane-scrape-ua2-'.uniqid();
@@ -71,10 +84,10 @@ test('http client sends user-agent on spell detail page requests', function (): 
     Http::assertSentCount(4); // index + 3 spell pages
 
     Http::assertSent(function (Request $request): bool {
-        return $request->url() === 'https://dnd5e.wikidot.com/fireball'
+        return $request->url() === 'https://dnd5e.wikidot.com/spell:fireball'
             && str_contains($request->header('User-Agent')[0] ?? '', 'ArcaneAdvisor');
     });
 
-    array_map('unlink', glob($outputDir.'/*.json'));
+    array_map('unlink', glob($outputDir.'/*.json') ?: []);
     rmdir($outputDir);
 });

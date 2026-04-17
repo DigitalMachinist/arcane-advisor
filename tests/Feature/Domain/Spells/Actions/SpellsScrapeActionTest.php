@@ -16,10 +16,11 @@ beforeEach(function (): void {
 
 test('scraping fireball detail page extracts expected raw fields', function (): void {
     Http::fake([
-        'dnd5e.wikidot.com/spells:wizard' => Http::response($this->indexHtml, 200),
-        'dnd5e.wikidot.com/spell:fireball' => Http::response($this->fireballHtml, 200),
-        'dnd5e.wikidot.com/spell:mage-hand' => Http::response($this->mageHandHtml, 200),
-        'dnd5e.wikidot.com/spell:alarm' => Http::response($this->alarmHtml, 200),
+        'https://dnd5e.wikidot.com/spells:wizard' => Http::response($this->indexHtml, 200),
+        'https://dnd5e.wikidot.com/spell:fireball' => Http::response($this->fireballHtml, 200),
+        'https://dnd5e.wikidot.com/spell:mage-hand' => Http::response($this->mageHandHtml, 200),
+        'https://dnd5e.wikidot.com/spell:alarm' => Http::response($this->alarmHtml, 200),
+        'https://dnd5e.wikidot.com/*' => Http::response('', 404),
     ]);
 
     $outputDir = sys_get_temp_dir().'/arcane-scrape-test-'.uniqid();
@@ -42,6 +43,7 @@ test('scraping fireball detail page extracts expected raw fields', function (): 
         ->toHaveKey('concentration')
         ->toHaveKey('ritual')
         ->toHaveKey('classes')
+        ->toHaveKey('sources')
         ->toHaveKey('description');
 
     expect($fireballJson['name'])->toBe('Fireball');
@@ -56,7 +58,8 @@ test('scraping fireball detail page extracts expected raw fields', function (): 
     expect($fireballJson['components']['somatic'])->toBeTrue();
     expect($fireballJson['components']['material'])->toBe('a tiny ball of bat guano and sulfur');
     expect($fireballJson['classes'])->toContain('wizard');
-    expect($fireballJson['description'])->toContain('20-foot-radius sphere');
+    expect($fireballJson['sources'])->toBe([['code' => 'phb', 'page' => null]]);
+    expect($fireballJson['description'])->toContain('20-foot radius');
 
     // cleanup
     array_map('unlink', glob($outputDir.'/*.json'));
@@ -65,10 +68,11 @@ test('scraping fireball detail page extracts expected raw fields', function (): 
 
 test('scraping mage-hand detail page extracts cantrip with no material component', function (): void {
     Http::fake([
-        'dnd5e.wikidot.com/spells:wizard' => Http::response($this->indexHtml, 200),
-        'dnd5e.wikidot.com/spell:fireball' => Http::response($this->fireballHtml, 200),
-        'dnd5e.wikidot.com/spell:mage-hand' => Http::response($this->mageHandHtml, 200),
-        'dnd5e.wikidot.com/spell:alarm' => Http::response($this->alarmHtml, 200),
+        'https://dnd5e.wikidot.com/spells:wizard' => Http::response($this->indexHtml, 200),
+        'https://dnd5e.wikidot.com/spell:fireball' => Http::response($this->fireballHtml, 200),
+        'https://dnd5e.wikidot.com/spell:mage-hand' => Http::response($this->mageHandHtml, 200),
+        'https://dnd5e.wikidot.com/spell:alarm' => Http::response($this->alarmHtml, 200),
+        'https://dnd5e.wikidot.com/*' => Http::response('', 404),
     ]);
 
     $outputDir = sys_get_temp_dir().'/arcane-scrape-test-'.uniqid();
@@ -96,10 +100,11 @@ test('scraping mage-hand detail page extracts cantrip with no material component
 
 test('scraping alarm detail page detects ritual flag', function (): void {
     Http::fake([
-        'dnd5e.wikidot.com/spells:wizard' => Http::response($this->indexHtml, 200),
-        'dnd5e.wikidot.com/spell:fireball' => Http::response($this->fireballHtml, 200),
-        'dnd5e.wikidot.com/spell:mage-hand' => Http::response($this->mageHandHtml, 200),
-        'dnd5e.wikidot.com/spell:alarm' => Http::response($this->alarmHtml, 200),
+        'https://dnd5e.wikidot.com/spells:wizard' => Http::response($this->indexHtml, 200),
+        'https://dnd5e.wikidot.com/spell:fireball' => Http::response($this->fireballHtml, 200),
+        'https://dnd5e.wikidot.com/spell:mage-hand' => Http::response($this->mageHandHtml, 200),
+        'https://dnd5e.wikidot.com/spell:alarm' => Http::response($this->alarmHtml, 200),
+        'https://dnd5e.wikidot.com/*' => Http::response('', 404),
     ]);
 
     $outputDir = sys_get_temp_dir().'/arcane-scrape-test-'.uniqid();
@@ -123,10 +128,11 @@ test('scraping alarm detail page detects ritual flag', function (): void {
 
 test('scraping in dry-run mode writes no files', function (): void {
     Http::fake([
-        'dnd5e.wikidot.com/spells:wizard' => Http::response($this->indexHtml, 200),
-        'dnd5e.wikidot.com/spell:fireball' => Http::response($this->fireballHtml, 200),
-        'dnd5e.wikidot.com/spell:mage-hand' => Http::response($this->mageHandHtml, 200),
-        'dnd5e.wikidot.com/spell:alarm' => Http::response($this->alarmHtml, 200),
+        'https://dnd5e.wikidot.com/spells:wizard' => Http::response($this->indexHtml, 200),
+        'https://dnd5e.wikidot.com/spell:fireball' => Http::response($this->fireballHtml, 200),
+        'https://dnd5e.wikidot.com/spell:mage-hand' => Http::response($this->mageHandHtml, 200),
+        'https://dnd5e.wikidot.com/spell:alarm' => Http::response($this->alarmHtml, 200),
+        'https://dnd5e.wikidot.com/*' => Http::response('', 404),
     ]);
 
     $outputDir = sys_get_temp_dir().'/arcane-scrape-dryrun-'.uniqid();
@@ -160,4 +166,90 @@ test('parse detail page extracts concentration from duration field', function ()
 
     expect($record['concentration'])->toBeTrue();
     expect($record['duration'])->toBe('Concentration, up to 1 minute');
+});
+
+test('parse detail page extracts single source book', function (): void {
+    $html = <<<'HTML'
+        <div id="page-content">
+        <h1>Fireball</h1>
+        <p><em>3rd-level evocation</em></p>
+        <p><strong>Casting Time:</strong> 1 action<br />
+        <strong>Range:</strong> 150 feet<br />
+        <strong>Components:</strong> V, S, M (a tiny ball of bat guano and sulfur)<br />
+        <strong>Duration:</strong> Instantaneous</p>
+        <p>A bright streak flashes from your finger.</p>
+        <p><strong><em>Spell Lists.</em></strong> <a href="http://dnd5e.wikidot.com/spells:wizard">Wizard</a></p>
+        <p>Source: Player's Handbook</p>
+        </div>
+        HTML;
+
+    $action = new SpellsScrapeAction;
+    $record = $action->parseDetailPage($html, 'fireball');
+
+    expect($record['sources'])->toBe([['code' => 'phb', 'page' => null]]);
+});
+
+test('parse detail page extracts dual source books', function (): void {
+    $html = <<<'HTML'
+        <div id="page-content">
+        <h1>Booming Blade</h1>
+        <p><em>Evocation cantrip</em></p>
+        <p><strong>Casting Time:</strong> 1 action<br />
+        <strong>Range:</strong> Self<br />
+        <strong>Components:</strong> S, M (a melee weapon worth at least 1 sp)<br />
+        <strong>Duration:</strong> 1 round</p>
+        <p>You brandish the weapon used in the spell's casting.</p>
+        <p><strong><em>Spell Lists.</em></strong> <a href="http://dnd5e.wikidot.com/spells:wizard">Wizard</a></p>
+        <p>Source: Xanathar's Guide to Everything/Elemental Evil Player's Companion</p>
+        </div>
+        HTML;
+
+    $action = new SpellsScrapeAction;
+    $record = $action->parseDetailPage($html, 'booming-blade');
+
+    expect($record['sources'])->toBe([
+        ['code' => 'xge', 'page' => null],
+        ['code' => 'eepc', 'page' => null],
+    ]);
+});
+
+test('parse detail page extracts unearthed arcana source', function (): void {
+    $html = <<<'HTML'
+        <div id="page-content">
+        <h1>Antagonize</h1>
+        <p><em>3rd-level enchantment</em></p>
+        <p><strong>Casting Time:</strong> 1 action<br />
+        <strong>Range:</strong> 30 feet<br />
+        <strong>Components:</strong> V, S, M (a playing card depicting a rogue)<br />
+        <strong>Duration:</strong> Instantaneous</p>
+        <p>You whisper magical words that antagonize one creature.</p>
+        <p><strong><em>Spell Lists.</em></strong> <a href="http://dnd5e.wikidot.com/spells:wizard">Wizard</a></p>
+        <p>Source: Unearthed Arcana 85 - Wonders of the Multiverse</p>
+        </div>
+        HTML;
+
+    $action = new SpellsScrapeAction;
+    $record = $action->parseDetailPage($html, 'antagonize');
+
+    expect($record['sources'])->toBe([['code' => 'ua', 'page' => null]]);
+});
+
+test('parse detail page returns empty sources when none present', function (): void {
+    $html = <<<'HTML'
+        <div id="page-content">
+        <h1>Mystery Spell</h1>
+        <p><em>1st-level abjuration</em></p>
+        <p><strong>Casting Time:</strong> 1 action<br />
+        <strong>Range:</strong> Touch<br />
+        <strong>Components:</strong> V, S<br />
+        <strong>Duration:</strong> 1 hour</p>
+        <p>A mysterious spell with no source listed.</p>
+        <p><strong><em>Spell Lists.</em></strong> <a href="http://dnd5e.wikidot.com/spells:wizard">Wizard</a></p>
+        </div>
+        HTML;
+
+    $action = new SpellsScrapeAction;
+    $record = $action->parseDetailPage($html, 'mystery-spell');
+
+    expect($record['sources'])->toBe([]);
 });
