@@ -17,9 +17,9 @@ beforeEach(function (): void {
 test('scraping fireball detail page extracts expected raw fields', function (): void {
     Http::fake([
         'dnd5e.wikidot.com/spells:wizard' => Http::response($this->indexHtml, 200),
-        'dnd5e.wikidot.com/fireball' => Http::response($this->fireballHtml, 200),
-        'dnd5e.wikidot.com/mage-hand' => Http::response($this->mageHandHtml, 200),
-        'dnd5e.wikidot.com/alarm' => Http::response($this->alarmHtml, 200),
+        'dnd5e.wikidot.com/spell:fireball' => Http::response($this->fireballHtml, 200),
+        'dnd5e.wikidot.com/spell:mage-hand' => Http::response($this->mageHandHtml, 200),
+        'dnd5e.wikidot.com/spell:alarm' => Http::response($this->alarmHtml, 200),
     ]);
 
     $outputDir = sys_get_temp_dir().'/arcane-scrape-test-'.uniqid();
@@ -66,9 +66,9 @@ test('scraping fireball detail page extracts expected raw fields', function (): 
 test('scraping mage-hand detail page extracts cantrip with no material component', function (): void {
     Http::fake([
         'dnd5e.wikidot.com/spells:wizard' => Http::response($this->indexHtml, 200),
-        'dnd5e.wikidot.com/fireball' => Http::response($this->fireballHtml, 200),
-        'dnd5e.wikidot.com/mage-hand' => Http::response($this->mageHandHtml, 200),
-        'dnd5e.wikidot.com/alarm' => Http::response($this->alarmHtml, 200),
+        'dnd5e.wikidot.com/spell:fireball' => Http::response($this->fireballHtml, 200),
+        'dnd5e.wikidot.com/spell:mage-hand' => Http::response($this->mageHandHtml, 200),
+        'dnd5e.wikidot.com/spell:alarm' => Http::response($this->alarmHtml, 200),
     ]);
 
     $outputDir = sys_get_temp_dir().'/arcane-scrape-test-'.uniqid();
@@ -97,9 +97,9 @@ test('scraping mage-hand detail page extracts cantrip with no material component
 test('scraping alarm detail page detects ritual flag', function (): void {
     Http::fake([
         'dnd5e.wikidot.com/spells:wizard' => Http::response($this->indexHtml, 200),
-        'dnd5e.wikidot.com/fireball' => Http::response($this->fireballHtml, 200),
-        'dnd5e.wikidot.com/mage-hand' => Http::response($this->mageHandHtml, 200),
-        'dnd5e.wikidot.com/alarm' => Http::response($this->alarmHtml, 200),
+        'dnd5e.wikidot.com/spell:fireball' => Http::response($this->fireballHtml, 200),
+        'dnd5e.wikidot.com/spell:mage-hand' => Http::response($this->mageHandHtml, 200),
+        'dnd5e.wikidot.com/spell:alarm' => Http::response($this->alarmHtml, 200),
     ]);
 
     $outputDir = sys_get_temp_dir().'/arcane-scrape-test-'.uniqid();
@@ -124,9 +124,9 @@ test('scraping alarm detail page detects ritual flag', function (): void {
 test('scraping in dry-run mode writes no files', function (): void {
     Http::fake([
         'dnd5e.wikidot.com/spells:wizard' => Http::response($this->indexHtml, 200),
-        'dnd5e.wikidot.com/fireball' => Http::response($this->fireballHtml, 200),
-        'dnd5e.wikidot.com/mage-hand' => Http::response($this->mageHandHtml, 200),
-        'dnd5e.wikidot.com/alarm' => Http::response($this->alarmHtml, 200),
+        'dnd5e.wikidot.com/spell:fireball' => Http::response($this->fireballHtml, 200),
+        'dnd5e.wikidot.com/spell:mage-hand' => Http::response($this->mageHandHtml, 200),
+        'dnd5e.wikidot.com/spell:alarm' => Http::response($this->alarmHtml, 200),
     ]);
 
     $outputDir = sys_get_temp_dir().'/arcane-scrape-dryrun-'.uniqid();
@@ -146,14 +146,12 @@ test('parse detail page extracts concentration from duration field', function ()
         <div id="page-content">
         <h1>Concentration Spell</h1>
         <p><em>1st-level illusion</em></p>
-        <table class="wiki-content-table">
-        <tr><td><strong>Casting Time:</strong> 1 action</td></tr>
-        <tr><td><strong>Range:</strong> 30 feet</td></tr>
-        <tr><td><strong>Components:</strong> V, S</td></tr>
-        <tr><td><strong>Duration:</strong> Concentration, up to 1 minute</td></tr>
-        <tr><td><strong>Classes:</strong> Wizard</td></tr>
-        </table>
+        <p><strong>Casting Time:</strong> 1 action<br />
+        <strong>Range:</strong> 30 feet<br />
+        <strong>Components:</strong> V, S<br />
+        <strong>Duration:</strong> Concentration, up to 1 minute</p>
         <p>A test concentration spell.</p>
+        <p><strong><em>Spell Lists.</em></strong> <a href="http://dnd5e.wikidot.com/spells:wizard">Wizard</a></p>
         </div>
         HTML;
 

@@ -38,7 +38,7 @@ final class SpellsScrapeAction
                 usleep($delayMs * 1000);
             }
 
-            $url = self::BASE_URL.'/'.$slug;
+            $url = self::BASE_URL.'/spell:'.$slug;
 
             if ($dryRun) {
                 Log::info('[dry-run] Would fetch spell', [
@@ -75,14 +75,12 @@ final class SpellsScrapeAction
     {
         $dom = new \DOMDocument;
 
-        // Suppress HTML5 parsing warnings.
         libxml_use_internal_errors(true);
         $dom->loadHTML($html, LIBXML_NOERROR | LIBXML_NOWARNING);
         libxml_clear_errors();
 
         $xpath = new \DOMXPath($dom);
 
-        // Find all <a href="..."> elements that look like spell paths (single-segment, lowercase, hyphenated).
         /** @var \DOMNodeList<\DOMElement> $nodes */
         $nodes = $xpath->query('//a[@href]');
 
@@ -91,8 +89,8 @@ final class SpellsScrapeAction
         foreach ($nodes as $node) {
             $href = $node->getAttribute('href');
 
-            // Valid spell hrefs are /slug-name — leading slash, no extra slashes, no colons, no dots.
-            if (! preg_match('#^/([a-z0-9][a-z0-9\-]*)$#', $href, $matches)) {
+            // Real wikidot spell hrefs are /spell:slug-name.
+            if (! preg_match('#^/spell:([a-z0-9][a-z0-9\-]*)$#', $href, $matches)) {
                 continue;
             }
 
@@ -127,53 +125,35 @@ final class SpellsScrapeAction
 
         $xpath = new \DOMXPath($dom);
 
-        // Extract the spell name from <h1>.
+        // Spell name from <h1>.
         /** @var \DOMNodeList<\DOMElement> $h1Nodes */
         $h1Nodes = $xpath->query('//div[@id="page-content"]//h1');
         $name = $h1Nodes->count() > 0 ? trim($h1Nodes->item(0)->textContent) : $slug;
 
-        // Extract the level/school line from <em> inside a <p>.
+        // Level and school from <em> inside a <p>.
         /** @var \DOMNodeList<\DOMElement> $emNodes */
         $emNodes = $xpath->query('//div[@id="page-content"]//p/em');
         $levelSchoolText = $emNodes->count() > 0 ? trim($emNodes->item(0)->textContent) : '';
 
         [$level, $school] = $this->parseLevelAndSchool($levelSchoolText);
 
-        // Extract stat block rows from the table.
-        /** @var \DOMNodeList<\DOMElement> $rowNodes */
-        $rowNodes = $xpath->query('//div[@id="page-content"]//table//tr/td');
-
-        $statBlock = [];
-
-        foreach ($rowNodes as $td) {
-            $text = trim($td->textContent);
-            if (str_contains($text, ':')) {
-                [$label, $value] = explode(':', $text, 2);
-                $statBlock[strtolower(trim($label))] = trim($value);
-            }
-        }
+        // Stat block: a <p> containing <strong>Casting Time:</strong> with <br /> separators.
+        $statBlock = $this->parseStatBlock($xpath);
 
         $castingTime = $statBlock['casting time'] ?? '';
         $range = $statBlock['range'] ?? '';
         $componentsRaw = $statBlock['components'] ?? '';
         $duration = $statBlock['duration'] ?? '';
-        $classesRaw = $statBlock['classes'] ?? '';
 
         $components = $this->parseComponents($componentsRaw);
         $concentration = str_contains(strtolower($duration), 'concentration');
-        $ritual = str_contains(strtolower($castingTime), 'ritual')
-            || str_contains(strtolower($levelSchoolText), 'ritual');
+        $ritual = str_contains(strtolower($levelSchoolText), 'ritual');
 
-        $classes = array_values(array_filter(
-            array_map(
-                fn (string $c): string => strtolower(trim($c)),
-                explode(',', $classesRaw),
-            ),
-            fn (string $c): bool => $c !== '',
-        ));
+        // Classes from the "Spell Lists." paragraph's anchor links.
+        $classes = $this->parseSpellListClasses($xpath);
 
-        // Extract description text: all <p> nodes after the stat block table.
-        $description = $this->parseDescription($xpath, $name);
+        // Description: all <p> nodes after the stat block, excluding the Spell Lists paragraph.
+        $description = $this->parseDescription($xpath);
 
         return [
             'name' => $name,
@@ -190,22 +170,107 @@ final class SpellsScrapeAction
         ];
     }
 
+    /** @return array<string, string> */
+    private function parseStatBlock(\DOMXPath $xpath): array
+    {
+        /** @var \DOMNodeList<\DOMElement> $pNodes */
+        $pNodes = $xpath->query(
+            '//div[@id="page-content"]//p[.//strong[contains(., "Casting Time")]]',
+        );
+
+        if ($pNodes->count() === 0) {
+            return [];
+        }
+
+        $statBlock = [];
+        $currentLabel = null;
+        $currentValue = '';
+
+        foreach ($pNodes->item(0)->childNodes as $child) {
+            if ($child->nodeType === XML_ELEMENT_NODE && $child->nodeName === 'strong') {
+                if ($currentLabel !== null) {
+                    $statBlock[strtolower(trim($currentLabel))] = trim($currentValue);
+                }
+
+                $currentLabel = rtrim(trim($child->textContent), ':');
+                $currentValue = '';
+            } elseif ($child->nodeType === XML_TEXT_NODE) {
+                $currentValue .= $child->textContent;
+            }
+            // <br /> nodes are separators; the next <strong> flushes the current value.
+        }
+
+        if ($currentLabel !== null) {
+            $statBlock[strtolower(trim($currentLabel))] = trim($currentValue);
+        }
+
+        return $statBlock;
+    }
+
+    /** @return list<string> */
+    private function parseSpellListClasses(\DOMXPath $xpath): array
+    {
+        // The "Spell Lists." paragraph links to each class spell list.
+        // href format: http://dnd5e.wikidot.com/spells:wizard → extract "wizard".
+        /** @var \DOMNodeList<\DOMElement> $pNodes */
+        $pNodes = $xpath->query(
+            '//div[@id="page-content"]//p[contains(., "Spell Lists")]',
+        );
+
+        if ($pNodes->count() === 0) {
+            return [];
+        }
+
+        $classes = [];
+
+        /** @var \DOMNodeList<\DOMElement> $anchors */
+        $anchors = $xpath->query('.//a[@href]', $pNodes->item(0));
+
+        foreach ($anchors as $a) {
+            $href = $a->getAttribute('href');
+
+            if (preg_match('#/spells:([a-z\-]+)$#', $href, $m)) {
+                $classes[] = $m[1];
+            }
+        }
+
+        return $classes;
+    }
+
+    private function parseDescription(\DOMXPath $xpath): string
+    {
+        // All <p> nodes after the stat block paragraph, excluding the Spell Lists paragraph.
+        /** @var \DOMNodeList<\DOMElement> $pNodes */
+        $pNodes = $xpath->query(
+            '//div[@id="page-content"]//p[.//strong[contains(., "Casting Time")]]/following-sibling::p[not(contains(., "Spell Lists"))]',
+        );
+
+        $parts = [];
+
+        foreach ($pNodes as $p) {
+            $text = trim($p->textContent);
+
+            if ($text !== '') {
+                $parts[] = $text;
+            }
+        }
+
+        return implode("\n\n", $parts);
+    }
+
     /** @return array{0: int, 1: string} */
     private function parseLevelAndSchool(string $text): array
     {
-        // Examples: "3rd-level evocation", "Conjuration cantrip", "1st-level abjuration (ritual)"
         $level = 0;
         $school = 'unknown';
 
         $text = strtolower($text);
-
-        // Strip ritual tag from school line for parsing.
         $text = str_replace('(ritual)', '', $text);
         $text = trim($text);
 
         if (str_contains($text, 'cantrip')) {
             $level = 0;
-            // School is before "cantrip".
+
             if (preg_match('/([a-z]+)\s+cantrip/', $text, $m)) {
                 $school = $m[1];
             }
@@ -222,7 +287,6 @@ final class SpellsScrapeAction
      */
     private function parseComponents(string $raw): array
     {
-        // Examples: "V, S, M (a tiny ball of bat guano and sulfur)", "V, S", "S, M (some component)"
         $verbal = str_contains($raw, 'V');
         $somatic = str_contains($raw, 'S');
         $material = null;
@@ -236,24 +300,5 @@ final class SpellsScrapeAction
             'somatic' => $somatic,
             'material' => $material,
         ];
-    }
-
-    private function parseDescription(\DOMXPath $xpath, string $spellName): string
-    {
-        // Collect all <p> nodes after the stat block table within page-content.
-        // We skip the first <p> which typically holds the level/school em tag.
-        /** @var \DOMNodeList<\DOMElement> $pNodes */
-        $pNodes = $xpath->query('//div[@id="page-content"]//table/following-sibling::p');
-
-        $parts = [];
-
-        foreach ($pNodes as $p) {
-            $text = trim($p->textContent);
-            if ($text !== '') {
-                $parts[] = $text;
-            }
-        }
-
-        return implode("\n\n", $parts);
     }
 }

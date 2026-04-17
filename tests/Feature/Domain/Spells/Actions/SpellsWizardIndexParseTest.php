@@ -24,8 +24,8 @@ test('wizard index page yields all spell slugs including fireball, mage-hand, an
 test('wizard index parser extracts slug from href attribute', function (): void {
     $html = <<<'HTML'
         <div id="page-content">
-            <a href="/detect-magic">Detect Magic</a>
-            <a href="/shield">Shield</a>
+            <a href="/spell:detect-magic">Detect Magic</a>
+            <a href="/spell:shield">Shield</a>
         </div>
         HTML;
 
@@ -41,7 +41,7 @@ test('wizard index parser ignores non-spell hrefs', function (): void {
     $html = <<<'HTML'
         <div id="page-content">
             <a href="https://external.com/page">External</a>
-            <a href="/fireball">Fireball</a>
+            <a href="/spell:fireball">Fireball</a>
             <a href="#anchor">Anchor</a>
             <a href="/spells:wizard">Index</a>
         </div>
