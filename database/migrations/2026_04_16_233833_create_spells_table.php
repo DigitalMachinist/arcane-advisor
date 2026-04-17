@@ -31,8 +31,7 @@ return new class extends Migration
             $table->boolean('component_verbal');
             $table->boolean('component_somatic');
             $table->binary('embedding')->nullable();
-            $table->unsignedBigInteger('created_at_ms');
-            $table->unsignedBigInteger('updated_at_ms')->nullable();
+            $table->timestamps(3);
         });
     }
 
