@@ -16,6 +16,24 @@ final class SpellsScrapeAction
 
     private const USER_AGENT = 'ArcaneAdvisor/1.0 (https://github.com/DigitalMachinist/arcane-advisor; spell scraper)';
 
+    /** @var array<string, string> Maps wikidot source strings to SourceCode values. */
+    private const SOURCE_MAP = [
+        "Player's Handbook" => 'phb',
+        "Xanathar's Guide to Everything" => 'xge',
+        "Tasha's Cauldron of Everything" => 'tce',
+        "Sword Coast Adventurer's Guide" => 'scag',
+        "Fizban's Treasury of Dragons" => 'ftd',
+        "Spelljammer: Adventures in Space - Astral Adventurer's Guide" => 'aag',
+        "Explorer's Guide to Wildemount" => 'egw',
+        "Elemental Evil Player's Companion" => 'eepc',
+        'Acquisitions Inc.' => 'acq',
+        'Lost Laboratory of Kwalish' => 'llk',
+        'Strixhaven: A Curriculum of Chaos' => 'scc',
+        'The Book of Many Things' => 'bmt',
+        'Planescape - Adventures in the Multiverse' => 'pam',
+        'Icewind Dale - Rime of the Frostmaiden' => 'idrf',
+    ];
+
     public function execute(string $outputDir, bool $dryRun = false, int $delayMs = 500): void
     {
         $indexResponse = Http::withHeaders(['User-Agent' => self::USER_AGENT])
@@ -112,6 +130,7 @@ final class SpellsScrapeAction
      *     concentration: bool,
      *     ritual: bool,
      *     classes: list<string>,
+     *     sources: list<array{code: string, page: null}>,
      *     description: string,
      * }
      */
@@ -125,10 +144,10 @@ final class SpellsScrapeAction
 
         $xpath = new \DOMXPath($dom);
 
-        // Spell name from <h1>.
-        /** @var \DOMNodeList<\DOMElement> $h1Nodes */
-        $h1Nodes = $xpath->query('//div[@id="page-content"]//h1');
-        $name = $h1Nodes->count() > 0 ? trim($h1Nodes->item(0)->textContent) : $slug;
+        // Spell name from the page-title header div (outside #page-content on real wikidot pages).
+        /** @var \DOMNodeList<\DOMElement> $titleNodes */
+        $titleNodes = $xpath->query('//div[contains(@class,"page-title")]//span');
+        $name = $titleNodes->count() > 0 ? trim($titleNodes->item(0)->textContent) : $slug;
 
         // Level and school from <em> inside a <p>.
         /** @var \DOMNodeList<\DOMElement> $emNodes */
@@ -152,6 +171,9 @@ final class SpellsScrapeAction
         // Classes from the "Spell Lists." paragraph's anchor links.
         $classes = $this->parseSpellListClasses($xpath);
 
+        // Source book(s) from the "Source: ..." paragraph.
+        $sources = $this->parseSource($xpath);
+
         // Description: all <p> nodes after the stat block, excluding the Spell Lists paragraph.
         $description = $this->parseDescription($xpath);
 
@@ -166,6 +188,7 @@ final class SpellsScrapeAction
             'concentration' => $concentration,
             'ritual' => $ritual,
             'classes' => $classes,
+            'sources' => $sources,
             'description' => $description,
         ];
     }
@@ -235,6 +258,36 @@ final class SpellsScrapeAction
         }
 
         return $classes;
+    }
+
+    /** @return list<array{code: string, page: null}> */
+    private function parseSource(\DOMXPath $xpath): array
+    {
+        /** @var \DOMNodeList<\DOMElement> $pNodes */
+        $pNodes = $xpath->query('//div[@id="page-content"]//p[starts-with(normalize-space(.), "Source:")]');
+
+        if ($pNodes->count() === 0) {
+            return [];
+        }
+
+        $raw = trim(preg_replace('/^Source:\s*/i', '', trim($pNodes->item(0)->textContent)) ?? '');
+
+        $sources = [];
+
+        foreach (explode('/', $raw) as $part) {
+            $part = trim($part);
+
+            $code = self::SOURCE_MAP[$part]
+                ?? (str_starts_with($part, 'Unearthed Arcana') ? 'ua' : null);
+
+            if ($code !== null) {
+                $sources[] = ['code' => $code, 'page' => null];
+            } else {
+                Log::warning('Unknown spell source encountered during scrape', ['source' => $part]);
+            }
+        }
+
+        return $sources;
     }
 
     private function parseDescription(\DOMXPath $xpath): string
