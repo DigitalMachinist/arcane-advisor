@@ -22,7 +22,7 @@ Tracks completion across all stages. Check items only when the PR is merged and 
 - [x] PR 2.3 — Migrations, Eloquent models, factories
 - [ ] PR 2.4 — `SpellsImportAction` + `spells:import` command
 - [ ] PR 2.5 — `SpellRepository` read API
-- [ ] PR 2.6 — `SpellsScrapeAction` + `spells:scrape` command
+- [x] PR 2.6 — `SpellsScrapeAction` + `spells:scrape` command
 - [ ] PR 2.7 — `SpellsExtractAction` + `spells:extract` command
 - [ ] PR 2.8 — `SpellsReviewAction` + `spells:review` walker
 - [ ] PR 2.9 — Full wizard corpus populated + reviewed
