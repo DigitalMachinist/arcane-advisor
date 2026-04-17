@@ -2,6 +2,55 @@
 
 Cross-surface, cross-language, and documentation conventions for this repo. For PHP code-level mechanics (class layout, identifier naming within PHP, patterns, enforcement toolchain), see `style-guide.md`.
 
+## Database model conventions
+
+These apply to every Eloquent model and its migration in this project. The mechanics (column types, cast syntax) belong here because they are project decisions, not PHP style rules.
+
+### Primary key
+
+Use `$table->id()` (auto-increment `BIGINT UNSIGNED`). Never expose the raw integer `id` to users — it is internal only.
+
+### Public identifier (UUID)
+
+Every entity that can be referenced in a URL or API response carries a `uuid` column alongside the primary key:
+
+```php
+$table->id();
+$table->uuid('uuid')->unique();
+```
+
+- Generated on create via `Str::uuid()` in the model's `booted()` hook (or a factory state).
+- Cast to `string` — no special UUID cast needed.
+- Used in all external references (route parameters, API payloads, client-side links).
+- The integer `id` must not appear in routes, API responses, or client-facing output.
+
+### Timestamps
+
+Use `DATETIME(3)` columns — not `TIMESTAMP` — for millisecond precision without timezone conversion or the 2038 range limit. Column names stay `created_at` / `updated_at` so Laravel's automatic timestamp management works unmodified.
+
+```php
+// Migration
+$table->timestamps(3);   // DATETIME(3) NULL for both created_at and updated_at
+
+// Model — set dateFormat so fractional seconds survive write/read round-trips
+protected $dateFormat = 'Y-m-d H:i:s.v';
+```
+
+Laravel's `timestamps` cast returns `Carbon` objects automatically; no custom cast is needed. The `v` specifier in the date format is PHP's milliseconds placeholder (000–999).
+
+Do **not** use plain `$table->timestamps()` — that defaults to `DATETIME` without fractional precision. Always pass `3` for millisecond accuracy.
+
+### Column ordering in migrations
+
+Apply these three conventions within the standard column ordering from `style-guide.md` Section 10:
+
+1. `$table->id()` — internal PK, always first
+2. `$table->uuid('uuid')->unique()` — public identifier, immediately after PK
+3. _(other columns per style-guide ordering)_
+4. `$table->timestamps(3)` — always last, in place of `$table->timestamps()`
+
+---
+
 ## Naming across surfaces
 
 Different surfaces use different casing — translation happens at one boundary, always the same one.
