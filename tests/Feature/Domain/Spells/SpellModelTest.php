@@ -2,16 +2,19 @@
 
 declare(strict_types=1);
 
+use App\Casts\UnixMillisecondsCast;
 use App\Domain\Spells\Enums\ActionEconomy;
 use App\Domain\Spells\Enums\DurationCategory;
 use App\Domain\Spells\Enums\School;
 use App\Domain\Spells\Enums\Targeting;
 use App\Domain\Spells\Models\Spell;
+use Carbon\Carbon;
+use Illuminate\Database\QueryException;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 
 uses(RefreshDatabase::class);
 
-covers(Spell::class);
+covers(Spell::class, UnixMillisecondsCast::class);
 
 test('factory creates a valid spell', function (): void {
     $spell = Spell::factory()->create();
@@ -23,11 +26,45 @@ test('factory creates a valid spell', function (): void {
         ->and($spell->level)->toBeInt();
 })->group('mysql');
 
-test('timestamps populate on create', function (): void {
+test('uuid is auto-generated on create and is unique', function (): void {
+    $a = Spell::factory()->create();
+    $b = Spell::factory()->create();
+
+    expect($a->uuid)->toBeString()->toMatch('/^[0-9a-f-]{36}$/')
+        ->and($b->uuid)->toBeString()
+        ->and($a->uuid)->not->toBe($b->uuid);
+})->group('mysql');
+
+test('uuid column has a unique index', function (): void {
     $spell = Spell::factory()->create();
 
-    expect($spell->created_at)->not->toBeNull()
-        ->and($spell->updated_at)->not->toBeNull();
+    expect(fn () => Spell::factory()->create(['uuid' => $spell->uuid]))
+        ->toThrow(QueryException::class);
+})->group('mysql');
+
+test('ms timestamps populate on create and cast to Carbon', function (): void {
+    $before = now()->valueOf();
+    $spell = Spell::factory()->create();
+    $after = now()->valueOf();
+
+    $fresh = Spell::find($spell->id);
+
+    expect($fresh->created_at_ms)->toBeInstanceOf(Carbon::class)
+        ->and($fresh->updated_at_ms)->toBeInstanceOf(Carbon::class)
+        ->and($fresh->created_at_ms->valueOf())->toBeGreaterThanOrEqual($before)
+        ->and($fresh->created_at_ms->valueOf())->toBeLessThanOrEqual($after);
+})->group('mysql');
+
+test('updated_at_ms advances on update', function (): void {
+    $spell = Spell::factory()->create();
+    $createdMs = $spell->created_at_ms->valueOf();
+
+    usleep(2000);
+    $spell->update(['name' => 'Renamed Spell']);
+
+    $fresh = Spell::find($spell->id);
+
+    expect($fresh->updated_at_ms->valueOf())->toBeGreaterThan($createdMs);
 })->group('mysql');
 
 test('school enum cast round-trips correctly', function (): void {
@@ -66,7 +103,7 @@ test('slug is unique', function (): void {
     Spell::factory()->create(['slug' => 'fireball']);
 
     expect(fn () => Spell::factory()->create(['slug' => 'fireball']))
-        ->toThrow(\Illuminate\Database\QueryException::class);
+        ->toThrow(QueryException::class);
 })->group('mysql');
 
 test('nullable fields accept null', function (): void {

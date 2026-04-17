@@ -2,6 +2,62 @@
 
 Cross-surface, cross-language, and documentation conventions for this repo. For PHP code-level mechanics (class layout, identifier naming within PHP, patterns, enforcement toolchain), see `style-guide.md`.
 
+## Database model conventions
+
+These apply to every Eloquent model and its migration in this project. The mechanics (column types, cast syntax) belong here because they are project decisions, not PHP style rules.
+
+### Primary key
+
+Use `$table->id()` (auto-increment `BIGINT UNSIGNED`). Never expose the raw integer `id` to users — it is internal only.
+
+### Public identifier (UUID)
+
+Every entity that can be referenced in a URL or API response carries a `uuid` column alongside the primary key:
+
+```php
+$table->id();
+$table->uuid('uuid')->unique();
+```
+
+- Generated on create via `Str::uuid()` in the model's `booted()` hook (or a factory state).
+- Cast to `string` — no special UUID cast needed.
+- Used in all external references (route parameters, API payloads, client-side links).
+- The integer `id` must not appear in routes, API responses, or client-facing output.
+
+### Timestamps
+
+Store timestamps as `BIGINT` unix milliseconds, not MySQL `TIMESTAMP`/`DATETIME` columns. Cast them to `Carbon` via a custom cast so application code works with `Carbon` throughout.
+
+```php
+// Migration
+$table->unsignedBigInteger('created_at_ms');
+$table->unsignedBigInteger('updated_at_ms')->nullable();
+
+// Model
+public $timestamps = false;
+
+protected function casts(): array
+{
+    return [
+        'created_at_ms' => UnixMillisecondsCast::class,
+        'updated_at_ms' => UnixMillisecondsCast::class,
+    ];
+}
+```
+
+Do **not** use `$table->timestamps()` — that produces MySQL `TIMESTAMP` columns that have timezone and range limitations. The `UnixMillisecondsCast` lives at `app/Casts/UnixMillisecondsCast.php` and converts between `int` (ms since epoch) and `Carbon`.
+
+### Column ordering in migrations
+
+Apply these three conventions within the standard column ordering from `style-guide.md` Section 10:
+
+1. `$table->id()` — internal PK, always first
+2. `$table->uuid('uuid')->unique()` — public identifier, immediately after PK
+3. _(other columns per style-guide ordering)_
+4. `$table->unsignedBigInteger('created_at_ms')` and `$table->unsignedBigInteger('updated_at_ms')->nullable()` — in place of `$table->timestamps()`
+
+---
+
 ## Naming across surfaces
 
 Different surfaces use different casing — translation happens at one boundary, always the same one.

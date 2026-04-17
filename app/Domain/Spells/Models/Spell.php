@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Domain\Spells\Models;
 
+use App\Casts\UnixMillisecondsCast;
 use App\Domain\Spells\Enums\ActionEconomy;
 use App\Domain\Spells\Enums\AreaShape;
 use App\Domain\Spells\Enums\AttackRoll;
@@ -17,9 +18,11 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasOne;
+use Illuminate\Support\Str;
 
 #[UseFactory(SpellFactory::class)]
 #[Fillable([
+    'uuid',
     'slug',
     'name',
     'level',
@@ -38,11 +41,29 @@ use Illuminate\Database\Eloquent\Relations\HasOne;
     'duration_category',
     'personality_blurb',
     'embedding',
+    'created_at_ms',
+    'updated_at_ms',
 ])]
 class Spell extends Model
 {
     /** @use HasFactory<SpellFactory> */
     use HasFactory;
+
+    public $timestamps = false;
+
+    protected static function booted(): void
+    {
+        static::creating(function (self $spell): void {
+            $spell->uuid ??= (string) Str::uuid();
+            $now = now()->getTimestampMs();
+            $spell->created_at_ms ??= $now;
+            $spell->updated_at_ms ??= $now;
+        });
+
+        static::updating(function (self $spell): void {
+            $spell->updated_at_ms = now()->getTimestampMs();
+        });
+    }
 
     /** @return HasMany<SpellQualifier, $this> */
     public function qualifiers(): HasMany
@@ -104,6 +125,8 @@ class Spell extends Model
             'component_verbal' => 'boolean',
             'component_somatic' => 'boolean',
             'level' => 'integer',
+            'created_at_ms' => UnixMillisecondsCast::class,
+            'updated_at_ms' => UnixMillisecondsCast::class,
         ];
     }
 }
