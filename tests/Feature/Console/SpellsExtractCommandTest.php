@@ -38,7 +38,7 @@ beforeEach(function (): void {
 
 test('spells:extract exits 0 when all files succeed', function (): void {
     $inputDir = base_path('tests/Fixtures/extract/raw');
-    $outputDir = sys_get_temp_dir() . '/arcane-extract-test-' . uniqid();
+    $outputDir = sys_get_temp_dir().'/arcane-extract-test-'.uniqid();
     mkdir($outputDir, 0755, true);
 
     $this->artisan('spells:extract', [
@@ -53,7 +53,7 @@ test('spells:extract exits 0 when all files succeed', function (): void {
 
 test('spells:extract reports count of processed files', function (): void {
     $inputDir = base_path('tests/Fixtures/extract/raw');
-    $outputDir = sys_get_temp_dir() . '/arcane-extract-test-' . uniqid();
+    $outputDir = sys_get_temp_dir().'/arcane-extract-test-'.uniqid();
     mkdir($outputDir, 0755, true);
 
     $this->artisan('spells:extract', [
@@ -70,7 +70,7 @@ test('spells:extract reports count of processed files', function (): void {
 
 test('spells:extract writes yaml files to output directory', function (): void {
     $inputDir = base_path('tests/Fixtures/extract/raw');
-    $outputDir = sys_get_temp_dir() . '/arcane-extract-test-' . uniqid();
+    $outputDir = sys_get_temp_dir().'/arcane-extract-test-'.uniqid();
     mkdir($outputDir, 0755, true);
 
     $this->artisan('spells:extract', [
@@ -93,7 +93,7 @@ test('spells:extract exits 1 when action throws an exception', function (): void
     $this->app->instance(SpellsExtractAction::class, $mock);
 
     $inputDir = base_path('tests/Fixtures/extract/raw');
-    $outputDir = sys_get_temp_dir() . '/arcane-extract-test-' . uniqid();
+    $outputDir = sys_get_temp_dir().'/arcane-extract-test-'.uniqid();
     mkdir($outputDir, 0755, true);
 
     $this->artisan('spells:extract', [
@@ -108,7 +108,7 @@ test('spells:extract uses default input and output directories when options omit
     // Just ensure the command signature accepts no options and uses defaults.
     // We pass explicit paths here to avoid writing to real storage during tests.
     $inputDir = base_path('tests/Fixtures/extract/raw');
-    $outputDir = sys_get_temp_dir() . '/arcane-extract-default-' . uniqid();
+    $outputDir = sys_get_temp_dir().'/arcane-extract-default-'.uniqid();
     mkdir($outputDir, 0755, true);
 
     $exitCode = $this->artisan('spells:extract', [

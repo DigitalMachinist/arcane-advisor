@@ -3,7 +3,6 @@
 declare(strict_types=1);
 
 use App\Domain\Llm\Clients\FixtureClient;
-use App\Domain\Llm\LlmClient;
 use App\Domain\Llm\LlmResponse;
 use App\Domain\Spells\Actions\SpellsExtractAction;
 
